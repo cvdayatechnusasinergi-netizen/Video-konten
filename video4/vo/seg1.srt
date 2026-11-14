@@ -1,0 +1,12 @@
+1
+00:00:00,100 --> 00:00:02,283
+Kenalan sama dua orang.
+
+2
+00:00:02,233 --> 00:00:05,304
+Si A, gajinya lima belas juta.
+
+3
+00:00:05,304 --> 00:00:08,338
+Si B, gajinya cuma lima juta.
+

@@ -1,0 +1,4 @@
+1
+00:00:00,100 --> 00:00:04,686
+Follow Suara untuk insight harian, dan share ke teman yang baru naik gaji.
+

@@ -1,0 +1,12 @@
+1
+00:00:00,100 --> 00:00:02,672
+Si B tetap hidup sederhana.
+
+2
+00:00:02,622 --> 00:00:04,964
+Pengeluarannya empat juta.
+
+3
+00:00:04,964 --> 00:00:08,895
+Sisanya satu juta, dia investasikan setiap bulan.
+

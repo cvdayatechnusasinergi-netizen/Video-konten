@@ -1,0 +1,492 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Kaya Bukan Gaji Besar</title>
+<style>
+  html,body{margin:0;background:#000;}
+  canvas{display:block;width:360px;height:640px;}
+  body.render canvas{width:1080px;height:1920px;}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+// ============ CONFIG ============
+const params = new URLSearchParams(location.search);
+const CONFIG = {
+  handle: params.get('handle') || '@.notingme',
+  brand: params.get('brand') || 'SUARA',
+  saveRate: 10000,      // Rp per hari
+  annualReturn: 0.06,   // asumsi imbal hasil per tahun
+  years: 10,
+};
+// ================================
+
+const W = 1080, H = 1920, FPS = 30, DURATION = 56.5;
+const cv = document.getElementById('c');
+const ctx = cv.getContext('2d');
+const FONT = 'Inter, "Inter Display", "DejaVu Sans", sans-serif';
+
+// ---------- helpers ----------
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, p) => a + (b - a) * p;
+const eo = x => 1 - Math.pow(1 - x, 3);
+const eio = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const expo = x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x);
+const back = x => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); };
+function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const fmtNum = (v, d) => v.toFixed(d).replace('.', ',');
+const rupiah = v => 'Rp' + Math.round(v).toLocaleString('id-ID');
+
+function font(size, weight = 700) { ctx.font = `${weight} ${size}px ${FONT}`; }
+
+// fade in at [a, a+fi], fade out at [b-fo, b]
+function life(t, a, b, fi = .35, fo = .35) { return Math.min(prog(t, a, a + fi), 1 - prog(t, b - fo, b)); }
+
+// Animated word-by-word text (centered)
+function words(text, x, y, size, t, start, opts = {}) {
+  const { weight = 700, color = '#fff', stagger = .09, dur = .55, end = 1e9, fo = .35, spacing = 0, align = 'center', rise = 46 } = opts;
+  font(size, weight);
+  ctx.letterSpacing = spacing + 'px';
+  const ws = text.split(' ');
+  const sp = ctx.measureText(' ').width;
+  const widths = ws.map(w => ctx.measureText(w).width);
+  const total = widths.reduce((a, b) => a + b, 0) + sp * (ws.length - 1);
+  let cx = align === 'center' ? x - total / 2 : align === 'left' ? x : x - total;
+  const outA = 1 - prog(t, end - fo, end);
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'left';
+  ws.forEach((w, i) => {
+    const p = prog(t, start + i * stagger, start + i * stagger + dur);
+    if (p > 0 && outA > 0) {
+      const e = eo(p);
+      ctx.save();
+      ctx.globalAlpha *= e * outA;
+      ctx.fillStyle = color;
+      const blur = (1 - e) * 14 + (1 - outA) * 10;
+      if (blur > .3) ctx.filter = `blur(${blur.toFixed(1)}px)`;
+      ctx.fillText(w, cx, y + (1 - e) * rise - (1 - outA) * 30);
+      ctx.restore();
+    }
+    cx += widths[i] + sp;
+  });
+  ctx.letterSpacing = '0px';
+}
+
+function label(text, y, t, start, end) {
+  // letter-spaced small label with side lines
+  const a = life(t, start, end, .5, .4);
+  if (a <= 0) return;
+  ctx.save();
+  ctx.globalAlpha *= a;
+  font(30, 600);
+  ctx.letterSpacing = '14px';
+  ctx.fillStyle = '#bdbdbd';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(text, W / 2 + 7, y);
+  const tw = ctx.measureText(text).width;
+  const lp = eo(prog(t, start, start + .8));
+  ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(W / 2 - tw / 2 - 30, y); ctx.lineTo(W / 2 - tw / 2 - 30 - 90 * lp, y);
+  ctx.moveTo(W / 2 + tw / 2 + 30, y); ctx.lineTo(W / 2 + tw / 2 + 30 + 90 * lp, y);
+  ctx.stroke();
+  ctx.restore();
+  ctx.letterSpacing = '0px';
+}
+
+function dot(x, y, r, a = 1, glow = 30) {
+  ctx.save();
+  ctx.globalAlpha *= a;
+  ctx.shadowColor = 'rgba(255,255,255,.9)';
+  ctx.shadowBlur = glow;
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+
+// ---------- background ----------
+const grain = [];
+(function makeGrain() {
+  const r = rng(7);
+  for (let k = 0; k < 6; k++) {
+    const g = document.createElement('canvas'); g.width = 270; g.height = 480;
+    const gx = g.getContext('2d'); const id = gx.createImageData(270, 480);
+    for (let i = 0; i < id.data.length; i += 4) { const v = r() * 255; id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 22; }
+    gx.putImageData(id, 0, 0); grain.push(g);
+  }
+})();
+
+const dust = (() => { const r = rng(42); return Array.from({ length: 70 }, () => ({ x: r() * W, y: r() * H, s: .5 + r() * 2, v: 8 + r() * 30, a: .1 + r() * .35, ph: r() * 6 })); })();
+
+function background(t, frame) {
+  ctx.fillStyle = '#040404'; ctx.fillRect(0, 0, W, H);
+  // soft center light
+  const g = ctx.createRadialGradient(W / 2, H * .45, 0, W / 2, H * .45, H * .7);
+  g.addColorStop(0, 'rgba(255,255,255,.07)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // dot grid ("titik")
+  const step = 60, off = (t * 6) % step;
+  ctx.fillStyle = 'rgba(255,255,255,.07)';
+  for (let y = -step; y < H + step; y += step) for (let x = 30; x < W; x += step) {
+    ctx.beginPath(); ctx.arc(x, y + off, 1.6, 0, Math.PI * 2); ctx.fill();
+  }
+  // floating dust
+  dust.forEach(d => {
+    const y = ((d.y - t * d.v) % H + H) % H;
+    ctx.fillStyle = `rgba(255,255,255,${d.a * (.6 + .4 * Math.sin(t * 2 + d.ph))})`;
+    ctx.beginPath(); ctx.arc(d.x + Math.sin(t * .5 + d.ph) * 20, y, d.s, 0, Math.PI * 2); ctx.fill();
+  });
+}
+function overlay(t, frame) {
+  // vignette
+  const v = ctx.createRadialGradient(W / 2, H / 2, H * .25, W / 2, H / 2, H * .75);
+  v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,.75)');
+  ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
+  // grain
+  ctx.save(); ctx.globalAlpha = .9;
+  ctx.drawImage(grain[frame % grain.length], 0, 0, W, H);
+  ctx.restore();
+  // progress line at very top
+  ctx.fillStyle = 'rgba(255,255,255,.18)'; ctx.fillRect(0, 0, W, 4);
+  ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.fillRect(0, 0, W * (t / DURATION), 4);
+}
+
+// scene wrapper: fade + slight zoom/blur on exit
+function scene(t, a, b, fn, fi = .3, fo = .5) {
+  if (t < a || t > b) return;
+  const inp = prog(t, a, a + fi), outp = prog(t, b - fo, b);
+  ctx.save();
+  ctx.globalAlpha = Math.min(eo(inp), 1 - outp);
+  const s = 1 + eio(outp) * .08;
+  ctx.translate(W / 2, H / 2); ctx.scale(s, s); ctx.translate(-W / 2, -H / 2);
+  if (outp > 0) ctx.filter = `blur(${(outp * 10).toFixed(1)}px)`;
+  fn(t - a, t);
+  ctx.restore();
+}
+
+// ================= VIDEO 4: Kaya Itu Bukan Soal Gaji Besar =================
+const CTA_TITLE = ['KAYA ITU BUKAN', 'SOAL GAJI BESAR'];
+
+function pill(text, x, y, a, opts = {}) {
+  if (a <= 0) return;
+  const { size = 34, filled = false, dx = 0 } = opts;
+  font(size, 700);
+  const tw = ctx.measureText(text).width, pw = tw + 48, ph = size * 1.7;
+  ctx.save(); ctx.globalAlpha *= eo(a); ctx.translate(x + dx * (1 - eo(a)), y);
+  const s = back(a); ctx.scale(s, s);
+  ctx.beginPath(); ctx.roundRect(-pw / 2, -ph / 2, pw, ph, ph / 2);
+  if (filled) { ctx.fillStyle = '#fff'; ctx.fill(); } else { ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2.5; ctx.stroke(); }
+  ctx.fillStyle = filled ? '#000' : '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, 0, 2);
+  ctx.restore();
+}
+function hatch(x, y, w, h) {
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 5;
+  for (let k = -h; k < w + h; k += 16) { ctx.beginPath(); ctx.moveTo(x + k, y + h); ctx.lineTo(x + k + h, y); ctx.stroke(); }
+  ctx.restore();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.strokeRect(x, y, w, h);
+}
+
+// ---------- S1: hook (0 - 4.9) ----------
+function s1(lt, t) {
+  words('Gaji', W / 2, 600, 56, lt, .25, { weight: 500, color: '#9a9a9a' });
+  words('Rp15.000.000', W / 2, 710, 120, lt, .4, { weight: 800, stagger: 0 });
+  // monthly balance going negative
+  const p = eio(prog(lt, 1.4, 3.0));
+  const bal = lerp(15, -1, p);
+  const ba = eo(prog(lt, 1.2, 1.6));
+  if (ba > 0) {
+    ctx.save(); ctx.globalAlpha *= ba;
+    font(30, 600); ctx.letterSpacing = '8px'; ctx.fillStyle = '#7a7a7a'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('SISA AKHIR BULAN', W / 2 + 4, 900); ctx.letterSpacing = '0px';
+    const shake = lt > 3.0 && lt < 3.5 ? Math.sin(lt * 90) * 10 * (1 - prog(lt, 3.0, 3.5)) : 0;
+    font(150, 900); ctx.fillStyle = bal < 0 ? '#fff' : '#cfcfcf';
+    if (bal < 0) { ctx.shadowColor = 'rgba(255,255,255,.6)'; ctx.shadowBlur = 40; }
+    const txt = (bal < 0 ? '−' : '') + 'Rp' + Math.abs(bal).toFixed(1).replace('.', ',') + ' jt';
+    ctx.fillText(txt, W / 2 + shake, 1040);
+    ctx.restore();
+  }
+  const q = prog(lt, 4.0, 4.4);
+  if (q > 0) { ctx.save(); ctx.translate(W / 2, 1250); const s = back(q); ctx.scale(s, s); font(110, 900); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('Kok bisa?', 0, 0); ctx.restore(); }
+}
+
+// ---------- S2: A vs B duel (4.9 - 32.6) ----------
+function s2(lt, t) {
+  const LX = 290, RX = 790, base = 1400, PX = 21; // px per juta
+  words('Kenalan sama dua orang.', W / 2, 400, 52, lt, .25, { weight: 500, color: '#9a9a9a', end: 7.6 });
+  // divider
+  ctx.save(); ctx.globalAlpha *= eo(prog(lt, 2.0, 2.6)); ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(W / 2, 520); ctx.lineTo(W / 2, 1440); ctx.stroke(); ctx.restore();
+  const focusA = lt < 19 ? 1 : .4, focusB = lt < 5.3 ? 1 : (lt < 19 && lt > 7.8 ? .4 : 1);
+  const col = (cx, letter, gaji, at, focus) => {
+    const p = prog(lt, at, at + .5); if (p <= 0) return;
+    ctx.save(); ctx.globalAlpha *= focus;
+    const s = back(p);
+    ctx.save(); ctx.translate(cx, 560); ctx.scale(s, s);
+    ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(255,255,255,.6)'; ctx.shadowBlur = 30; ctx.beginPath(); ctx.arc(0, 0, 58, 0, 7); ctx.fill(); ctx.shadowBlur = 0;
+    font(64, 900); ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(letter, 0, 4); ctx.restore();
+    ctx.globalAlpha *= eo(p);
+    font(26, 600); ctx.letterSpacing = '6px'; ctx.fillStyle = '#8a8a8a'; ctx.textAlign = 'center'; ctx.fillText('GAJI', cx + 3, 660); ctx.letterSpacing = '0px';
+    font(66, 800); ctx.fillStyle = '#fff'; ctx.fillText(`Rp${gaji} jt`, cx, 715);
+    // income outline bar
+    const ih = gaji * PX * eio(prog(lt, at + .3, at + 1.1));
+    ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 3; ctx.setLineDash([8, 8]);
+    ctx.strokeRect(cx - 120, base - ih, 100, ih); ctx.setLineDash([]);
+    font(22, 600); ctx.letterSpacing = '4px'; ctx.fillStyle = '#7a7a7a';
+    ctx.fillText('MASUK', cx - 68, base + 30); ctx.fillText('KELUAR', cx + 72, base + 30); ctx.letterSpacing = '0px';
+    ctx.restore();
+  };
+  col(LX, 'A', 15, 2.45, focusA);
+  col(RX, 'B', 5, 5.5, focusB);
+
+  // --- A expenses
+  const steps = [[7.9, 8], [11.65, 11], [13.4, 13.5], [15.15, 16]];
+  let ex = 0;
+  steps.forEach(([at, v], i) => { if (lt >= at) ex = lerp(i ? steps[i - 1][1] : 0, v, eio(prog(lt, at, at + .6))); });
+  if (ex > 0) {
+    ctx.save(); ctx.globalAlpha *= focusA;
+    const within = Math.min(ex, 15), over = Math.max(0, ex - 15);
+    ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.fillRect(LX + 20, base - within * PX, 100, within * PX);
+    if (over > 0) hatch(LX + 20, base - ex * PX, 100, over * PX);
+    font(30, 800); ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+    ctx.fillText(`Rp${fmtNum(ex, ex % 1 ? 1 : 0)} jt`, LX + 70, base - ex * PX - 26);
+    ctx.restore();
+  }
+  pill('Gaya hidup naik', LX, 800, prog(lt, 7.9, 8.4) * focusA * (1 - prog(lt, 11.3, 11.6)), { dx: -40 });
+  pill('Mobil baru', LX, 800, prog(lt, 11.65, 12.1) * focusA, { dx: -40 });
+  pill('Cicilan baru', LX, 870, prog(lt, 13.4, 13.85) * focusA, { dx: -40 });
+  pill('Nongkrong tiap minggu', LX, 940, prog(lt, 15.15, 15.6) * focusA, { dx: -40, size: 30 });
+  // A minus badge
+  const mb = prog(lt, 17.2, 17.7);
+  if (mb > 0) {
+    ctx.save(); ctx.globalAlpha *= focusA; ctx.translate(LX, 1490); const s = back(mb); ctx.scale(s, s);
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.roundRect(-190, -36, 380, 72, 36); ctx.fill();
+    font(36, 900); ctx.fillStyle = '#000'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('MINUS Rp1 jt/bln', 0, 2);
+    ctx.restore();
+  }
+
+  // --- B
+  pill('Hidup sederhana', RX, 800, prog(lt, 19.1, 19.6), { dx: 40 });
+  const be = 4 * eio(prog(lt, 21.7, 22.3));
+  if (be > 0) {
+    ctx.save(); ctx.fillStyle = 'rgba(255,255,255,.45)'; ctx.fillRect(RX + 20, base - be * PX, 100, be * PX);
+    const inv = eio(prog(lt, 24.05, 24.6));
+    if (inv > 0) {
+      ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(255,255,255,.9)'; ctx.shadowBlur = 30;
+      ctx.fillRect(RX + 20, base - (4 + inv) * PX, 100, inv * PX); ctx.shadowBlur = 0;
+    }
+    font(30, 800); ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+    ctx.fillText(`Rp${Math.round(be)} jt`, RX + 70, base - (be + (inv > 0 ? inv : 0)) * PX - 26);
+    ctx.restore();
+  }
+  pill('Investasi Rp1 jt/bln', RX, 870, prog(lt, 24.05, 24.5), { dx: 40, filled: true, size: 30 });
+  // dots dropping into investment
+  if (lt > 24.6) for (let k = 0; k < 4; k++) {
+    const ph = ((lt - 24.6) * .9 + k * .25) % 1;
+    dot(RX + 70, lerp(960, base - 5 * PX - 10, eio(ph)), 6, 1 - ph * .5, 14);
+  }
+  const gb = prog(lt, 25.0, 25.5);
+  if (gb > 0) {
+    ctx.save(); ctx.translate(RX, 1490); const s = back(gb); ctx.scale(s, s);
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.roundRect(-190, -36, 380, 72, 36); ctx.stroke();
+    font(36, 900); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('PLUS Rp1 jt/bln', 0, 2);
+    ctx.restore();
+  }
+}
+
+// ---------- S3: 5 years later (32.6 - 41.4) ----------
+function s3(lt, t) {
+  words('5 tahun kemudian…', W / 2, 460, 76, lt, .25, { weight: 700 });
+  const X0 = 150, X1 = 900, Y0 = 1010, PXJ = 5; // px per juta
+  const ax = eo(prog(lt, .5, 1.1));
+  ctx.save(); ctx.globalAlpha *= ax; ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(X0, Y0); ctx.lineTo(lerp(X0, X1, ax), Y0); ctx.stroke();
+  font(24, 500); ctx.fillStyle = '#6a6a6a'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let y = 1; y <= 5; y++) ctx.fillText(y + ' th', lerp(X0, X1, y / 5), Y0 + 12);
+  ctx.restore();
+  const fvB = m => 1 * ((Math.pow(1.005, m) - 1) / .005);
+  const pa = eio(prog(lt, .8, 3.0)), pb = eio(prog(lt, 3.9, 6.0));
+  const px = m => lerp(X0, X1, m / 60);
+  // A line (debt)
+  if (pa > 0) {
+    ctx.save(); ctx.strokeStyle = '#8a8a8a'; ctx.lineWidth = 5; ctx.setLineDash([12, 10]);
+    ctx.beginPath(); ctx.moveTo(X0, Y0); ctx.lineTo(px(60 * pa), Y0 + 60 * pa * PXJ); ctx.stroke(); ctx.restore();
+    dot(px(60 * pa), Y0 + 60 * pa * PXJ, 10, 1, 10);
+    const la = eo(prog(lt, 2.6, 3.1));
+    if (la > 0) { ctx.save(); ctx.globalAlpha *= la; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      font(30, 700); ctx.fillStyle = '#9a9a9a'; ctx.fillText('A — utang', X1, Y0 + 300 + 50);
+      font(64, 900); ctx.fillStyle = '#9a9a9a'; ctx.fillText('−Rp60 juta', X1, Y0 + 300 + 105); ctx.restore(); }
+  }
+  // B curve (assets)
+  if (pb > 0) {
+    const mEnd = 60 * pb;
+    ctx.save(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 6; ctx.shadowColor = 'rgba(255,255,255,.8)'; ctx.shadowBlur = 20; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(X0, Y0); for (let m = 0; m <= mEnd; m += .5) ctx.lineTo(px(m), Y0 - fvB(m) * PXJ); ctx.stroke(); ctx.restore();
+    dot(px(mEnd), Y0 - fvB(mEnd) * PXJ, 12, 1, 35);
+    ctx.save(); ctx.globalAlpha *= eo(prog(lt, 4.0, 4.4)); ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    font(30, 700); ctx.fillStyle = '#fff'; ctx.fillText('B — aset', X0, Y0 - 370);
+    font(76, 900); ctx.shadowColor = 'rgba(255,255,255,.5)'; ctx.shadowBlur = 25 * pb;
+    ctx.fillText('+Rp' + fmtNum(fvB(mEnd), 1) + ' jt', X0, Y0 - 300); ctx.restore();
+  }
+  words('*ilustrasi, asumsi imbal hasil 6%/tahun', W / 2, 1520, 24, lt, 6.2, { weight: 400, color: '#666', stagger: .02 });
+}
+
+// ---------- S4: quote (41.4 - 45.8) ----------
+function s4(lt, t) {
+  words('Kaya itu bukan soal', W / 2, 640, 62, lt, .2, { weight: 500, color: '#bdbdbd', stagger: .07 });
+  words('berapa yang kamu', W / 2, 760, 62, lt, 1.0, { weight: 500, color: '#bdbdbd', stagger: .07 });
+  const h = eo(prog(lt, 1.8, 2.2));
+  if (h > 0) {
+    ctx.save(); ctx.globalAlpha *= h; font(120, 900); ctx.fillStyle = '#5a5a5a'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('HASILKAN', W / 2, 890); const tw = ctx.measureText('HASILKAN').width; ctx.restore();
+    const sp = eo(prog(lt, 2.2, 2.5));
+    ctx.save(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.beginPath();
+    ctx.moveTo(W / 2 - tw / 2 - 10, 895); ctx.lineTo(W / 2 - tw / 2 - 10 + (tw + 20) * sp, 895); ctx.stroke(); ctx.restore();
+  }
+  words('tapi berapa yang kamu', W / 2, 1060, 62, lt, 2.5, { weight: 500, color: '#e0e0e0', stagger: .06 });
+  const s = prog(lt, 3.3, 3.8);
+  if (s > 0) {
+    ctx.save(); ctx.translate(W / 2, 1200); const k = back(s); ctx.scale(k, k);
+    font(170, 900); ctx.letterSpacing = '4px'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(255,255,255,.6)'; ctx.shadowBlur = 50; ctx.fillText('SIMPAN.', 2, 0); ctx.restore(); ctx.letterSpacing = '0px';
+  }
+}
+
+// ---------- S5: arrows (45.8 - 51.0) ----------
+function arrowUp(x, baseY, h, w, a, label, filled) {
+  if (a <= 0 || h <= 1) return;
+  ctx.save(); ctx.globalAlpha *= a;
+  const head = Math.min(70, h * .5);
+  ctx.beginPath();
+  ctx.moveTo(x - w / 2, baseY); ctx.lineTo(x - w / 2, baseY - h + head); ctx.lineTo(x - w, baseY - h + head);
+  ctx.lineTo(x, baseY - h); ctx.lineTo(x + w, baseY - h + head); ctx.lineTo(x + w / 2, baseY - h + head); ctx.lineTo(x + w / 2, baseY); ctx.closePath();
+  if (filled) { ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(255,255,255,.6)'; ctx.shadowBlur = 35; ctx.fill(); }
+  else { ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.stroke(); }
+  ctx.shadowBlur = 0; font(30, 700); ctx.letterSpacing = '6px'; ctx.fillStyle = '#bdbdbd'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  ctx.fillText(label, x + 3, baseY + 22); ctx.restore(); ctx.letterSpacing = '0px';
+}
+function s5(lt, t) {
+  words('Naik gaji boleh.', W / 2, 500, 80, lt, .25, { weight: 800 });
+  const base = 1180;
+  arrowUp(330, base, 520 * eio(prog(lt, .4, 1.5)), 110, eo(prog(lt, .3, .6)), 'GAJI', true);
+  arrowUp(750, base, 180 * eio(prog(lt, 2.4, 3.4)), 110, eo(prog(lt, 2.3, 2.6)), 'GAYA HIDUP', false);
+  words('Naik gaya hidup?', W / 2, 1340, 64, lt, 2.25, { weight: 600, color: '#bdbdbd' });
+  words('Pelan-pelan aja.', W / 2, 1440, 80, lt, 4.2, { weight: 800 });
+}
+
+// ---------- master ----------
+let frameNo = 0;
+function renderFrame(t) {
+  const frame = Math.round(t * FPS); frameNo = frame;
+  ctx.save();
+  ctx.globalAlpha = 1; ctx.filter = 'none';
+  background(t, frame);
+  scene(t, 0, 4.9, s1, .01, .4);
+  scene(t, 4.9, 32.6, s2, .2, .5);
+  scene(t, 32.6, 41.4, s3, .3, .5);
+  scene(t, 41.4, 45.8, s4, .2, .4);
+  scene(t, 45.8, 51.0, s5, .2, .3);
+  scene(t, 50.9, 56.51, cta, .2, .01);
+  ctx.restore();
+  overlay(t, frame);
+}
+
+function cta(lt, t) {
+  // title
+  words(CTA_TITLE[0], W / 2, 470, 92, lt, .1, { weight: 900, stagger: .1, spacing: 2 });
+  words(CTA_TITLE[1], W / 2, 570, 92, lt, .35, { weight: 300, stagger: .1, spacing: 12, color: '#d8d8d8' });
+
+  // avatar
+  const ap = prog(lt, .6, 1.2);
+  if (ap > 0) {
+    const s = back(ap);
+    ctx.save(); ctx.translate(W / 2, 790); ctx.scale(s, s);
+    // logo: black disc, white ring, pulse waveform + brand name
+    ctx.shadowColor = 'rgba(255,255,255,.55)'; ctx.shadowBlur = 45;
+    ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(0, 0, 105, 0, 7); ctx.fill();
+    ctx.shadowBlur = 0; ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.stroke();
+    const wp = eo(prog(lt, .9, 1.6));
+    ctx.save(); ctx.beginPath(); ctx.rect(-80, -60, 160 * wp, 100); ctx.clip();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 6; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.shadowColor = 'rgba(255,255,255,.9)'; ctx.shadowBlur = 14;
+    const pts = [[-70,-12],[-34,-12],[-24,-30],[-12,14],[0,-52],[12,26],[24,-22],[34,-12],[70,-12]];
+    ctx.beginPath(); pts.forEach(([x,y],i)=> i?ctx.lineTo(x,y):ctx.moveTo(x,y)); ctx.stroke();
+    ctx.restore();
+    font(26, 800); ctx.letterSpacing = '7px'; ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(CONFIG.brand, 4, 50);
+    ctx.letterSpacing = '0px';
+    // rotating dashed ring
+    ctx.rotate(t * .6); ctx.setLineDash([6, 14]); ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(0, 0, 130, 0, 7); ctx.stroke();
+    ctx.restore();
+    // "+" follow badge
+    const bp = back(prog(lt, 1.0, 1.4));
+    const followed = lt > 3.25;
+    ctx.save(); ctx.translate(W / 2, 900); ctx.scale(bp, bp);
+    ctx.fillStyle = followed ? '#fff' : '#000'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.arc(0, 0, 26, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle = followed ? '#000' : '#fff'; ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.beginPath();
+    if (followed) { ctx.moveTo(-11, 1); ctx.lineTo(-3, 9); ctx.lineTo(12, -8); } else { ctx.moveTo(-11, 0); ctx.lineTo(11, 0); ctx.moveTo(0, -11); ctx.lineTo(0, 11); }
+    ctx.stroke(); ctx.restore();
+  }
+  words(CONFIG.handle, W / 2, 1005, 64, lt, 1.0, { weight: 700, stagger: 0 });
+
+  // buttons
+  const btn = (y, start, text, filled, icon, pressT) => {
+    const p = prog(lt, start, start + .5); if (p <= 0) return;
+    const press = Math.sin(Math.PI * prog(lt, pressT, pressT + .3));
+    const done = lt > pressT + .15;
+    ctx.save(); ctx.globalAlpha *= eo(p);
+    ctx.translate(W / 2, y + (1 - eo(p)) * 50); const s = 1 - press * .06; ctx.scale(s, s);
+    const bw = 560, bh = 112;
+    ctx.beginPath(); ctx.roundRect(-bw / 2, -bh / 2, bw, bh, bh / 2);
+    const isFilled = filled !== done;
+    if (isFilled) { ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(255,255,255,.5)'; ctx.shadowBlur = 30; ctx.fill(); ctx.shadowBlur = 0; }
+    else { ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.stroke(); }
+    const label = done ? text[1] : text[0];
+    font(46, 800); ctx.letterSpacing = '6px'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = isFilled ? '#000' : '#fff';
+    ctx.fillText(label, 34, 2);
+    ctx.letterSpacing = '0px';
+    const tw = ctx.measureText(label).width;
+    icon(34 - tw / 2 - 52, 0, isFilled ? '#000' : '#fff', done);
+    ctx.restore();
+    // tap ripple
+    const rp = prog(lt, pressT, pressT + .7);
+    if (rp > 0 && rp < 1) { ctx.save(); ctx.globalAlpha = (1 - rp) * .7; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(W / 2 + 150, y, 20 + rp * 110, 0, 7); ctx.stroke(); ctx.restore(); }
+  };
+  const iconUser = (x, y, c, done) => {
+    ctx.save(); ctx.translate(x, y); ctx.strokeStyle = c; ctx.fillStyle = c; ctx.lineWidth = 4; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.arc(-6, -9, 9, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.arc(-6, 18, 16, Math.PI, 0); ctx.fill();
+    ctx.beginPath();
+    if (done) { ctx.moveTo(10, -2); ctx.lineTo(15, 4); ctx.lineTo(24, -8); } else { ctx.moveTo(17, -9); ctx.lineTo(17, 7); ctx.moveTo(9, -1); ctx.lineTo(25, -1); }
+    ctx.stroke(); ctx.restore();
+  };
+  const iconShare = (x, y, c) => {
+    ctx.save(); ctx.translate(x, y); ctx.fillStyle = c;
+    ctx.beginPath(); ctx.moveTo(4, -20); ctx.lineTo(26, 0); ctx.lineTo(4, 20); ctx.lineTo(4, 9);
+    ctx.quadraticCurveTo(-14, 7, -24, 20); ctx.quadraticCurveTo(-20, -6, 4, -9); ctx.closePath(); ctx.fill(); ctx.restore();
+  };
+  btn(1170, 1.5, ['FOLLOW', 'FOLLOWING'], true, iconUser, 3.1);
+  btn(1310, 1.8, ['SHARE', 'TERKIRIM'], false, iconShare, 4.2);
+  words('Follow untuk insight harian.', W / 2, 1430, 38, lt, 2.4, { weight: 500, color: '#a8a8a8', stagger: .05 });
+  words('Share ke teman yang baru naik gaji.', W / 2, 1485, 38, lt, 2.8, { weight: 500, color: '#a8a8a8', stagger: .05 });
+}
+
+
+window.renderFrame = renderFrame;
+window.FPS = FPS; window.DURATION = DURATION;
+window.ready = document.fonts.load(`800 40px Inter`).then(() => document.fonts.load(`300 40px Inter`)).then(() => document.fonts.ready).then(() => true);
+
+// preview mode: play in browser
+if (!params.has('render')) {
+  const t0 = performance.now();
+  (function loop() { renderFrame(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); })();
+} else document.body.classList.add('render');
+</script>
+</body>
+</html>

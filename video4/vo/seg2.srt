@@ -1,0 +1,20 @@
+1
+00:00:00,100 --> 00:00:03,873
+Begitu naik gaji, si A langsung naikin gaya hidup.
+
+2
+00:00:03,823 --> 00:00:05,583
+Mobil baru.
+
+3
+00:00:05,583 --> 00:00:07,343
+Cicilan baru.
+
+4
+00:00:07,343 --> 00:00:09,382
+Nongkrong tiap minggu.
+
+5
+00:00:09,382 --> 00:00:12,027
+Pengeluarannya jadi enam belas juta.
+
