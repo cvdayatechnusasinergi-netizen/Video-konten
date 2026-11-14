@@ -1,0 +1,16 @@
+1
+00:00:00,100 --> 00:00:02,016
+Idealnya berapa?
+
+2
+00:00:01,966 --> 00:00:06,020
+Kalau masih lajang, tiga sampai enam kali pengeluaran bulanan.
+
+3
+00:00:06,020 --> 00:00:09,151
+Sudah menikah, enam sampai sembilan.
+
+4
+00:00:09,151 --> 00:00:12,318
+Punya anak, sembilan sampai dua belas.
+

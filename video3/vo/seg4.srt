@@ -1,0 +1,8 @@
+1
+00:00:00,100 --> 00:00:03,157
+Misalnya pengeluaranmu empat juta sebulan.
+
+2
+00:00:03,107 --> 00:00:07,075
+Berarti targetmu, dua belas sampai dua puluh empat juta.
+
