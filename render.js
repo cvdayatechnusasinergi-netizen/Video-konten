@@ -36,10 +36,12 @@ if (arg('brand')) q.set('brand', arg('brand'));
 
   const { FPS, DURATION } = await page.evaluate(() => ({ FPS: window.FPS, DURATION: window.DURATION }));
   const total = Math.round(FPS * DURATION);
+  const vo = arg('audio', path.join(__dirname, 'vo', 'voiceover.wav'));
+  const audioIn = fs.existsSync(vo) && vo !== 'none' ? ['-i', vo] : ['-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=stereo'];
   const ff = spawn('ffmpeg', ['-y', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
-    '-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=stereo', '-shortest',
-    '-c:v', 'libx264', '-preset', 'slow', '-crf', '17', '-pix_fmt', 'yuv420p', '-profile:v', 'high',
-    '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', out], { stdio: ['pipe', 'ignore', 'inherit'] });
+    ...audioIn, '-map', '0:v', '-map', '1:a', '-t', String(DURATION),
+    '-c:v', 'libx264', '-preset', 'medium', '-crf', '21', '-pix_fmt', 'yuv420p', '-profile:v', 'high',
+    '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', out], { stdio: ['pipe', 'ignore', 'inherit'] });
   for (let i = 0; i < total; i++) {
     const d = await grab(i / FPS);
     if (!ff.stdin.write(Buffer.from(d.split(',')[1], 'base64'))) await new Promise(r => ff.stdin.once('drain', r));

@@ -1,0 +1,16 @@
+1
+00:00:00,100 --> 00:00:02,672
+idup dibangun dari hal-hal kecil.
+
+2
+00:00:02,622 --> 00:00:04,770
+Baca sepuluh halaman.
+
+3
+00:00:04,770 --> 00:00:06,906
+Jalan lima belas menit.
+
+4
+00:00:06,906 --> 00:00:09,127
+Belajar satu hal baru.
+
