@@ -368,3 +368,57 @@ function logoWord(cx, cy, size, name, color = C.ink, accent = C.red) {
   ctx.letterSpacing = '0px';
   return wa + wb;
 }
+
+// ---------- added for Brain vs Wallet ----------
+POSE.present = { lean: 0, la: [-45, -125], ra: [45, 125], ll: [-12, -4], rl: [12, 4], head: 0 };
+POSE.sip = { lean: 0, la: [-20, -10], ra: [25, -165], ll: [-12, -4], rl: [12, 4], head: -4 };
+POSE.phone = { lean: 3, la: [-20, -10], ra: [30, -120], ll: [-12, -4], rl: [12, 4], head: 12 };
+
+function coffeeCup(x, y, s = 1, rot = 0, steam = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.lineWidth = 7; ctx.strokeStyle = C.ink; ctx.lineJoin = 'round';
+  ctx.fillStyle = C.white; ctx.beginPath(); ctx.moveTo(-42, -60); ctx.lineTo(42, -60); ctx.lineTo(32, 60); ctx.lineTo(-32, 60); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#8a5a35'; ctx.fillRect(-38, -10, 76, 34); ctx.strokeRect(-38, -10, 76, 34);
+  ctx.fillStyle = C.ink; roughRect(-50, -82, 100, 24, 8); ctx.fill();
+  if (steam > 0) { ctx.strokeStyle = 'rgba(20,20,20,.35)'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+    for (let i = -1; i <= 1; i++) { ctx.beginPath(); for (let k = 0; k < 8; k++) { const yy = -95 - k * 10, xx = i * 22 + Math.sin(k * .9 + steam * 5 + i) * 8; k ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); } ctx.stroke(); } }
+  ctx.restore();
+}
+function phone(x, y, s = 1, rot = 0, screenFn = null) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.lineWidth = 8; ctx.strokeStyle = C.ink; ctx.fillStyle = C.ink;
+  roughRect(-60, -110, 120, 220, 18); ctx.fill();
+  ctx.fillStyle = C.white; roughRect(-50, -96, 100, 186, 10); ctx.fill();
+  if (screenFn) { ctx.save(); ctx.beginPath(); ctx.rect(-50, -96, 100, 186); ctx.clip(); screenFn(); ctx.restore(); }
+  ctx.restore();
+}
+function appIcon(x, y, size, hue = 0) {
+  const cols = [C.red, C.gold, '#7ec8f2', '#9ad48a', C.ink];
+  ctx.fillStyle = cols[hue % cols.length]; roughRect(x - size / 2, y - size / 2, size, size, size * .25); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.beginPath(); ctx.arc(x, y, size * .2, 0, 7); ctx.fill();
+}
+// glass jar with a label; fill 0..1
+function jar(x, y, w, h, label, fill = 0, opts = {}) {
+  const { fillColor = C.gold, size = 40 } = opts;
+  ctx.save(); ctx.translate(x, y);
+  ctx.lineWidth = 8; ctx.strokeStyle = C.ink; ctx.lineJoin = 'round';
+  if (fill > 0) { ctx.fillStyle = fillColor; ctx.fillRect(-w / 2 + 6, h / 2 - (h - 20) * fill - 4, w - 12, (h - 20) * fill); }
+  ctx.fillStyle = 'rgba(126,200,242,.18)'; roughRect(-w / 2, -h / 2, w, h, 26); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.ink; roughRect(-w / 2 - 10, -h / 2 - 30, w + 20, 34, 8); ctx.fill();
+  if (label) { font(size, 900); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const lw = ctx.measureText(label).width + 26; ctx.fillStyle = C.white; roughRect(-lw / 2, -size * .7, lw, size * 1.4, 6); ctx.fill(); ctx.lineWidth = 5; ctx.stroke();
+    ctx.fillStyle = C.ink; ctx.fillText(label, 0, 2); }
+  ctx.restore();
+}
+// Persistent series badge (top-left, below the Shorts top bar)
+function seriesBadge(series, ep, t, opts = {}) {
+  const { x = 50, y = 250 } = opts;
+  font(34, 900); ctx.letterSpacing = '1px';
+  const a = series.toUpperCase(), b = 'EP ' + ep;
+  const wa = ctx.measureText(a).width, wb = ctx.measureText(b).width;
+  ctx.save(); ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  ctx.fillStyle = C.ink; roughRect(x, y - 30, wa + 36, 60, 10); ctx.fill();
+  ctx.fillStyle = C.red; roughRect(x + wa + 36, y - 30, wb + 36, 60, 10); ctx.fill();
+  ctx.fillStyle = C.white; ctx.fillText(a, x + 18, y + 2); ctx.fillText(b, x + wa + 54, y + 2);
+  ctx.restore(); ctx.letterSpacing = '0px';
+}

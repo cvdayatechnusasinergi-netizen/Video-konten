@@ -7,7 +7,8 @@ Separate from the SUARA series in the repo root. Make a new video with the `/sti
 |---|---|
 | `lib/stick.js` | Shared canvas library: stickman + poses + faces, props, text pops, camera, logo |
 | `videoN/` | One video: `index.html` (animation), `vo/` (script + VO), `output/` (MP4) |
-| `tools/tts.py` | edge-tts wrapper (trusts the sandbox proxy CA) |
+| `tools/make_vo.sh` | Generate trimmed VO segments from `vo/script.txt` (uses `tools/tts.py`, an edge-tts wrapper that trusts the sandbox proxy CA) |
+| `SERIES.md` | Series plan: Brain vs Wallet, Worst Money Decisions in History |
 | `brand/` | Logo: `node stickman/brand/render-brand.js [Name]` → `profile.png` (800²), `banner.png` (2560×1440), `watermark.png` |
 | `CAPTIONS.md` | YouTube title, description, hashtags per video |
 

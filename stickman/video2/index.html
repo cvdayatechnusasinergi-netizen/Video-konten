@@ -1,0 +1,222 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Brain vs Wallet 1</title>
+<style>
+  html,body{margin:0;background:#222;}
+  canvas{display:block;width:360px;height:640px;}
+  body.render canvas{width:1080px;height:1920px;}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="../lib/stick.js"></script>
+<script>
+// ============ CONFIG ============
+const params = new URLSearchParams(location.search);
+const CONFIG = {
+  channel: params.get('channel') || 'StickWise',
+  series: 'Brain vs Wallet',
+  ep: 1,
+};
+// ================================
+const FPS = 30, DURATION = 31;
+// VO starts: 0.15 3.5 6.4 10.4 16.65 18.6 23.15 25.3 28.8
+
+function sceneIn(t, a) { const p = prog(t, a, a + .2); zoomAt(W / 2, H / 2, 1 + (1 - eo(p)) * .06); }
+
+// ---------- S0: hook (frame 0 = full title; the ending loops back here) ----------
+function hookLayout(t, still) {
+  const T = still ? 99 : t;
+  const m = stick(540, 1260, POSE.present, { s: 1.2, face: 'neutral', id: 1, blink: !still && blinkAt(t) });
+  coffeeCup(m.lh[0] - 10, m.lh[1] - 60, 1.15, -.08, T);
+  phone(m.rh[0] + 10, m.rh[1] - 80, 1.05, .1, () => { appIcon(0, -20, 60, 0); font(26, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.fillText('$4.99', 0, 50); });
+  pop('$5 COFFEE = CHEAP', 540, 430, 92, T, -1, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop('$5 APP = EXPENSIVE?!', 540, 570, 86, T, -1, { color: C.white, bg: 1, rot: 2 });
+  pop('✓', m.lh[0] - 10, m.lh[1] - 230, 90, T, still ? -1 : 1.0, { color: '#2f9e44' });
+  pop('?!', m.rh[0] + 10, m.rh[1] - 250, 90, T, still ? -1 : 1.5, { color: C.red });
+}
+function s0(t) {
+  ctx.save(); zoomAt(540, 900, 1 + t * .02); hookLayout(t, false); ctx.restore();
+  pop('SAME $5. DIFFERENT BRAIN.', 540, 720, 54, t, 1.5, { weight: 900 });
+}
+
+// ---------- S1: coffee = instant yes ----------
+function s1(t) {
+  sceneIn(t, 3.4);
+  // counter
+  ctx.fillStyle = '#e9d3a6'; ctx.strokeStyle = C.ink; ctx.lineWidth = 9;
+  roughRect(560, 1060, 520, 520, 0); ctx.fill(); ctx.stroke();
+  font(54, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.fillText('COFFEE', 800, 1180);
+  const got = prog(t, 4.2, 4.5);
+  const m = stick(330, 1330, got > 0 ? POSE.sip : POSE.point, { s: 1.05, face: got > 0 ? 'happy' : 'smile', look: .6, id: 2 });
+  if (got > 0) coffeeCup(m.rh[0] + 75, m.rh[1] + 20, .9, .35, t); else coffeeCup(720, 1000, 1, 0, t);
+  pop('COFFEE?', 540, 420, 100, t, 3.5, { rot: -2, end: 4.15 });
+  pop('INSTANT YES ✓', 540, 420, 100, t, 4.2, { color: C.white, bg: 1, bgColor: '#2f9e44', rot: -3 });
+  pop('BEEP!', 640, 900, 60, t, 4.15, { color: C.red, rot: 10, end: 4.9 });
+  // every single morning: flipping day cards
+  if (t > 5.2) {
+    const days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+    const d = days[Math.floor((t - 5.2) * 9) % 7];
+    pop('EVERY. SINGLE. MORNING.', 540, 560, 64, t, 5.2, {});
+    pop(d, 540, 690, 70, t, 5.2, { color: C.white, bg: 1, bgColor: C.ink });
+  }
+}
+
+// ---------- S2: $5 app = 10 minutes of reviews ----------
+function s2(t) {
+  sceneIn(t, 6.3);
+  pop('$5 APP?', 540, 380, 100, t, 6.4, { rot: -2 });
+  // big phone
+  phone(560, 860, 3.2, 0, () => {
+    appIcon(0, -62, 46, 0);
+    font(13, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('Super App', 0, -26);
+    if (t < 7.8) { ctx.fillStyle = '#2f9e44'; roughRect(-34, -8, 68, 26, 12); ctx.fill(); ctx.fillStyle = C.white; ctx.fillText('BUY $4.99', 0, 6); }
+    else {
+      const sc = (t - 7.8) * 40; ctx.save(); ctx.beginPath(); ctx.rect(-48, -10, 96, 100); ctx.clip();
+      for (let i = 0; i < 14; i++) { const yy = 2 + i * 26 - sc % 26 - Math.floor(sc / 26) * 0; const k = (i + Math.floor(sc / 26)) % 5;
+        ctx.fillStyle = C.gold; font(12, 900); ctx.textAlign = 'left'; ctx.fillText('★★★★☆'.slice(0, 3 + (k % 3)), -42, yy);
+        ctx.fillStyle = C.line; ctx.fillRect(-42, yy + 8, 70 - k * 8, 5); }
+      ctx.restore();
+    }
+  });
+  const m = stick(200, 1440, POSE.think, { s: .8, face: 'worried', look: .8, id: 3 });
+  sweat(m.head[0] - 60, m.head[1] - 20, 1, t);
+  if (t > 8.4) {
+    // clock
+    ctx.save(); ctx.translate(880, 1300); ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.arc(0, 0, 90, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.lineCap = 'round'; ctx.lineWidth = 9; const a = (t - 8.4) * 6;
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.sin(a) * 65, -Math.cos(a) * 65); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.sin(a / 12) * 40, -Math.cos(a / 12) * 40); ctx.stroke(); ctx.restore();
+  }
+  pop('10 MINUTES OF REVIEWS...', 540, 1540, 52, t, 8.5, { color: C.white, bg: 1, bgColor: C.ink });
+}
+
+// ---------- S3: invisible wallets in the brain ----------
+const JARS = [[270, 'TREATS', 12.97], [540, 'BILLS', 14.05], [810, 'SILLY STUFF', 15.07]];
+function brainHead(t) {
+  ctx.save(); ctx.fillStyle = C.paper; ctx.strokeStyle = C.ink; ctx.lineWidth = 16;
+  ctx.beginPath(); ctx.arc(540, 960, 470, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(380, 640, 22, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(700, 640, 22, 0, 7); ctx.fill();
+  ctx.restore();
+}
+function s3(t) {
+  sceneIn(t, 10.2);
+  const z = eo(prog(t, 10.2, 10.8));
+  ctx.save(); ctx.globalAlpha = z; brainHead(t); ctx.restore();
+  pop('INVISIBLE WALLETS', 540, 340, 84, t, 10.5, { color: C.white, bg: 1, rot: -2 });
+  JARS.forEach(([x, label, at], i) => {
+    const jp = back(prog(t, 11.0 + i * .2, 11.4 + i * .2));
+    if (jp <= 0) return;
+    ctx.save(); ctx.translate(x, 1050); ctx.scale(jp, jp);
+    jar(0, 0, 220, 300, t > at ? label : '', t > at + .4 ? .35 : 0, { size: label.length > 6 ? 30 : 38, fillColor: i === 1 ? '#9ad48a' : C.gold });
+    ctx.restore();
+    // item flying into the jar
+    const fp = prog(t, at, at + .45);
+    if (fp > 0 && fp < 1) {
+      const ix = lerp(540, x, eio(fp)), iy = lerp(1500, 1000, eio(fp)) - Math.sin(fp * Math.PI) * 260;
+      if (i === 0) coffeeCup(ix, iy, .8, fp * 6);
+      else if (i === 1) { ctx.save(); ctx.translate(ix, iy); ctx.rotate(fp * 5); ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 6; roughRect(-60, -40, 120, 80, 6); ctx.fill(); ctx.stroke(); font(30, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.fillText('BILL', 0, 10); ctx.restore(); }
+      else phone(ix, iy, .6, fp * 6, () => appIcon(0, -10, 50, 0));
+    }
+  });
+}
+
+// ---------- S4: mental accounting ----------
+function s4(t) {
+  sceneIn(t, 16.5);
+  shake(t, Math.max(0, 14 - (t - 16.7) * 40));
+  JARS.forEach(([x, label], i) => jar(x, 1140, 180, 240, label, .35, { size: label.length > 6 ? 24 : 32, fillColor: i === 1 ? '#9ad48a' : C.gold }));
+  const p = prog(t, 16.65, 16.85);
+  if (p > 0) {
+    const s = lerp(2.2, 1, eo(p));
+    ctx.save(); ctx.translate(540, 640); ctx.rotate(-6 * D2R); ctx.scale(s, s); ctx.globalAlpha = p;
+    ctx.strokeStyle = C.red; ctx.lineWidth = 12; roughRect(-430, -130, 860, 260, 18); ctx.stroke();
+    font(96, 900); ctx.fillStyle = C.red; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('MENTAL', 0, -48); ctx.fillText('ACCOUNTING', 0, 58);
+    ctx.restore();
+  }
+  pop('Richard Thaler · Nobel Prize 2017', 540, 880, 40, t, 17.2, { color: C.soft, weight: 800 });
+}
+
+// ---------- S5: the scary math ----------
+function s5(t) {
+  sceneIn(t, 18.4);
+  pop('THE SCARY PART', 540, 360, 70, t, 18.6, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  const cp = prog(t, 20.1, 22.4), k = eo(cp);
+  const v = Math.round(lerp(5, 1825, k));
+  if (t > 20.0) {
+    pop('$5 / DAY  ×  365', 540, 500, 60, t, 20.0, { color: C.soft, end: 22.4 });
+    const hit = t > 22.4;
+    if (hit) burst(540, 660, 260 + Math.sin(t * 9) * 6, C.gold, 16, t * .3);
+    pop('$' + v.toLocaleString('en-US'), 540, 660, hit ? 150 : 130, t, 20.1, { color: hit ? C.white : C.ink, bg: hit ? 1 : null, rot: -2 });
+    pop('PER YEAR', 540, 930, 56, t, 21.5, { color: C.white, bg: 1, bgColor: C.ink });
+  }
+  // stacking cups
+  const n = Math.floor(lerp(1, 18, k));
+  for (let i = 0; i < n; i++) coffeeCup(130 + (i % 3) * 90 + (Math.floor(i / 3) % 2) * 20, 1440 - Math.floor(i / 3) * 105, .7, (hash(i, 2) - .5) * .2);
+  const m = stick(760, 1380, t > 20.5 ? POSE.shock : POSE.stand, { s: 1, face: t > 20.5 ? 'shock' : 'neutral', id: 5, mouthOpen: .5 + .5 * Math.sin(t * 9) });
+  if (t > 20.5) sweat(m.head[0] + 75, m.head[1] - 30, 1.1, t);
+}
+
+// ---------- S6: 365 apps ----------
+function s6(t) {
+  sceneIn(t, 23.0);
+  const p = prog(t, 23.15, 24.4);
+  const cols = 15, size = 52, gap = 12, x0 = 540 - (cols * (size + gap) - gap) / 2 + size / 2;
+  const shown = Math.floor(365 * eo(p));
+  for (let i = 0; i < shown; i++) { const r = Math.floor(i / cols), c = i % cols; appIcon(x0 + c * (size + gap), 330 + r * (size + gap) * .62 + 0, size * .55, i); }
+  pop('= 365 APPS', 540, 1180, 140, t, 23.9, { color: C.white, bg: 1, rot: -3, pad: 26 });
+  stick(540, 1560, POSE.facepalm, { s: .7, face: 'sad', id: 6 });
+}
+
+// ---------- S7: the fix ----------
+function s7(t) {
+  sceneIn(t, 25.1);
+  pop('THE FIX', 540, 360, 90, t, 25.3, { color: C.white, bg: 1, bgColor: '#2f9e44', rot: -2 });
+  const pour = prog(t, 26.2, 27.4);
+  JARS.forEach(([x, label], i) => {
+    const tilt = Math.sin(clamp(pour * 1.4 - i * .15, 0, 1) * Math.PI) * (x < 540 ? .9 : x > 540 ? -.9 : 0);
+    ctx.save(); ctx.translate(x, lerp(700, 640, pour)); ctx.rotate(tilt); ctx.scale(.6, .6);
+    jar(0, 0, 220, 300, label, .35 * (1 - pour), { size: label.length > 6 ? 30 : 38, fillColor: i === 1 ? '#9ad48a' : C.gold }); ctx.restore();
+  });
+  const bp = back(prog(t, 25.9, 26.3));
+  if (bp > 0) { ctx.save(); ctx.translate(540, 1110); ctx.scale(bp, bp); jar(0, 0, 420, 400, 'ONE WALLET', .1 + .6 * eo(pour), { size: 50 }); ctx.restore(); }
+  stick(170, 1500, POSE.aha, { s: .75, face: 'happy', id: 7 });
+}
+
+// ---------- S8: loop back ----------
+function s8(t) {
+  sceneIn(t, 28.6);
+  const m = stick(540, 1260, mixPose(POSE.present, POSE.stand, .0), { s: 1.2, face: 'smug', id: 1 });
+  coffeeCup(m.lh[0] - 10, m.lh[1] - 60, 1.15, -.08, t);
+  pop('?', m.rh[0] + 10, m.rh[1] - 120, 110, t, 29.0, { color: C.red, rot: 12 });
+  pop('STILL "CHEAP"?', 540, 470, 120, t, 28.8, { color: C.white, bg: 1, rot: -3 });
+  pop('EP 2 TOMORROW →', 540, 640, 50, t, 29.4, { color: C.soft, weight: 800 });
+  // last 0.45 s: dissolve into the hook frame so the Short loops seamlessly
+  const k = prog(t, 30.55, 31);
+  if (k > 0) { ctx.save(); ctx.globalAlpha = k; paper(); hookLayout(0, true); ctx.restore(); }
+}
+
+const SCENES = [[s0, 0, 3.4], [s1, 3.4, 6.3], [s2, 6.3, 10.2], [s3, 10.2, 16.5], [s4, 16.5, 18.4], [s5, 18.4, 23.0], [s6, 23.0, 25.1], [s7, 25.1, 28.6], [s8, 28.6, 99]];
+
+function renderFrame(t) {
+  setTime(t);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none';
+  paper();
+  for (const [fn, a, b] of SCENES) if (inScene(t, a, b)) { ctx.save(); fn(t); ctx.restore(); }
+  for (const [, a] of SCENES) { const k = prog(t, a - .06, a + .08); if (a > 0 && k > 0 && k < 1) { ctx.fillStyle = `rgba(20,20,20,${(1 - Math.abs(k * 2 - 1)) * .45})`; ctx.fillRect(0, 0, W, H); } }
+  vignette();
+  seriesBadge(CONFIG.series, CONFIG.ep, t);
+}
+
+window.FPS = FPS; window.DURATION = DURATION;
+if (params.get('render')) document.body.classList.add('render');
+window.ready = document.fonts.load('900 100px Inter').then(() => document.fonts.load('700 50px Inter')).then(() => { renderFrame(0); return true; });
+if (!params.get('render')) { const t0 = performance.now(); const loop = () => { renderFrame(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); }; loop(); }
+</script>
+</body>
+</html>
