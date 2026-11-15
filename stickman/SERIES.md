@@ -24,7 +24,7 @@ and double down on the stronger series. Each series = one YouTube playlist.
 | Ep | Title | Folder | Status |
 |---|---|---|---|
 | 1 | This Guy Paid 10,000 Bitcoin for 2 Pizzas | `video1/` | ✅ uploaded (no badge, made before the series format) |
-| 2 | The Man Who Sold Apple for $800 | | |
+| 2 | He Gave Up 10% of Apple for $800 | `video3/` | ✅ rendered |
 | 3 | Blockbuster Laughed at Netflix | | |
 | 4 | The Lottery Winner Who Went Broke in 5 Years | | |
 | 5 | Kodak Invented the Digital Camera… and Hid It | | |

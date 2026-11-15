@@ -39,3 +39,23 @@
 
 **Pinned comment**
 > What's your $5 coffee? ☕ Mine is ___ 👇
+
+## Worst Money Decisions EP 2 (`video3/output/worst-money-ep2-apple-800.mp4`)
+**Title** (≤100 chars)
+> He Gave Up 10% of Apple for $800 🍎 #WorstMoneyDecisions #shorts
+
+**Description**
+> In 1976, Apple had three founders: Steve Jobs, Steve Wozniak… and Ron Wayne.
+> Wayne wrote the partnership contract, drew Apple's very first logo, and got 10% of the company. Twelve days later he walked away for $800 — and later took $1,500 more to give up any future claim.
+>
+> Why? The two Steves had nothing to lose. Ron had a house, a car and savings — if Apple failed, creditors could come after him.
+> Today that 10% would be worth around $400 billion*. At 91, he says he has no regrets.
+>
+> Sometimes the safest move is the most expensive one. Would you have taken the $800? 👇
+>
+> *Hypothetical estimate, before dilution. Wayne himself says he never "sold" shares — he gave up his interest.
+>
+> #WorstMoneyDecisions #apple #history #money #shorts
+
+**Pinned comment**
+> Be honest: $800 safe today… or 10% of a garage startup? 👇

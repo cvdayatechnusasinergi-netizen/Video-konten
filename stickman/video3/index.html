@@ -1,0 +1,281 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Apple For 800</title>
+<style>
+  html,body{margin:0;background:#222;}
+  canvas{display:block;width:360px;height:640px;}
+  body.render canvas{width:1080px;height:1920px;}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="../lib/stick.js"></script>
+<script>
+// ============ CONFIG ============
+const params = new URLSearchParams(location.search);
+const CONFIG = {
+  channel: params.get('channel') || 'StickWise',
+  series: 'Worst Money Decisions',
+  ep: 2,
+};
+// ================================
+const FPS = 30, DURATION = 36.6;
+// VO starts: 0.15 3.65 7.85 12.05 14.1 21.1 25.15 29.15 31.45
+
+function sceneIn(t, a) { const p = prog(t, a, a + .2); zoomAt(W / 2, H / 2, 1 + (1 - eo(p)) * .06); }
+
+// ---------- local props ----------
+function glasses(m, s = 1) { // Ron Wayne: glasses + grey hair tufts
+  const [x, y] = m.head, r = m.headR;
+  ctx.save(); ctx.strokeStyle = C.ink; ctx.lineWidth = 5 * s;
+  [-1, 1].forEach(d => { ctx.beginPath(); ctx.arc(x + d * r * .36, y - r * .12, 15 * s, 0, 7); ctx.stroke(); });
+  ctx.beginPath(); ctx.moveTo(x - r * .36 + 15 * s, y - r * .12); ctx.lineTo(x + r * .36 - 15 * s, y - r * .12); ctx.stroke();
+  ctx.strokeStyle = C.soft; ctx.lineWidth = 7 * s; ctx.lineCap = 'round';
+  [-1, 1].forEach(d => { for (let i = 0; i < 3; i++) { const a = (d > 0 ? -.35 : Math.PI + .35) + d * i * .25; ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * r, y + Math.sin(a) * r); ctx.lineTo(x + Math.cos(a) * (r + 16 * s), y + Math.sin(a) * (r + 16 * s)); ctx.stroke(); } });
+  ctx.restore();
+}
+function beard(m, s = 1) { const [x, y] = m.head, r = m.headR; ctx.save(); ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(x, y + r * .2, r * .8, .25, Math.PI - .25); ctx.quadraticCurveTo(x, y + r * .55, x + r * .76, y + r * .4); ctx.fill(); ctx.restore(); }
+function appleIcon(x, y, r, bite = true) {
+  ctx.save(); ctx.translate(x, y);
+  ctx.fillStyle = C.red; ctx.strokeStyle = C.ink; ctx.lineWidth = r * .07;
+  ctx.beginPath(); ctx.moveTo(0, -r * .62);
+  ctx.bezierCurveTo(r * .55, -r * 1.05, r * 1.15, -r * .45, r * .85, r * .35);
+  ctx.bezierCurveTo(r * .65, r * .95, r * .2, r * 1.0, 0, r * .82);
+  ctx.bezierCurveTo(-r * .2, r * 1.0, -r * .65, r * .95, -r * .85, r * .35);
+  ctx.bezierCurveTo(-r * 1.15, -r * .45, -r * .55, -r * 1.05, 0, -r * .62); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = C.ink; ctx.lineWidth = r * .09; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(0, -r * .6); ctx.quadraticCurveTo(r * .05, -r * .9, r * .2, -r * 1.05); ctx.stroke();
+  ctx.fillStyle = '#7fbf5a'; ctx.lineWidth = r * .05; ctx.beginPath(); ctx.ellipse(r * .32, -r * .92, r * .22, r * .1, -.5, 0, 7); ctx.fill(); ctx.stroke();
+  if (bite) { ctx.fillStyle = C.paper; ctx.beginPath(); ctx.arc(r * 1.0, -r * .05, r * .3, 0, 7); ctx.fill(); }
+  ctx.restore();
+}
+function cheque(x, y, s, rot, amount) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.fillStyle = '#eaf3df'; ctx.strokeStyle = C.ink; ctx.lineWidth = 6;
+  roughRect(-150, -70, 300, 140, 8); ctx.fill(); ctx.stroke();
+  font(22, 800); ctx.fillStyle = C.soft; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('PAY TO: RON WAYNE', -130, -40);
+  font(64, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.fillText(amount, 0, 18);
+  ctx.strokeStyle = C.soft; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(40, 52); ctx.lineTo(130, 52); ctx.stroke();
+  ctx.restore();
+}
+function paperDoc(x, y, s, rot, title, lines = 5) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 6; roughRect(-110, -150, 220, 300, 6); ctx.fill(); ctx.stroke();
+  font(30, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(title, 0, -110);
+  ctx.fillStyle = C.line; for (let i = 0; i < lines; i++) ctx.fillRect(-80, -60 + i * 34, 160 - (i % 2) * 40, 10);
+  ctx.restore();
+}
+function logoFrame(x, y, s, draw = 1) { // the first Apple logo idea: framed drawing of a tree with a figure under it
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.fillStyle = '#f3ead2'; ctx.strokeStyle = C.ink; ctx.lineWidth = 8; roughRect(-120, -150, 240, 300, 6); ctx.fill(); ctx.stroke();
+  ctx.lineWidth = 3; ctx.strokeRect(-100, -130, 200, 260);
+  ctx.save(); ctx.beginPath(); ctx.rect(-100, -130, 200 * draw, 260); ctx.clip();
+  ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(0, 100); ctx.lineTo(0, -10); ctx.stroke();
+  ctx.fillStyle = '#9ad48a'; ctx.beginPath(); ctx.arc(0, -50, 70, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.red; ctx.beginPath(); ctx.arc(20, -40, 12, 0, 7); ctx.fill();
+  ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(-50, 70, 10, 0, 7); ctx.stroke(); ctx.beginPath(); ctx.moveTo(-50, 80); ctx.lineTo(-50, 110); ctx.stroke();
+  ctx.restore(); ctx.restore();
+}
+function house(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 7; ctx.lineJoin = 'round';
+  roughRect(-80, -40, 160, 120, 4); ctx.fill(); ctx.stroke(); ctx.fillStyle = C.red; ctx.beginPath(); ctx.moveTo(-100, -40); ctx.lineTo(0, -120); ctx.lineTo(100, -40); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.ink; ctx.fillRect(-20, 20, 40, 60); ctx.restore(); }
+function car(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.fillStyle = '#7ec8f2'; ctx.strokeStyle = C.ink; ctx.lineWidth = 7; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(-110, 20); ctx.lineTo(-100, -20); ctx.lineTo(-50, -25); ctx.lineTo(-25, -65); ctx.lineTo(50, -65); ctx.lineTo(80, -25); ctx.lineTo(110, -15); ctx.lineTo(110, 20); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.ink; [-60, 65].forEach(cx => { ctx.beginPath(); ctx.arc(cx, 25, 24, 0, 7); ctx.fill(); }); ctx.restore(); }
+function piggy(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.fillStyle = '#f7b6c2'; ctx.strokeStyle = C.ink; ctx.lineWidth = 7;
+  ctx.beginPath(); ctx.ellipse(0, 0, 90, 65, 0, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.ellipse(88, -5, 22, 26, 0, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(40, -22, 7, 0, 7); ctx.fill(); ctx.fillRect(-20, -66, 40, 8);
+  [-50, -20, 25, 55].forEach(lx => ctx.fillRect(lx, 55, 14, 28)); ctx.restore(); }
+function pie(x, y, r, p) { // 45 / 45 / 10
+  const parts = [[.45, C.ink, 'JOBS 45%'], [.45, C.soft, 'WOZ 45%'], [.10, C.red, '10%']];
+  let a0 = -Math.PI / 2;
+  ctx.save(); ctx.strokeStyle = C.paper; ctx.lineWidth = 8;
+  parts.forEach(([f, col], i) => { const a1 = a0 + f * 6.2832 * p; ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x, y); ctx.arc(x, y, i === 2 ? r * 1.12 : r, a0, a1); ctx.closePath(); ctx.fill(); ctx.stroke(); a0 = a1; });
+  ctx.restore();
+}
+function rockingChair(x, y, s, rot) { ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s); ctx.strokeStyle = '#8a5a35'; ctx.lineWidth = 14; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.arc(0, -60, 200, .9, Math.PI - .9); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-90, 80); ctx.lineTo(-100, -40); ctx.lineTo(80, -40); ctx.lineTo(90, 80); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-100, -40); ctx.lineTo(-150, -260); ctx.stroke(); ctx.restore(); }
+
+// ---------- S0 hook (also the loop target) ----------
+function hookLayout(t, still) {
+  const T = still ? 99 : t;
+  appleIcon(760, 1040, 260);
+  pop('$400 BILLION*', 760, 1060, 54, T, -1, { color: C.white, bg: 1, bgColor: C.ink, rot: -6, pad: 10 });
+  const m = stick(330, 1330, POSE.hold, { s: 1.15, face: still ? 'worried' : (t > 2.3 ? 'worried' : 'smile'), id: 1 });
+  glasses(m, 1.15);
+  cheque(m.lh[0], m.lh[1] - 30, .95, -.08, '$800');
+  pop('GAVE UP 10% OF APPLE', 540, 430, 82, T, -1, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop('FOR $800', 540, 570, 120, T, -1, { color: C.white, bg: 1, rot: 2 });
+}
+function s0(t) {
+  ctx.save(); zoomAt(540, 900, 1 + t * .02); hookLayout(t, false); ctx.restore();
+}
+
+// ---------- S1 1976: three founders ----------
+function s1(t) {
+  sceneIn(t, 3.5);
+  pop('1976', 540, 400, 130, t, 3.65, { color: C.white, bg: 1, rot: -3 });
+  // garage
+  inkLine([[90, 1580], [90, 900], [540, 740], [990, 900], [990, 1580]], 12, C.ink, 800);
+  const xs = [280, 540, 800], names = ['JOBS', 'WOZ', 'WAYNE (41)'];
+  xs.forEach((x, i) => {
+    const p = back(prog(t, 5.2 + i * .25, 5.55 + i * .25));
+    if (p <= 0) return;
+    ctx.save(); ctx.translate(x, 1450); ctx.scale(p, p); ctx.translate(-x, -1450);
+    const m = stick(x, 1450, i === 2 ? POSE.stand : POSE.hips, { s: .95, face: 'smile', id: 10 + i, look: i === 2 ? -.4 : 0, blink: blinkAt(t, i) });
+    if (i === 1) beard(m, .95);
+    if (i === 2) glasses(m, .95);
+    pop(names[i], x, m.head[1] - 110, i === 2 ? 44 : 50, t, 5.3 + i * .25, { color: C.white, bg: 1, bgColor: i === 2 ? C.red : C.ink, pad: 10 });
+    ctx.restore();
+  });
+  pop('YOU KNOW TWO OF THEM', 540, 560, 62, t, 6.85, {});
+  if (t > 6.85) pop('?', 800, 900, 120, t, 7.1, { color: C.red, rot: 12 });
+}
+
+// ---------- S2 Ron's role ----------
+function s2(t) {
+  sceneIn(t, 7.7);
+  pop('RON WAYNE', 540, 380, 96, t, 7.85, { color: C.white, bg: 1, rot: -2 });
+  const m = stick(230, 1420, POSE.point, { s: .9, face: 'happy', id: 12, blink: blinkAt(t, 2) });
+  glasses(m, .9);
+  // contract
+  const c = back(prog(t, 8.3, 8.6)); if (c > 0) { paperDoc(330, 760, c, -.08, 'CONTRACT'); pop('✓ wrote it', 330, 960, 40, t, 8.7, { weight: 800 }); }
+  const l = back(prog(t, 9.55, 9.9)); if (l > 0) { logoFrame(760, 760, l * .9, prog(t, 9.7, 10.4)); pop('✓ drew logo #1', 760, 960, 40, t, 9.9, { weight: 800 }); }
+  const pp = eo(prog(t, 10.8, 11.5));
+  if (pp > 0) { pie(640, 1300, 170, pp); pop('10%', 870, 1170, 80, t, 11.2, { color: C.red, rot: -6 }); }
+}
+
+// ---------- S3 twelve days later ----------
+function s3(t) {
+  sceneIn(t, 11.9);
+  const day = Math.min(12, 1 + Math.floor(prog(t, 12.05, 12.8) * 11));
+  ctx.save(); ctx.translate(540, 700); ctx.rotate(-2 * D2R);
+  ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 9;
+  roughRect(-220, -230, 440, 460, 24); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.ink; roughRect(-220, -230, 440, 120, 24); ctx.fill();
+  font(72, 900); ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('APRIL', 0, -168);
+  font(230, 900); ctx.fillStyle = day === 12 ? C.red : C.ink; ctx.fillText(String(day), 0, 60);
+  ctx.restore();
+  pop('12 DAYS LATER...', 540, 360, 70, t, 12.1, {});
+  const panic = t > 13.15;
+  shake(t, panic ? 8 : 0);
+  const m = stick(540, 1420, panic ? POSE.shock : POSE.stand, { s: .95, face: panic ? 'shock' : 'neutral', id: 12, mouthOpen: .5 + .5 * Math.sin(t * 10) });
+  glasses(m, .95);
+  if (panic) { sweat(m.head[0] + 75, m.head[1] - 20, 1.1, t); pop('PANIC', 840, 1080, 80, t, 13.2, { color: C.white, bg: 1, rot: 10 }); }
+}
+
+// ---------- S4 why: nothing vs everything to lose ----------
+function s4(t) {
+  sceneIn(t, 13.95);
+  inkLine([[540, 330], [540, 1500]], 8, C.line, 900);
+  // left: the Steves
+  const a = stick(170, 1250, POSE.shrug, { s: .75, face: 'happy', id: 10 });
+  const b = stick(380, 1250, POSE.shrug, { s: .75, face: 'happy', id: 11 }); beard(b, .75);
+  pop('NOTHING', 275, 560, 64, t, 14.2, { color: C.white, bg: 1, bgColor: C.ink });
+  pop('TO LOSE', 275, 650, 54, t, 14.4, {});
+  // empty pockets
+  if (t > 14.6) { pop('$0', 275, 830, 90, t, 14.6, { color: C.soft, rot: -5 }); }
+  // right: Ron with stuff
+  const m = stick(810, 1300, POSE.worried || POSE.stand, { s: .75, face: t > 18.5 ? 'worried' : 'neutral', id: 12, look: -.3 });
+  glasses(m, .75);
+  pop('EVERYTHING', 810, 560, 60, t, 15.9, { color: C.white, bg: 1 });
+  pop('TO LOSE', 810, 650, 54, t, 16.1, {});
+  const hp = back(prog(t, 16.3, 16.6)), cp = back(prog(t, 16.9, 17.2)), sp = back(prog(t, 17.4, 17.7));
+  if (hp > 0) house(700, 830, .6 * hp);
+  if (cp > 0) car(930, 850, .55 * cp);
+  if (sp > 0) piggy(820, 960, .5 * sp);
+  // creditors
+  const k = prog(t, 18.5, 20.7);
+  if (k > 0) {
+    for (let i = 0; i < 6; i++) {
+      const p = clamp(k * 1.6 - i * .12);
+      if (p <= 0) continue;
+      const x = lerp(1180, 820 + (i % 3 - 1) * 110, eo(p)), y = 1120 + Math.floor(i / 3) * 90 - Math.sin(p * Math.PI) * 100;
+      ctx.save(); ctx.translate(x, y); ctx.rotate((hash(i, 7) - .5) * .5); ctx.fillStyle = C.white; ctx.strokeStyle = C.red; ctx.lineWidth = 6;
+      roughRect(-70, -40, 140, 80, 6); ctx.fill(); ctx.stroke(); font(30, 900); ctx.fillStyle = C.red; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('DEBT', 0, 2); ctx.restore();
+    }
+    pop('IF APPLE FAILS → HE PAYS', 540, 1480, 50, t, 18.6, { color: C.white, bg: 1, bgColor: C.ink });
+  }
+}
+
+// ---------- S5 he walks away ----------
+function s5(t) {
+  sceneIn(t, 20.95);
+  const walk = eio(prog(t, 21.1, 21.9));
+  const pose = walk > 0 && walk < 1 ? (Math.floor(t * 6) % 2 ? POSE.walk1 : POSE.walk2) : POSE.hold;
+  const m = stick(lerp(760, 420, walk), 1330, pose, { s: 1.05, face: 'neutral', id: 12, flip: walk > 0 && walk < 1 });
+  glasses(m, 1.05);
+  paperDoc(860, 980, .8 * (1 - prog(t, 21.9, 22.2)), .1, '10%', 3);
+  const c1 = back(prog(t, 22.2, 22.5)), c2 = back(prog(t, 23.4, 23.7));
+  if (c1 > 0) cheque(540, 650, c1 * 1.25, -.06, '$800');
+  if (c2 > 0) cheque(600, 860, c2 * 1.05, .07, '+$1,500');
+  pop('WALKED AWAY', 540, 380, 100, t, 21.15, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop('TOTAL: $2,300', 540, 1530, 64, t, 24.0, { color: C.white, bg: 1 });
+}
+
+// ---------- S6 today ----------
+function s6(t) {
+  sceneIn(t, 25.0);
+  const k = 1 - Math.pow(1 - prog(t, 25.6, 28.3), 4);
+  const v = Math.exp(lerp(Math.log(2300), Math.log(4e11), k));
+  const hit = t > 28.3;
+  shake(t, hit ? Math.max(0, 12 - (t - 28.3) * 25) : prog(t, 26.5, 28.3) * 5);
+  const ar = lerp(110, 290, eo(prog(t, 25.2, 28.3)));
+  appleIcon(540, 1200, ar);
+  pop('TODAY, 10% ≈', 540, 380, 64, t, 25.2, { color: C.soft });
+  if (hit) burst(540, 560, 250 + Math.sin(t * 9) * 6, C.gold, 18, t * .3);
+  pop('$' + Math.round(v).toLocaleString('en-US'), 540, 540, hit ? 100 : 92, t, 25.25, { color: hit ? C.white : C.ink, bg: hit ? 1 : null, rot: -2 });
+  pop('*estimate before dilution — hypothetical', 540, 885, 32, t, 28.4, { color: C.ink, weight: 700, bg: 1, bgColor: C.paper, pad: 8 });
+  const m = stick(870, 1500, hit ? mixPose(POSE.shock, POSE.stand, .2) : POSE.stand, { s: .7, face: hit ? 'shock' : 'neutral', id: 12 });
+  glasses(m, .7);
+}
+
+// ---------- S7 no regrets ----------
+function s7(t) {
+  sceneIn(t, 29.0);
+  const rock = Math.sin(t * 2.4) * .06;
+  ctx.save(); ctx.translate(540, 1300); ctx.rotate(rock); ctx.translate(-540, -1300);
+  rockingChair(560, 1300, 1.1, 0);
+  const m = stick(560, 1240, POSE.sit, { s: 1, face: t > 30.4 ? 'cool' : 'smile', id: 12, look: -.2 });
+  if (t <= 30.4) glasses(m, 1);
+  ctx.restore();
+  pop('AGE 91', 540, 400, 90, t, 29.2, { color: C.soft });
+  pop('NO REGRETS.', 540, 560, 120, t, 30.45, { color: C.white, bg: 1, rot: -3 });
+}
+
+// ---------- S8 lesson + loop ----------
+function s8(t) {
+  sceneIn(t, 31.3);
+  pop('THE SAFEST MOVE', 540, 420, 84, t, 31.5, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop('CAN BE THE', 540, 540, 70, t, 32.4, {});
+  pop('MOST EXPENSIVE', 540, 660, 96, t, 33.1, { color: C.white, bg: 1, rot: 2 });
+  const m = stick(540, 1360, POSE.think, { s: 1, face: 'smug', id: 12, look: .4 });
+  glasses(m, 1);
+  if (t > 34.5) { cheque(800, 1080, back(prog(t, 34.5, 34.8)) * .9, .1, '$800'); pop('YOU?', 800, 920, 70, t, 34.9, { color: C.red, rot: 8 }); }
+  pop('EP 3 TOMORROW →', 540, 1560, 44, t, 35.2, { color: C.soft, weight: 800 });
+  const k = prog(t, 36.15, 36.6);
+  if (k > 0) { ctx.save(); ctx.globalAlpha = k; paper(); hookLayout(0, true); ctx.restore(); }
+}
+
+const SCENES = [[s0, 0, 3.5], [s1, 3.5, 7.7], [s2, 7.7, 11.9], [s3, 11.9, 13.95], [s4, 13.95, 20.95], [s5, 20.95, 25.0], [s6, 25.0, 29.0], [s7, 29.0, 31.3], [s8, 31.3, 99]];
+
+function renderFrame(t) {
+  setTime(t);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none';
+  paper();
+  for (const [fn, a, b] of SCENES) if (inScene(t, a, b)) { ctx.save(); fn(t); ctx.restore(); }
+  for (const [, a] of SCENES) { const k = prog(t, a - .06, a + .08); if (a > 0 && k > 0 && k < 1) { ctx.fillStyle = `rgba(20,20,20,${(1 - Math.abs(k * 2 - 1)) * .45})`; ctx.fillRect(0, 0, W, H); } }
+  vignette();
+  seriesBadge(CONFIG.series, CONFIG.ep, t);
+}
+
+window.FPS = FPS; window.DURATION = DURATION;
+if (params.get('render')) document.body.classList.add('render');
+window.ready = document.fonts.load('900 100px Inter').then(() => document.fonts.load('700 50px Inter')).then(() => { renderFrame(0); return true; });
+if (!params.get('render')) { const t0 = performance.now(); const loop = () => { renderFrame(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); }; loop(); }
+</script>
+</body>
+</html>
