@@ -1,0 +1,24 @@
+1
+00:00:00,100 --> 00:00:02,611
+Kenalin, latte factor.
+
+2
+00:00:02,561 --> 00:00:05,156
+Jajan receh yang lo pikir nggak ngaruh.
+
+3
+00:00:05,156 --> 00:00:07,311
+Kopi dua puluh lima ribu.
+
+4
+00:00:07,311 --> 00:00:09,335
+Ongkir sepuluh ribu.
+
+5
+00:00:09,335 --> 00:00:11,097
+Checkout iseng.
+
+6
+00:00:11,097 --> 00:00:13,383
+Langganan yang jarang lo buka.
+

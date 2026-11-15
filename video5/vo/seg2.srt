@@ -1,0 +1,24 @@
+1
+00:00:00,100 --> 00:00:01,540
+Kecil?
+
+2
+00:00:01,490 --> 00:00:03,121
+Coba itung.
+
+3
+00:00:03,121 --> 00:00:06,952
+Tiga puluh lima ribu sehari, itu sekitar sejuta sebulan.
+
+4
+00:00:06,952 --> 00:00:08,550
+Setahun?
+
+5
+00:00:08,550 --> 00:00:10,787
+Dua belas koma enam juta.
+
+6
+00:00:10,787 --> 00:00:12,383
+Literally.
+

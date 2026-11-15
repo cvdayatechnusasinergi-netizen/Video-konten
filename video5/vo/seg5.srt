@@ -1,0 +1,16 @@
+1
+00:00:00,100 --> 00:00:01,980
+Caranya gampang.
+
+2
+00:00:01,930 --> 00:00:04,370
+Cek mutasi lo seminggu terakhir.
+
+3
+00:00:04,370 --> 00:00:07,084
+Pilih satu jajan yang paling bikin happy.
+
+4
+00:00:07,084 --> 00:00:10,632
+Sisanya pangkas, terus selisihnya langsung sisihin.
+
