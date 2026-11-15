@@ -1,4 +1,4 @@
-# Seri Video SUARA (@.notingme)
+# Seri Video SUARA (@.suaraduit)
 
 Motion graphic TikTok, tema motivasi hidup & keuangan. Tiap video: folder `videoN/` berisi `index.html` (animasi canvas), `vo/` (naskah + voice over), `output/` (MP4).
 
@@ -9,7 +9,10 @@ Motion graphic TikTok, tema motivasi hidup & keuangan. Tiap video: folder `video
 ## Gaya visual
 - Hitam-putih: latar hitam, elemen putih/abu, grid titik, grain, glow putih. Tanpa warna lain.
 - 1080×1920, 30 fps, ±45–60 detik. Teks penting di area aman (y ±350–1550, jauh dari tepi kanan/bawah).
-- Penutup selalu: judul, logo SUARA (gelombang pulse), @.notingme, tombol FOLLOW & SHARE.
+- Penutup selalu: judul, logo SUARA (gelombang pulse), handle, tombol FOLLOW & SHARE.
+- **Handle: `@.suaraduit`** (nama profil "Suara | Duit dan Mindset") mulai video 6. Saat menyalin template
+  dari video sebelumnya, ganti default `handle` di CONFIG `index.html` jadi `'@.suaraduit'`.
+  Video 1–5 tetap pakai `@.notingme` (tidak dirender ulang).
 - **Frame pertama wajib berisi judul/hook besar** (bukan layar hitam), supaya thumbnail grid TikTok terbaca.
   Buat cover di `covers/cover.html` (tambah entri COVERS), render `node covers/render-covers.js N`,
   lalu tempel ke MP4: `covers/add_cover.sh covers/cover-N.png videoN/output/<nama>.mp4`.
