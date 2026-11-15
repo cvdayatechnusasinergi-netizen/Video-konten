@@ -1,0 +1,12 @@
+1
+00:00:00,100 --> 00:00:02,897
+Yang pertama mulai umur dua puluh lima.
+
+2
+00:00:02,847 --> 00:00:05,810
+Yang kedua, umur tiga puluh lima.
+
+3
+00:00:05,810 --> 00:00:08,798
+Yang ketiga, umur empat puluh lima.
+

@@ -1,0 +1,12 @@
+1
+00:00:00,100 --> 00:00:02,123
+Nggak harus sejuta kok.
+
+2
+00:00:02,073 --> 00:00:04,419
+Mulai dari ceban juga gas.
+
+3
+00:00:04,419 --> 00:00:07,048
+Yang penting, mulai sekarang.
+

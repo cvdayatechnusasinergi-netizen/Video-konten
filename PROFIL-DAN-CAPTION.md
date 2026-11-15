@@ -53,10 +53,16 @@ Pola: hook pendek + pertanyaan biar orang komen + 3–5 hashtag (campur niche & 
 >
 > #lattefactor #keuangan #tipshemat #jajan #fyp
 
+### #6 — Umur 25, 35, 45
+> Modal sama-sama sejuta sebulan, tapi hasilnya beda Rp840 juta. Bedanya cuma satu: kapan mulainya 👀
+> Lo mulai investasi umur berapa? 👇
+>
+> #investasipemula #keuangan #reksadana #financialfreedom #fyp
+
 ---
 
 ## Cover
-File cover ada di `covers/cover-1.png` … `cover-5.png`.
+File cover ada di `covers/cover-1.png` … `cover-6.png`.
 Video MP4 sekarang dibuka dengan cover (0,6 detik), jadi thumbnail otomatis sudah berisi judul.
 Saat upload: **Pilih sampul → geser ke frame paling awal** (atau unggah gambar cover kalau opsinya ada).
 
