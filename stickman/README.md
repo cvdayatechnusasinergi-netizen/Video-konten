@@ -1,6 +1,6 @@
 # StickWise — English stickman-meme YouTube Shorts
 
-Faceless Shorts in English: **history, money, psychology, relatable life**.
+YouTube: **StickWise** (`@wisestick100`). Faceless Shorts in English: **history, money, psychology, relatable life**.
 Separate from the SUARA series in the repo root. Make a new video with the `/stickman-short` skill.
 
 | Path | What |
