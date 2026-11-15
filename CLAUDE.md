@@ -10,6 +10,10 @@ Motion graphic TikTok, tema motivasi hidup & keuangan. Tiap video: folder `video
 - Hitam-putih: latar hitam, elemen putih/abu, grid titik, grain, glow putih. Tanpa warna lain.
 - 1080×1920, 30 fps, ±45–60 detik. Teks penting di area aman (y ±350–1550, jauh dari tepi kanan/bawah).
 - Penutup selalu: judul, logo SUARA (gelombang pulse), @.notingme, tombol FOLLOW & SHARE.
+- **Frame pertama wajib berisi judul/hook besar** (bukan layar hitam), supaya thumbnail grid TikTok terbaca.
+  Buat cover di `covers/cover.html` (tambah entri COVERS), render `node covers/render-covers.js N`,
+  lalu tempel ke MP4: `covers/add_cover.sh covers/cover-N.png videoN/output/<nama>.mp4`.
+- Caption + hashtag tiap video dicatat di `PROFIL-DAN-CAPTION.md`.
 
 ## Gaya bahasa (berlaku mulai video 5)
 - **Santai, gaya Gen Z, jangan kaku.** Pakai "lo/gue", kalimat pendek, kayak ngobrol sama temen.
