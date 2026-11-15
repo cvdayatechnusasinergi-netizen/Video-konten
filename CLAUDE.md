@@ -33,3 +33,7 @@ Motion graphic TikTok, tema motivasi hidup & keuangan. Tiap video: folder `video
 
 ## Render
 `node render.js --page videoN --out videoN/output/<nama>.mp4` (still: `--stills 3,10,20`).
+
+## Project lain: StickWise (`stickman/`)
+Shorts YouTube bahasa Inggris gaya stickman meme (sejarah, uang, psikologi, relatable life). Aturan seri SUARA di atas
+**tidak** berlaku di sana — ikuti skill `/stickman-short` (`.claude/skills/stickman-short/SKILL.md`) dan `stickman/README.md`.

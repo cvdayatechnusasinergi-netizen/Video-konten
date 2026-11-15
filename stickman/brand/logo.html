@@ -1,0 +1,36 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>StickWise Brand</title>
+<style>html,body{margin:0;background:#222}canvas{display:block}</style></head>
+<body><canvas id="c" width="1080" height="1920"></canvas>
+<script src="../lib/stick.js"></script>
+<script>
+// ?kind=profile|banner|watermark  &name=StickWise
+const q = new URLSearchParams(location.search);
+const NAME = q.get('name') || 'StickWise';
+const kind = q.get('kind') || 'profile';
+function draw() {
+  if (kind === 'profile') {           // 800x800 YouTube profile picture (shown as a circle)
+    cv.width = cv.height = 800;
+    ctx.fillStyle = C.red; ctx.fillRect(0, 0, 800, 800);
+    logoMark(400, 400, 345, { ring: null });
+  } else if (kind === 'watermark') {  // 150x150 transparent video watermark
+    cv.width = cv.height = 300;
+    logoMark(150, 150, 140);
+  } else {                            // 2560x1440 banner; safe area = center 1546x423
+    cv.width = 2560; cv.height = 1440;
+    ctx.fillStyle = C.paper; ctx.fillRect(0, 0, 2560, 1440);
+    ctx.fillStyle = 'rgba(20,20,20,.07)';
+    for (let y = 30; y < 1440; y += 60) for (let x = 30; x < 2560; x += 60) { ctx.beginPath(); ctx.arc(x, y, 2.4, 0, 7); ctx.fill(); }
+    const cx = 1280, cy = 720;
+    logoMark(cx - 520, cy, 165);
+    ctx.save(); ctx.translate(-150, 0); logoWord(cx + 230, cy - 45, 170, NAME); ctx.restore();
+    font(54, 700); ctx.fillStyle = C.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText('History · Money · Psychology · Life', cx - 290, cy + 85);
+    font(40, 800); ctx.fillStyle = C.red; ctx.fillText('NEW SHORTS EVERY DAY', cx - 290, cy + 155);
+    // little stickmen at the edges (outside safe area, visible on TV/desktop)
+    stick(420, 980, POSE.cheer, { s: 1.4, face: 'happy', id: 1 });
+    stick(2150, 980, POSE.think, { s: 1.4, face: 'smug', id: 2 });
+  }
+}
+window.ready = document.fonts.load('900 100px Inter').then(() => document.fonts.load('700 50px Inter')).then(() => { draw(); return true; });
+</script></body></html>
