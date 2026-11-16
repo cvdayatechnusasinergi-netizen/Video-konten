@@ -14,6 +14,7 @@
 // foto profil menutupi bagian bawah-tengah, jadi teks utama ditaruh di tengah atas.
 const GOLD = '#F5B301', GLOW = 'rgba(245,179,1,.6)', FONT = 'Inter, sans-serif';
 const img = new Image(); img.src = 'var-a.png';
+const bg = new Image(); bg.src = 'cover-bg.jpg';
 
 function dots(ctx, w, h, a = .09) {
   ctx.fillStyle = `rgba(255,255,255,${a})`;
@@ -69,30 +70,22 @@ function chip(c, text, x, y, kind) {
 }
 
 function cover() {
+  // santai: latar bokeh dari foto sendiri (diblur), satu kalimat, tanpa ikon
   const c = document.getElementById('cover').getContext('2d'), W = 1640, H = 624, cx = W / 2;
-  c.fillStyle = '#060606'; c.fillRect(0, 0, W, H);
-  const g = c.createRadialGradient(cx, H * .38, 0, cx, H * .38, 760); g.addColorStop(0, 'rgba(245,179,1,.07)'); g.addColorStop(1, 'rgba(245,179,1,0)');
-  c.fillStyle = g; c.fillRect(0, 0, W, H); dots(c, W, H, .08);
-  // network lines decoration on the sides
-  c.strokeStyle = 'rgba(245,179,1,.14)'; c.lineWidth = 2;
-  const nodes = [[90, 120], [230, 260], [120, 420], [300, 520], [1550, 110], [1410, 250], [1520, 430], [1340, 520]];
-  [[0, 1], [1, 2], [2, 3], [1, 3], [4, 5], [5, 6], [6, 7], [5, 7]].forEach(([a, b]) => { c.beginPath(); c.moveTo(...nodes[a]); c.lineTo(...nodes[b]); c.stroke(); });
-  nodes.forEach(([x, y]) => { c.fillStyle = 'rgba(245,179,1,.5)'; c.beginPath(); c.arc(x, y, 6, 0, 7); c.fill(); });
-
-  // simple & calm: one casual line, no slogans
+  c.drawImage(bg, 0, 0, W, H);
+  const v = c.createLinearGradient(0, 0, 0, H); v.addColorStop(0, 'rgba(0,0,0,.15)'); v.addColorStop(1, 'rgba(0,0,0,.45)');
+  c.fillStyle = v; c.fillRect(0, 0, W, H);
   c.textAlign = 'center'; c.textBaseline = 'middle';
-  c.font = `800 84px ${FONT}`; c.fillStyle = '#fff';
-  const a = 'ngoprek teknologi', b = 'sehari-hari';
-  c.fillText(a, cx, 145);
-  c.font = `300 84px ${FONT}`; c.fillStyle = '#d6d6d6'; c.fillText(b, cx - 18, 243);
-  c.font = `300 84px ${FONT}`; const bw = c.measureText(b).width;
-  c.fillStyle = GOLD; c.beginPath(); c.arc(cx - 18 + bw / 2 + 26, 271, 11, 0, 7); c.fill();
-  c.font = `500 26px ${FONT}`; c.letterSpacing = '6px'; c.fillStyle = '#8a8a8a';
-  c.fillText('JARINGAN · HP · LAPTOP · INTERNET', cx + 3, 330); c.letterSpacing = '0px';
-  grain(c, W, H, 10);
+  c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = 24;
+  c.font = `italic 400 96px Caladea, "DejaVu Serif", serif`; c.fillStyle = '#fff';
+  c.fillText('pelan-pelan aja,', cx, 160);
+  c.font = `300 46px ${FONT}`; c.fillStyle = 'rgba(255,255,255,.88)'; c.letterSpacing = '1px';
+  c.fillText('mulai dari yang kita suka.', cx, 262); c.letterSpacing = '0px';
+  c.shadowBlur = 0;
+  grain(c, W, H, 8);
 }
 
-window.ready = new Promise(r => img.onload = r).then(() => document.fonts.load(`900 40px Inter`)).then(() => document.fonts.load(`700 40px Inter`)).then(() => { profile(); cover(); return true; });
+window.ready = Promise.all([new Promise(r => img.onload = r), new Promise(r => bg.onload = r)]).then(() => document.fonts.load(`900 40px Inter`)).then(() => document.fonts.load(`700 40px Inter`)).then(() => document.fonts.load(`italic 400 40px Caladea`)).then(() => { profile(); cover(); return true; });
 </script>
 </body>
 </html>
