@@ -24,6 +24,7 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 | 1 | Jangan Buka File "Undangan.apk"! | `video1/output/jangan-buka-apk.mp4` (57,5 dtk) |
 | 2 | Cara Kerja Kuota: 1 GB Cukup Buat Apa? | `video2/output/cara-kerja-kuota.mp4` (45,8 dtk) |
 | 3 | Perusahaan Ini Pernah Hampir Bangkrut (Sejarah Apple, **Remotion**) | `video3/output/sejarah-apple.mp4` (49,9 dtk) — versi iPhone lama: `sejarah-iphone.mp4` (tidak dipakai) |
+| 4 | Dulu Raja HP, Terus Ke Mana? (Sejarah Nokia, **Remotion**) | `video4/output/sejarah-nokia.mp4` (48,2 dtk) |
 
 Render: `node render.js --page reyobian/video1 --out reyobian/video1/output/jangan-buka-apk.mp4`
 VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
@@ -72,6 +73,21 @@ Catatan v2: versi pertama (daftar 9 tahun, gaya hitam-emas) dinilai membingungka
 ("diketawain -> jadi standar") dengan **gaya B**: latar biru-ungu gelap + grid, cahaya biru/pink/oranye bergerak,
 teks gradasi oranye->pink, gelembung kaca, ilustrasi HP penuh warna besar, emoji ketawa. HP generik (tanpa logo Apple).
 Naskah lama: `vo/build_timeline_v1.py`. Uji gaya: `style-test.html`, `gaya-A-vs-B.png`.
+
+### #4 — Caption Facebook (Sejarah Nokia)
+> Dulu hampir 4 dari 10 HP di dunia itu Nokia. Terus, ke mana perginya? 🤔
+> Awalnya pabrik kertas (1865) → karet → kabel → raja HP. Nokia 1100 saja terjual 200 juta+ unit.
+> Tapi 2007 datang layar sentuh & Android. Nokia terlalu nyaman, telat berubah — 2013 bisnis HP-nya dijual ke Microsoft.
+> Plot twist: Nokia enggak mati. Sekarang jualan perangkat jaringan 4G/5G.
+>
+> Pelajarannya: yang bikin jatuh itu terlalu nyaman, yang bikin bangkit itu berani berubah.
+> Skill apa yang mungkin enggak kepakai 5 tahun lagi? Mulai pelajari 1 hal baru minggu ini.
+>
+> HP Nokia pertama kamu tipe apa? Tulis di komentar 👇
+>
+> #nokia #sejarahteknologi #hpjadul #teknologi #pangkalanbun
+
+Remotion: komposisi `Video4Nokia` (`remotion/src/v4/Nokia.tsx`). HP digambar generik, tanpa logo Nokia.
 
 ## Gaya tetap: Remotion (mulai video 3) — disukai user
 - Proyek `remotion/` (React). Tampilan: latar gelap halus (gumpalan biru tua + grid titik), **HP 3D realistis** (CSS 3D,
