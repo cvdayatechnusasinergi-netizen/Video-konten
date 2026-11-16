@@ -11,6 +11,7 @@
 </head>
 <body>
 <canvas id="c" width="1080" height="1920"></canvas>
+<script src="timing.js"></script>
 <script>
 // Reyo Bian #2 — Cara Kerja Kuota: 1 GB Buat Apa Aja? (Facebook Reels)
 // Gaya: latar hitam, grid titik, grain, aksen KUNING/EMAS (warna sampul profil Reyo Bian).
@@ -22,7 +23,8 @@ const CONFIG = {
 };
 // ================================
 
-const W = 1080, H = 1920, FPS = 30, DURATION = 52.3;
+const W = 1080, H = 1920, FPS = 30, DURATION = TIMING.END;
+const EVENTS = TIMING.EVENTS.filter(e => e[1] !== "whoosh").map(e => e[0]);
 const GOLD = '#F5B301', GOLD_GLOW = 'rgba(245,179,1,.65)';
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
@@ -170,6 +172,17 @@ function background(t) {
   const g = ctx.createRadialGradient(W / 2, H * .45, 0, W / 2, H * .45, H * .7);
   g.addColorStop(0, 'rgba(245,179,1,.06)'); g.addColorStop(1, 'rgba(245,179,1,0)');
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // dua cahaya yang melayang pelan
+  [[.3, .35, .7, 0], [.75, .7, .5, 2.1]].forEach(([bx, by, sp, ph]) => {
+    const x = W * (bx + .12 * Math.sin(t * .35 * sp + ph)), y = H * (by + .08 * Math.cos(t * .3 * sp + ph));
+    const lg = ctx.createRadialGradient(x, y, 0, x, y, 520); lg.addColorStop(0, 'rgba(245,179,1,.09)'); lg.addColorStop(1, 'rgba(245,179,1,0)');
+    ctx.fillStyle = lg; ctx.fillRect(0, 0, W, H);
+  });
+  // garis cahaya diagonal yang lewat tiap beberapa detik
+  const sw = ((t * .22) % 1.6) - .3;
+  ctx.save(); ctx.translate(W * sw * 1.4, 0); ctx.rotate(.35);
+  const sg = ctx.createLinearGradient(-120, 0, 120, 0); sg.addColorStop(0, 'rgba(255,255,255,0)'); sg.addColorStop(.5, 'rgba(255,255,255,.035)'); sg.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = sg; ctx.fillRect(-120, -400, 240, H * 1.6); ctx.restore();
   const step = 60, off = (t * 6) % step;
   ctx.fillStyle = 'rgba(255,255,255,.07)';
   for (let y = -step; y < H + step; y += step) for (let x = 30; x < W; x += step) { ctx.beginPath(); ctx.arc(x, y + off, 1.6, 0, Math.PI * 2); ctx.fill(); }
@@ -195,9 +208,10 @@ function scene(t, a, b, fn, fi = .3, fo = .5, P = null) {
   const inp = fi <= 0 ? 1 : prog(t, a, a + fi), outp = prog(t, b - fo, b);
   ctx.save();
   ctx.globalAlpha = Math.min(eo(inp), 1 - outp);
-  const s = 1 + eio(outp) * .08;
+  const push = 1 + .035 * prog(t, a, b);                       // kamera pelan mendekat
+  const s = push * (fi <= 0 ? 1 : lerp(.86, 1, back(inp))) * (1 + eio(outp) * .18);
   ctx.translate(W / 2, H / 2); ctx.scale(s, s); ctx.translate(-W / 2, -H / 2);
-  if (outp > 0) ctx.filter = `blur(${(outp * 10).toFixed(1)}px)`;
+  if (outp > 0) ctx.filter = `blur(${(outp * 6).toFixed(1)}px)`;
   fn(warp(t - a, P), t);
   ctx.restore();
 }
@@ -361,7 +375,7 @@ function s4(lt) {
     } else { ctx.textAlign = 'right'; font(42, 900); ctx.fillStyle = '#8a8a8a'; ctx.fillText('?', 970, y - 32); }
     ctx.restore();
   });
-  words('*perkiraan, tergantung kualitas & aplikasi', W / 2, 1460, 26, lt, 4.0, { weight: 400, color: '#777', stagger: .02 });
+  words('*perkiraan, tergantung kualitas & aplikasi', W / 2, 1365, 26, lt, 4.0, { weight: 400, color: '#777', stagger: .02 });
 }
 
 // ---------- S5: why it runs out (38.3 - 49.8) ----------
@@ -522,23 +536,69 @@ function cta(lt, t) {
   words('Tips teknologi sehari-hari.', W / 2, 1465, 36, lt, 2.0, { weight: 500, color: '#a8a8a8', stagger: .04 });
 }
 
+// ---------- efek: hentakan, getar, partikel, kilat, caption ----------
+const lastEvent = t => { let e = -1; for (const x of EVENTS) if (x <= t) e = x; return e; };
+const SHAKE_AT = TIMING.EVENTS.filter(e => e[1] === 'ding').map(e => e[0]).slice(0, 1);
+function punch(t) { const e = lastEvent(t); return e < 0 ? 1 : 1 + .028 * Math.exp(-(t - e) * 10); }
+function shake(t) {
+  let a = 0; SHAKE_AT.forEach(e => { if (t >= e && t < e + .35) a = Math.max(a, 1 - (t - e) / .35); });
+  return a > 0 ? [Math.sin(t * 90) * 10 * a, Math.cos(t * 77) * 8 * a] : [0, 0];
+}
+function bursts(t) {
+  EVENTS.forEach((e, n) => {
+    const p = (t - e) / .7; if (p < 0 || p > 1) return;
+    const r = rng(100 + n), cx = W / 2 + (r() - .5) * 500, cy = 600 + r() * 700;
+    for (let k = 0; k < 14; k++) {
+      const ang = r() * 6.28, sp = 120 + r() * 260, x = cx + Math.cos(ang) * sp * eo(p), y = cy + Math.sin(ang) * sp * eo(p) + 80 * p * p;
+      ctx.save(); ctx.globalAlpha = (1 - p) * .9; ctx.fillStyle = k % 3 ? GOLD : '#fff';
+      ctx.shadowColor = GOLD_GLOW; ctx.shadowBlur = 12; ctx.beginPath(); ctx.arc(x, y, 3 + r() * 4 * (1 - p), 0, 7); ctx.fill(); ctx.restore();
+    }
+  });
+}
+function flash(t) {
+  TIMING.SC.slice(1, -1).forEach(c => { const p = (t - c) / .18; if (p >= 0 && p < 1) { ctx.fillStyle = `rgba(255,255,255,${.22 * (1 - p)})`; ctx.fillRect(0, 0, W, H); } });
+}
+function captions(t) {
+  if (t >= TIMING.SC[7]) return;
+  const c = TIMING.CAPS.find(c => t >= c.t0 && t < c.t1 + .08); if (!c) return;
+  const ws = c.text.split(' '), L = ws.map(w => w.length + 1), tot = L.reduce((a, b) => a + b, 0);
+  const sp = (c.t1 - c.t0) * .92; let acc = 0; const wt = L.map(l => { const x = c.t0 + sp * acc / tot; acc += l; return x; });
+  font(46, 800); const gap = ctx.measureText(' ').width * 1.7, wd = ws.map(w => ctx.measureText(w).width);
+  // bungkus jadi maks 2 baris (lebar 900)
+  const lines = [[]]; let lw = 0;
+  ws.forEach((w, i) => { if (lw + wd[i] > 900 && lines[lines.length - 1].length) { lines.push([]); lw = 0; } lines[lines.length - 1].push(i); lw += wd[i] + gap; });
+  const pin = back(clamp((t - c.t0) / .18)), y0 = 1540 - (lines.length - 1) * 31;
+  lines.forEach((ln, li) => {
+    const tw = ln.reduce((a, i) => a + wd[i], 0) + gap * (ln.length - 1); let x = W / 2 - tw / 2; const y = y0 + li * 62;
+    ctx.save(); ctx.translate(W / 2, y); ctx.scale(pin, pin); ctx.translate(-W / 2, -y);
+    ctx.fillStyle = 'rgba(0,0,0,.55)'; ctx.beginPath(); ctx.roundRect(x - 22, y - 34, tw + 44, 68, 18); ctx.fill();
+    ln.forEach(i => {
+      const on = t >= wt[i], cur = on && (i === ws.length - 1 || t < wt[i + 1]);
+      ctx.fillStyle = cur ? GOLD : on ? '#fff' : 'rgba(255,255,255,.45)'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      if (cur) { ctx.save(); ctx.shadowColor = GOLD_GLOW; ctx.shadowBlur = 18; ctx.translate(x + wd[i] / 2, y); ctx.scale(1.05, 1.05); ctx.fillText(ws[i], -wd[i] / 2, 2); ctx.restore(); }
+      else ctx.fillText(ws[i], x, y + 2);
+      x += wd[i] + gap;
+    });
+    ctx.restore();
+  });
+}
+
 // ---------- master ----------
+const FNS = [s1, s2, s3, s4, s5, s6, s7, cta];
 function renderFrame(t) {
-  const frame = Math.round(t * FPS);
+  const frame = Math.round(t * FPS), SC = TIMING.SC;
   ctx.save(); ctx.globalAlpha = 1; ctx.filter = 'none';
   background(t);
-  // denyut zoom kecil tiap ketukan musik (124 BPM)
-  const ph = (t / (60 / 124)) % 1, bz = 1 + .012 * Math.exp(-ph * 9);
-  ctx.translate(W / 2, H / 2); ctx.scale(bz, bz); ctx.translate(-W / 2, -H / 2);
-  scene(t, 0, 3.65, s1, 0, .3, [[0, 0], [.15, .5], [1.39, 2.2], [3.65, 4.3]]);
-  scene(t, 3.65, 10.2, s2, .2, .4, [[0, 0], [.15, .2], [4.0, 4.25], [6.55, 8.1]]);
-  scene(t, 10.2, 15.4, s3, .2, .4, [[0, 0], [1.2, .3], [2.3, 1.9], [4.0, 4.5], [4.4, 5.6], [5.2, 7.3]]);
-  scene(t, 15.4, 29.05, s4, .2, .4, [[0, 0], [.15, .2], [2.3, 3.0], [4.17, 5.6], [6.48, 8.6], [8.62, 11.3], [10.85, 13.7], [12.05, 15.6], [13.65, 18.6]]);
-  scene(t, 29.05, 37.6, s5, .2, .4, [[0, 0], [.15, .2], [1.33, 1.2], [2.59, 3.0], [4.38, 4.8], [5.6, 6.85], [7.25, 9.1], [8.55, 11.5]]);
-  scene(t, 37.6, 44.5, s6, .2, .4, [[0, 0], [1.36, .8], [2.63, 2.3], [4.42, 4.0], [5.2, 5.0], [6.9, 7.4]]);
-  scene(t, 44.5, 48.1, s7, .2, .3, [[0, 0], [.15, .2], [3.6, 4.1]]);
-  scene(t, 48.0, 52.31, cta, .2, .01);
+  const [sx, sy] = shake(t), pz = punch(t);
+  ctx.translate(W / 2 + sx, H / 2 + sy); ctx.scale(pz, pz); ctx.translate(-W / 2, -H / 2);
+  FNS.forEach((fn, i) => {
+    const a = SC[i], b = i === 7 ? DURATION + .01 : SC[i + 1] + .05;
+    scene(t, a, b, fn, i === 0 ? 0 : .22, i === 7 ? .01 : .22, TIMING.WARP[i]);
+  });
+  bursts(t);
   ctx.restore();
+  flash(t);
+  captions(t);
   overlay(t, frame);
 }
 
