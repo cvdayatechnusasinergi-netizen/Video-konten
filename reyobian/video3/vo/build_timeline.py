@@ -10,7 +10,7 @@ SEGS = [
  [("Tapi lihat sekarang.", None), ("Hampir semua HP, termasuk Android,", None), ("bentuknya ya begini.", None)],
  [("Jadi, yang diketawain hari ini,", None), ("bisa jadi standar besok.", None)],
  [("Menurut kamu, teknologi apa yang sekarang masih diketawain,", None), ("tapi nanti jadi standar?", None), ("HP lipat, mungkin?", None), ("Tulis di komentar!", None)],
- [("Follow Reyo Bian buat tips teknologi sehari-hari!", None)],
+ [("Follow buat tips teknologi sehari-hari!", None)],
 ]
 def sfx(C, SC):
     e = [(SC[i] - .06, 'whoosh') for i in range(1, 8)]

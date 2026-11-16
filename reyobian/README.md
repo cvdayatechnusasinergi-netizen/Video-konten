@@ -15,6 +15,7 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
   Urutan: `python3 build_timeline.py && python3 make_audio.py && ./build_vo.sh`, lalu render.
 - Frame pertama = judul besar (tidak perlu `add_cover.sh`).
 - Penutup: judul, logo RB (node jaringan), nama Reyo Bian, FOLLOW & SHARE.
+- **Penutup VO (mulai video 3): "Follow buat tips teknologi sehari-hari!"** — tanpa menyebut nama "Reyo Bian".
 - Upload MP4 langsung ke Facebook Reels (tanpa watermark TikTok).
 
 ## Video
