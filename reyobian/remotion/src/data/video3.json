@@ -1,0 +1,324 @@
+{
+"END": 38.437,
+"SC": [
+0,
+2.634,
+8.094,
+16.383,
+21.166,
+25.633,
+29.098,
+35.221,
+38.437
+],
+"CUE": [
+[
+0.15,
+1.146,
+2.184
+],
+[
+2.754,
+4.746,
+5.451,
+6.34,
+7.694
+],
+[
+8.214,
+9.714,
+10.914,
+12.073,
+12.869,
+13.908,
+15.883
+],
+[
+16.503,
+17.49,
+18.593,
+19.54,
+20.766
+],
+[
+21.286,
+22.356,
+24.239,
+25.033
+],
+[
+25.753,
+27.545,
+28.548
+],
+[
+29.218,
+31.745,
+32.889,
+34.188,
+34.921
+],
+[
+35.341,
+36.837
+]
+],
+"EVENTS": [
+[
+1.646,
+"pop"
+],
+[
+2.046,
+"pop"
+],
+[
+2.574,
+"whoosh"
+],
+[
+4.846,
+"pop"
+],
+[
+5.551,
+"pop"
+],
+[
+6.44,
+"pop"
+],
+[
+8.034,
+"whoosh"
+],
+[
+8.514,
+"ding"
+],
+[
+12.073,
+"pop"
+],
+[
+12.869,
+"pop"
+],
+[
+14.508,
+"pop"
+],
+[
+14.808,
+"pop"
+],
+[
+16.323,
+"whoosh"
+],
+[
+17.59,
+"pop"
+],
+[
+18.693,
+"pop"
+],
+[
+19.64,
+"pop"
+],
+[
+21.106,
+"whoosh"
+],
+[
+22.456,
+"pop"
+],
+[
+22.696,
+"pop"
+],
+[
+22.936,
+"pop"
+],
+[
+25.573,
+"whoosh"
+],
+[
+27.645,
+"ding"
+],
+[
+29.038,
+"whoosh"
+],
+[
+31.945,
+"pop"
+],
+[
+32.245,
+"pop"
+],
+[
+32.545,
+"pop"
+],
+[
+32.845,
+"pop"
+],
+[
+35.161,
+"whoosh"
+],
+[
+37.121,
+"pop"
+],
+[
+37.821,
+"pop"
+]
+],
+"SHAKE": [
+14.508,
+27.645
+],
+"CAPS": [
+{
+"t0": 0.15,
+"t1": 1.146,
+"text": "Tahun 2007,"
+},
+{
+"t0": 1.146,
+"t1": 2.184,
+"text": "HP ini sempat diketawain."
+},
+{
+"t0": 2.754,
+"t1": 4.746,
+"text": "Dulu, HP paling keren itu kayak gini."
+},
+{
+"t0": 4.746,
+"t1": 5.451,
+"text": "Ada keypad,"
+},
+{
+"t0": 5.451,
+"t1": 6.34,
+"text": "layarnya kecil,"
+},
+{
+"t0": 6.34,
+"t1": 7.694,
+"text": "ngetik SMS pencet-pencet tombol."
+},
+{
+"t0": 8.214,
+"t1": 9.714,
+"text": "Terus muncul HP layar sentuh penuh,"
+},
+{
+"t0": 9.714,
+"t1": 10.914,
+"text": "tanpa keypad sama sekali."
+},
+{
+"t0": 10.914,
+"t1": 12.073,
+"text": "Banyak yang meremehkan."
+},
+{
+"t0": 12.073,
+"t1": 12.869,
+"text": "Kemahalan!"
+},
+{
+"t0": 12.869,
+"t1": 13.908,
+"text": "Ngetiknya pakai apa?"
+},
+{
+"t0": 13.908,
+"t1": 15.883,
+"text": "Bahkan bos perusahaan teknologi lain ikut ketawa."
+},
+{
+"t0": 16.503,
+"t1": 17.49,
+"text": "Padahal waktu itu,"
+},
+{
+"t0": 17.49,
+"t1": 18.593,
+"text": "belum bisa copy-paste,"
+},
+{
+"t0": 18.593,
+"t1": 19.54,
+"text": "belum ada App Store,"
+},
+{
+"t0": 19.54,
+"t1": 20.766,
+"text": "dan internetnya masih 2G."
+},
+{
+"t0": 21.286,
+"t1": 22.356,
+"text": "Tapi lihat sekarang."
+},
+{
+"t0": 22.356,
+"t1": 24.239,
+"text": "Hampir semua HP, termasuk Android,"
+},
+{
+"t0": 24.239,
+"t1": 25.033,
+"text": "bentuknya ya begini."
+},
+{
+"t0": 25.753,
+"t1": 27.545,
+"text": "Jadi, yang diketawain hari ini,"
+},
+{
+"t0": 27.545,
+"t1": 28.548,
+"text": "bisa jadi standar besok."
+},
+{
+"t0": 29.218,
+"t1": 31.745,
+"text": "Menurut kamu, teknologi apa yang sekarang masih diketawain,"
+},
+{
+"t0": 31.745,
+"t1": 32.889,
+"text": "tapi nanti jadi standar?"
+},
+{
+"t0": 32.889,
+"t1": 34.188,
+"text": "HP lipat, mungkin?"
+},
+{
+"t0": 34.188,
+"t1": 34.921,
+"text": "Tulis di komentar!"
+},
+{
+"t0": 35.341,
+"t1": 36.837,
+"text": "Follow buat tips teknologi sehari-hari!"
+}
+]
+}

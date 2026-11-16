@@ -23,7 +23,7 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 |---|---|---|
 | 1 | Jangan Buka File "Undangan.apk"! | `video1/output/jangan-buka-apk.mp4` (57,5 dtk) |
 | 2 | Cara Kerja Kuota: 1 GB Cukup Buat Apa? | `video2/output/cara-kerja-kuota.mp4` (45,8 dtk) |
-| 3 | HP Ini Sempat Diketawain (Sejarah iPhone, v2 gaya B) | `video3/output/sejarah-iphone.mp4` (38,8 dtk) |
+| 3 | HP Ini Sempat Diketawain (Sejarah iPhone, **Remotion**) | `video3/output/sejarah-iphone.mp4` (38,4 dtk) |
 
 Render: `node render.js --page reyobian/video1 --out reyobian/video1/output/jangan-buka-apk.mp4`
 VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
@@ -67,6 +67,17 @@ Catatan v2: versi pertama (daftar 9 tahun, gaya hitam-emas) dinilai membingungka
 ("diketawain -> jadi standar") dengan **gaya B**: latar biru-ungu gelap + grid, cahaya biru/pink/oranye bergerak,
 teks gradasi oranye->pink, gelembung kaca, ilustrasi HP penuh warna besar, emoji ketawa. HP generik (tanpa logo Apple).
 Naskah lama: `vo/build_timeline_v1.py`. Uji gaya: `style-test.html`, `gaya-A-vs-B.png`.
+
+## Gaya tetap: Remotion (mulai video 3) — disukai user
+- Proyek `remotion/` (React). Tampilan: latar gelap halus (gumpalan biru tua + grid titik), **HP 3D realistis** (CSS 3D,
+  bingkai logam, kilau kaca), **kartu UI asli** (komentar FB, berita, panel pengaturan), animasi pegas, kedalaman
+  (blur jauh/dekat), teks minimal, palet netral + aksen biru `#4F7CFF`. Hindari: ilustrasi "digambar", emoji, gelembung
+  kartun, teks gradasi, layar kosong, terlalu banyak tulisan.
+- Alur: naskah & VO tetap lewat `videoN/vo/build_timeline.py` + `tools/` -> ekspor `timing.js` ke `remotion/src/data/videoN.json`,
+  salin `voiceover.wav` ke `remotion/public/videoN/`, buat `remotion/src/vN/VideoN.tsx` (pakai `src/v3/common.tsx`).
+- Render: `cd remotion && npx remotion render src/index.ts Video3 out/video3.mp4 --browser-executable=/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell --concurrency=4 --crf=18`
+  (±6,5 menit), lalu salin ke `videoN/output/`. Frame pertama tetap berisi judul besar.
+- Lisensi Remotion: gratis untuk individu/usaha kecil (≤3 orang).
 
 ## Alat bersama (`tools/`, mulai video 3)
 - `tools/timeline.py` — TTS cepat + deteksi awal frasa (`align`, bisa dikoreksi manual lewat `fix`) -> `timing.js` (SC, CUE, EVENTS, SHAKE, CAPS).
