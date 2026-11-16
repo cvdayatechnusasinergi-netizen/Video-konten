@@ -22,6 +22,7 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 |---|---|---|
 | 1 | Jangan Buka File "Undangan.apk"! | `video1/output/jangan-buka-apk.mp4` (57,5 dtk) |
 | 2 | Cara Kerja Kuota: 1 GB Cukup Buat Apa? | `video2/output/cara-kerja-kuota.mp4` (45,8 dtk) |
+| 3 | iPhone Pertama Enggak Bisa Copy-Paste?! (Sejarah iPhone) | `video3/output/sejarah-iphone.mp4` (47,4 dtk) |
 
 Render: `node render.js --page reyobian/video1 --out reyobian/video1/output/jangan-buka-apk.mp4`
 VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
@@ -50,6 +51,23 @@ VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
 > #kuotainternet #tipsHP #kuotacepathabis #tekno #pangkalanbun
 
 Catatan: penutup video mulai #2 hanya menulis "Pangkalan Bun" (tanpa "Freelance IT Support").
+
+### #3 — Caption Facebook
+> iPhone pertama enggak bisa copy-paste?! 😳
+> Dari 2007 sampai sekarang: App Store, Siri, sidik jari, lubang headset dihapus, tanpa tombol home, charger hilang dari kotak, USB-C… sampai iPhone lipat.
+> Di Indonesia, iPhone 16 bahkan sempat enggak bisa dijual resmi gara-gara aturan TKDN.
+>
+> iPhone pertama kamu seri berapa? Atau kamu tim Android? Tulis di komentar 👇
+>
+> #iphone #sejarahiphone #teknologi #faktaunik #pangkalanbun
+
+Catatan: HP digambar generik (tanpa logo/foto produk Apple). 2026 ditulis "iPhone lipat pertama" saja (nama resmi tidak disebut).
+
+## Alat bersama (`tools/`, mulai video 3)
+- `tools/timeline.py` — TTS cepat + deteksi awal frasa (`align`, bisa dikoreksi manual lewat `fix`) -> `timing.js` (SC, CUE, EVENTS, SHAKE, CAPS).
+- `tools/sfx.py` (efek suara dari `timing.json`), `tools/mix.sh` (VO + efek -> `voiceover.wav`), `tools/tts.py` (edge-tts lewat CA proxy).
+- Per video: `vo/build_timeline.py` berisi naskah per frasa + daftar efek; di `index.html` pakai `cu(adegan, frasa)` untuk timing animasi.
+- Urutan (dari `videoN/vo/`): `python3 build_timeline.py && python3 ../../tools/sfx.py && ../../tools/mix.sh`, lalu render.
 
 ## Foto profil & sampul
 - `profil/foto-profil.png` (1080×1080): opsi 3, foto natural + cincin emas tipis (dari `profil/foto-asli.jpg`).
