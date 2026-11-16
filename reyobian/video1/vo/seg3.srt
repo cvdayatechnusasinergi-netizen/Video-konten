@@ -1,0 +1,16 @@
+1
+00:00:00,100 --> 00:00:02,271
+Cara ngenalinnya gampang.
+
+2
+00:00:02,221 --> 00:00:04,965
+Nama filenya berakhiran a pe ka.
+
+3
+00:00:04,965 --> 00:00:07,549
+Dikirim dari nomor yang nggak dikenal.
+
+4
+00:00:07,549 --> 00:00:10,486
+Dan biasanya nyuruh kamu buru-buru buka.
+

@@ -1,0 +1,8 @@
+1
+00:00:00,100 --> 00:00:04,224
+Begitu diinstal, aplikasi ini minta izin baca SMS.
+
+2
+00:00:04,174 --> 00:00:09,842
+Kode OTP dari bank kamu kebaca sama penipu… dan saldo m-banking bisa habis dalam hitungan menit.
+

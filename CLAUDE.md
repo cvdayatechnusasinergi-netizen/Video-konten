@@ -33,3 +33,8 @@ Motion graphic TikTok, tema motivasi hidup & keuangan. Tiap video: folder `video
 
 ## Render
 `node render.js --page videoN --out videoN/output/<nama>.mp4` (still: `--stills 3,10,20`).
+
+## Akun lain: Reyo Bian (Facebook Pro, IT Support)
+- Folder `reyobian/videoN/` (pola sama). Gaya & caption: lihat `reyobian/README.md` (aksen kuning/emas, bahasa "kamu").
+- edge-tts di container: jika SSL gagal, jalankan lewat wrapper yang set `certifi.where` ke `/root/.ccr/ca-bundle.crt`;
+  pakai `ffmpeg -nostdin` di dalam loop `while read` (kalau tidak, ffmpeg memakan baris naskah).

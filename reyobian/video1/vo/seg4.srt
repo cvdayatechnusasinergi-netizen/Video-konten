@@ -1,0 +1,16 @@
+1
+00:00:00,100 --> 00:00:04,104
+Kalau terlanjur keinstal, langsung matiin data dan WiFi.
+
+2
+00:00:04,054 --> 00:00:06,166
+Hapus aplikasinya.
+
+3
+00:00:06,166 --> 00:00:08,738
+Telepon bank buat blokir m-banking.
+
+4
+00:00:08,738 --> 00:00:11,251
+Terus ganti semua password kamu.
+
