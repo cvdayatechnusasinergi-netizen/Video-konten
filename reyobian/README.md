@@ -25,6 +25,7 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 | 2 | Cara Kerja Kuota: 1 GB Cukup Buat Apa? | `video2/output/cara-kerja-kuota.mp4` (45,8 dtk) |
 | 3 | Perusahaan Ini Pernah Hampir Bangkrut (Sejarah Apple, **Remotion**) | `video3/output/sejarah-apple.mp4` (49,9 dtk) — versi iPhone lama: `sejarah-iphone.mp4` (tidak dipakai) |
 | 4 | Dulu Raja HP, Terus Ke Mana? (Sejarah Nokia, **Remotion**) | `video4/output/sejarah-nokia.mp4` (48,2 dtk) |
+| 5 | Ditolak Facebook, Lalu Dibeli $19 Miliar (Sejarah WhatsApp, **Remotion**) | `video5/output/sejarah-whatsapp.mp4` (44,4 dtk) |
 
 Render: `node render.js --page reyobian/video1 --out reyobian/video1/output/jangan-buka-apk.mp4`
 VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
@@ -88,6 +89,20 @@ Naskah lama: `vo/build_timeline_v1.py`. Uji gaya: `style-test.html`, `gaya-A-vs-
 > #nokia #sejarahteknologi #hpjadul #teknologi #pangkalanbun
 
 Remotion: komposisi `Video4Nokia` (`remotion/src/v4/Nokia.tsx`). HP digambar generik, tanpa logo Nokia.
+
+### #5 — Caption Facebook (Sejarah WhatsApp)
+> Orang ini ditolak kerja di Facebook. 5 tahun kemudian, Facebook beli aplikasinya $19 miliar 🤯
+> 2009: Brian Acton ditolak Twitter, lalu Facebook. Bareng Jan Koum, dia bikin WhatsApp.
+> Awalnya cuma buat status, sering error, sampai hampir menyerah. Tapi mereka terus memperbaiki — jadi aplikasi chat yang simpel, tanpa iklan, hemat kuota.
+> 2014 dibeli Facebook $19 miliar. Sekarang penggunanya 2 miliar+.
+>
+> Pelajarannya: ditolak itu bukan akhir. Catat 1 hal yang bisa diperbaiki, lalu coba lagi.
+>
+> Kamu pernah ditolak, tapi akhirnya dapat yang lebih baik? Cerita di komentar 👇
+>
+> #whatsapp #sejarahteknologi #motivasi #teknologi #pangkalanbun
+
+Remotion: komposisi `Video5WhatsApp` (`remotion/src/v5/WhatsApp.tsx`). Tampilan aplikasi generik (ikon biru), tanpa logo asli.
 
 ## Gaya tetap: Remotion (mulai video 3) — disukai user
 - Proyek `remotion/` (React). Tampilan: latar gelap halus (gumpalan biru tua + grid titik), **HP 3D realistis** (CSS 3D,
