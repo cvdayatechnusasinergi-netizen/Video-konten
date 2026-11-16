@@ -8,7 +8,7 @@ export const V3_FRAMES = Math.ceil(T.END * 30);
 const SC = T.SC.map(fr);
 const cue = (i: number, k: number) => fr(T.CUE[i][k] - T.SC[i]);
 
-const Odometer: React.FC<{ value: string; start: number; size?: number }> = ({ value, start, size = 200 }) => {
+export const Odometer: React.FC<{ value: string; start: number; size?: number }> = ({ value, start, size = 200 }) => {
   const f = useCurrentFrame(); const h = size * .96;
   return (
     <div style={{ display: 'flex' }}>
@@ -27,7 +27,7 @@ const Odometer: React.FC<{ value: string; start: number; size?: number }> = ({ v
     </div>
   );
 };
-const Title: React.FC<{ top: number; small: string; big: string; start: number; bigSize?: number; color?: string }> = ({ top, small, big, start, bigSize = 128, color = '#fff' }) => {
+export const Title: React.FC<{ top: number; small: string; big: string; start: number; bigSize?: number; color?: string }> = ({ top, small, big, start, bigSize = 128, color = '#fff' }) => {
   const s = useSpring(start, 20, 100);
   return (
     <div style={{ position: 'absolute', top, width: '100%', textAlign: 'center', fontFamily: FONT }}>
@@ -43,12 +43,12 @@ const Letter: React.FC<{ ch: string; start: number; size: number; color: string 
   return <div style={{ overflow: 'hidden', height: size * 1.25 }}><div style={{ fontSize: size, fontWeight: 900, color, letterSpacing: -3, lineHeight: `${size * 1.25}px`, whiteSpace: 'pre',
     transform: `translateY(${(1 - s) * size * 1.25}px)` }}>{ch}</div></div>;
 };
-const Head: React.FC<{ text: string; start: number; top?: number; size?: number }> = ({ text, start, top = 300, size = 60 }) => {
+export const Head: React.FC<{ text: string; start: number; top?: number; size?: number }> = ({ text, start, top = 300, size = 60 }) => {
   const s = useSpring(start, 20, 110);
   return <div style={{ position: 'absolute', top, width: '100%', textAlign: 'center', fontFamily: FONT, fontSize: size, fontWeight: 600, color: '#fff', letterSpacing: -1,
     opacity: s, transform: `translateY(${(1 - s) * 30}px)` }}>{text}</div>;
 };
-const Chip: React.FC<{ text: string; start: number; x: number; y: number; on?: boolean; size?: number }> = ({ text, start, x, y, on, size = 40 }) => {
+export const Chip: React.FC<{ text: string; start: number; x: number; y: number; on?: boolean; size?: number }> = ({ text, start, x, y, on, size = 40 }) => {
   const s = useSpring(start, 14, 140);
   return <div style={{ position: 'absolute', left: x, top: y, transform: `translate(-50%,-50%) scale(${s})`, opacity: s, fontFamily: FONT, fontWeight: 700, fontSize: size,
     padding: '18px 34px', borderRadius: 999, whiteSpace: 'nowrap', background: on ? ACCENT : 'rgba(255,255,255,.96)', color: on ? '#fff' : '#111',

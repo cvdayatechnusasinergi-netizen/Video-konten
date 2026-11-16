@@ -23,7 +23,7 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 |---|---|---|
 | 1 | Jangan Buka File "Undangan.apk"! | `video1/output/jangan-buka-apk.mp4` (57,5 dtk) |
 | 2 | Cara Kerja Kuota: 1 GB Cukup Buat Apa? | `video2/output/cara-kerja-kuota.mp4` (45,8 dtk) |
-| 3 | HP Ini Sempat Diketawain (Sejarah iPhone, **Remotion**) | `video3/output/sejarah-iphone.mp4` (38,4 dtk) |
+| 3 | Perusahaan Ini Pernah Hampir Bangkrut (Sejarah Apple, **Remotion**) | `video3/output/sejarah-apple.mp4` (49,9 dtk) — versi iPhone lama: `sejarah-iphone.mp4` (tidak dipakai) |
 
 Render: `node render.js --page reyobian/video1 --out reyobian/video1/output/jangan-buka-apk.mp4`
 VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
@@ -53,15 +53,20 @@ VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
 
 Catatan: penutup video mulai #2 hanya menulis "Pangkalan Bun" (tanpa "Freelance IT Support").
 
-### #3 — Caption Facebook
-> Tahun 2007, HP ini sempat diketawain 😂
-> "Kemahalan!", "Enggak ada tombolnya?", "Ngetiknya pakai apa?" — padahal waktu itu belum bisa copy-paste, belum ada App Store, internetnya masih 2G.
-> Sekarang? Hampir semua HP, termasuk Android, bentuknya ya begitu.
+### #3 — Caption Facebook (Sejarah Apple)
+> Perusahaan ini pernah tinggal beberapa bulan lagi dari bangkrut 😳
+> 1976 mulai dari garasi → 1985 Steve Jobs didepak → 1997 hampir bangkrut karena kebanyakan produk.
+> Jobs balik, pangkas sekitar 70% produk jadi cuma 4. Hasilnya: iMac, iPod, iPhone… dan 2018 tembus $1 triliun.
 >
-> Yang diketawain hari ini, bisa jadi standar besok.
-> Menurut kamu, teknologi apa yang sekarang masih diketawain? HP lipat? Tulis di komentar 👇
+> Pelajarannya: lebih baik sedikit tapi bagus, daripada banyak tapi setengah-setengah.
+> Coba hari ini: tulis semua kerjaan kamu, pilih 3 yang paling penting.
 >
-> #iphone #sejarahteknologi #teknologi #faktaunik #pangkalanbun
+> Apa yang paling susah buat kamu fokusin? Tulis di komentar 👇
+>
+> #apple #sejarahteknologi #stevejobs #fokus #pangkalanbun
+
+Catatan: naskah final `vo/build_timeline.py` (Apple). Naskah lama iPhone: `vo/build_timeline_iphone.py` & `build_timeline_v1.py`.
+Remotion: komposisi `Video3Apple` (`remotion/src/v3/AppleHistory.tsx`). Produk digambar generik, tanpa logo Apple.
 
 Catatan v2: versi pertama (daftar 9 tahun, gaya hitam-emas) dinilai membingungkan -> diganti satu cerita jelas
 ("diketawain -> jadi standar") dengan **gaya B**: latar biru-ungu gelap + grid, cahaya biru/pink/oranye bergerak,
