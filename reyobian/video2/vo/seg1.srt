@@ -1,0 +1,8 @@
+1
+00:00:00,100 --> 00:00:04,710
+Tiap kamu buka apa pun di HP, HP kamu ngirim dan nerima data lewat tower.
+
+2
+00:00:04,660 --> 00:00:08,702
+Nah, jumlah data yang lewat itulah yang dihitung jadi kuota.
+

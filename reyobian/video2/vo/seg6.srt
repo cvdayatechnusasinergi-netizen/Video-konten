@@ -1,0 +1,8 @@
+1
+00:00:00,100 --> 00:00:02,781
+Kuota kamu biasanya abis buat apa?
+
+2
+00:00:02,731 --> 00:00:04,758
+Tulis di komen ya.
+

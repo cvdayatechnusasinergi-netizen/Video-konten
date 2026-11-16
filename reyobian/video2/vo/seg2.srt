@@ -1,0 +1,12 @@
+1
+00:00:00,100 --> 00:00:02,041
+Satuannya gini.
+
+2
+00:00:01,991 --> 00:00:05,000
+Seribu ka be, jadi satu em be.
+
+3
+00:00:05,000 --> 00:00:07,961
+Seribu em be, jadi satu ge be.
+

@@ -1,0 +1,4 @@
+1
+00:00:00,100 --> 00:00:07,974
+Solusinya, matiin autoplay video, atur update cuma lewat WiFi, dan cek pemakaian di setelan, penggunaan data.
+

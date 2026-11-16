@@ -1,0 +1,4 @@
+1
+00:00:00,100 --> 00:00:04,723
+Beli kuota tiap bulan… tapi tau nggak, sebenernya kuota itu apa sih?
+

@@ -14,6 +14,7 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 | # | Judul | File |
 |---|---|---|
 | 1 | Jangan Buka File "Undangan.apk"! | `video1/output/jangan-buka-apk.mp4` (57,5 dtk) |
+| 2 | Cara Kerja Kuota: 1 GB Buat Apa Aja? | `video2/output/cara-kerja-kuota.mp4` (65,5 dtk) |
 
 Render: `node render.js --page reyobian/video1 --out reyobian/video1/output/jangan-buka-apk.mp4`
 VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
@@ -29,6 +30,19 @@ VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
 > Kamu atau keluarga pernah dapet file kayak gini? Cerita di komen 👇
 >
 > #penipuanonline #waspadapenipuan #tipsIT #keamanandigital #pangkalanbun
+
+### #2 — Caption Facebook
+> Kuota 1 GB itu sebenernya cukup buat apa aja sih? 🤔
+> Ternyata tiap kamu buka apa pun di HP, ada data yang bolak-balik lewat tower — itu yang dihitung jadi kuota.
+>
+> 📱 1 GB kira-kira: chat WA ribuan pesan · telepon WA ±16 jam · video call ±2 jam · Reels ±1 jam · YouTube HD ±20–30 menit
+> 🔥 Cepet abis? Cek autoplay video, update otomatis, sama backup foto.
+>
+> Kuota kamu biasanya abis buat apa? Tulis di komen 👇
+>
+> #kuotainternet #tipsHP #kuotacepathabis #tekno #pangkalanbun
+
+Catatan: penutup video mulai #2 hanya menulis "Pangkalan Bun" (tanpa "Freelance IT Support").
 
 ## Foto profil & sampul
 - `profil/foto-profil.png` (1080×1080): opsi 3, foto natural + cincin emas tipis (dari `profil/foto-asli.jpg`).
