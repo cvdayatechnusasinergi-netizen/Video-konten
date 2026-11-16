@@ -71,29 +71,24 @@ function chip(c, text, x, y, kind) {
 function cover() {
   const c = document.getElementById('cover').getContext('2d'), W = 1640, H = 624, cx = W / 2;
   c.fillStyle = '#060606'; c.fillRect(0, 0, W, H);
-  const g = c.createRadialGradient(cx, H * .38, 0, cx, H * .38, 760); g.addColorStop(0, 'rgba(245,179,1,.16)'); g.addColorStop(1, 'rgba(245,179,1,0)');
+  const g = c.createRadialGradient(cx, H * .38, 0, cx, H * .38, 760); g.addColorStop(0, 'rgba(245,179,1,.07)'); g.addColorStop(1, 'rgba(245,179,1,0)');
   c.fillStyle = g; c.fillRect(0, 0, W, H); dots(c, W, H, .08);
   // network lines decoration on the sides
-  c.strokeStyle = 'rgba(245,179,1,.22)'; c.lineWidth = 2;
+  c.strokeStyle = 'rgba(245,179,1,.14)'; c.lineWidth = 2;
   const nodes = [[90, 120], [230, 260], [120, 420], [300, 520], [1550, 110], [1410, 250], [1520, 430], [1340, 520]];
   [[0, 1], [1, 2], [2, 3], [1, 3], [4, 5], [5, 6], [6, 7], [5, 7]].forEach(([a, b]) => { c.beginPath(); c.moveTo(...nodes[a]); c.lineTo(...nodes[b]); c.stroke(); });
   nodes.forEach(([x, y]) => { c.fillStyle = 'rgba(245,179,1,.5)'; c.beginPath(); c.arc(x, y, 6, 0, 7); c.fill(); });
 
+  // simple & calm: one casual line, no slogans
   c.textAlign = 'center'; c.textBaseline = 'middle';
-  c.font = `700 26px ${FONT}`; c.letterSpacing = '12px'; c.fillStyle = GOLD;
-  c.fillText('TIPS IT · BAHASA GAMPANG', cx + 6, 118); c.letterSpacing = '0px';
-  c.font = `900 92px ${FONT}`; c.fillStyle = '#fff'; c.fillText('Melek Teknologi,', cx, 215);
-  // gold pill
-  c.font = `900 92px ${FONT}`; const tw = c.measureText('Anti Kena Tipu').width;
-  c.save(); c.shadowColor = GLOW; c.shadowBlur = 45; c.fillStyle = GOLD; c.beginPath(); c.roundRect(cx - tw / 2 - 36, 266, tw + 72, 112, 22); c.fill(); c.restore();
-  c.fillStyle = '#000'; c.fillText('Anti Kena Tipu', cx, 324);
-  // side icons (visible on desktop, safe if cropped on mobile)
-  icon(c, 'warn', 250, 140, 1.1); icon(c, 'wifi', 1390, 130, 1.4);
-  // chips: left & right of the profile-photo zone (bottom centre stays empty)
-  chip(c, 'Anti Penipuan', 460, 470, 'shield');
-  chip(c, 'WiFi & Internet', 460, 552, 'wifi');
-  chip(c, 'HP & Laptop', 1180, 470, 'phone');
-  chip(c, 'Keamanan Akun', 1180, 552, 'lock');
+  c.font = `800 84px ${FONT}`; c.fillStyle = '#fff';
+  const a = 'ngoprek teknologi', b = 'sehari-hari';
+  c.fillText(a, cx, 145);
+  c.font = `300 84px ${FONT}`; c.fillStyle = '#d6d6d6'; c.fillText(b, cx - 18, 243);
+  c.font = `300 84px ${FONT}`; const bw = c.measureText(b).width;
+  c.fillStyle = GOLD; c.beginPath(); c.arc(cx - 18 + bw / 2 + 26, 271, 11, 0, 7); c.fill();
+  c.font = `500 26px ${FONT}`; c.letterSpacing = '6px'; c.fillStyle = '#8a8a8a';
+  c.fillText('JARINGAN · HP · LAPTOP · INTERNET', cx + 3, 330); c.letterSpacing = '0px';
   grain(c, W, H, 10);
 }
 
