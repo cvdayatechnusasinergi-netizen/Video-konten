@@ -7,10 +7,12 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 - 1080×1920, 30 fps, ±45–60 dtk, latar hitam + grid titik + grain, aksen **kuning/emas `#F5B301`** (warna sampul profil).
 - Bahasa santai pakai **"kamu"** (penonton FB lebih dewasa), bukan "lo/gue". **Ejaan bahasa Indonesia yang benar**
   di VO & teks layar (tahu, enggak, habis, dipakai, sebenarnya, matikan) — tetap asik, bukan kaku.
-- **Tempo cepat & ramai** (mulai video 2): edge-tts `--rate=+15% --pitch=+4Hz`, jeda dalam segmen dipadatkan
-  (`silenceremove ... stop_duration=0.18:stop_silence=0.14`), musik beat 124 BPM + whoosh/pop/ding dari
-  `vo/make_audio.py` (musik di-duck saat VO), denyut zoom kecil tiap ketukan. Animasi lama disinkronkan
-  ke VO baru lewat `warp()` (pasangan [waktu baru, waktu lama] per adegan).
+- **Tempo cepat & ramai** (mulai video 2, TANPA musik): edge-tts `--rate=+24% --pitch=+4Hz`, jeda dipadatkan.
+  `vo/build_timeline.py` membuat VO + mendeteksi awal tiap frasa -> `timing.js` (batas adegan, `warp` animasi,
+  caption, event efek). `vo/make_audio.py` -> efek suara saja (whoosh/pop/ding). `vo/build_vo.sh` -> mix.
+  Visual: caption bawah (kata aktif kuning), transisi zoom, kamera push-in, hentakan zoom + partikel tiap efek,
+  getar di momen kunci, kilat putih saat ganti adegan, cahaya latar bergerak.
+  Urutan: `python3 build_timeline.py && python3 make_audio.py && ./build_vo.sh`, lalu render.
 - Frame pertama = judul besar (tidak perlu `add_cover.sh`).
 - Penutup: judul, logo RB (node jaringan), nama Reyo Bian, FOLLOW & SHARE.
 - Upload MP4 langsung ke Facebook Reels (tanpa watermark TikTok).
@@ -19,7 +21,7 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 | # | Judul | File |
 |---|---|---|
 | 1 | Jangan Buka File "Undangan.apk"! | `video1/output/jangan-buka-apk.mp4` (57,5 dtk) |
-| 2 | Cara Kerja Kuota: 1 GB Cukup Buat Apa? | `video2/output/cara-kerja-kuota.mp4` (52,3 dtk) |
+| 2 | Cara Kerja Kuota: 1 GB Cukup Buat Apa? | `video2/output/cara-kerja-kuota.mp4` (45,8 dtk) |
 
 Render: `node render.js --page reyobian/video1 --out reyobian/video1/output/jangan-buka-apk.mp4`
 VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.

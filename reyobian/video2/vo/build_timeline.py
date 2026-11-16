@@ -7,7 +7,7 @@
 import json, subprocess, sys, re, os
 TTS = '--no-tts' not in sys.argv
 RATE, PITCH, GAP = '+24%', '+4Hz', .12
-TTSPY = '/tmp/claude-0/-home-user-Video-konten/52c2ff57-cb90-5299-a05f-e19cdeaa465c/scratchpad/tts.py'
+TTSPY = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'tools', 'tts.py')  # edge-tts lewat CA proxy
 # frasa: (ucapan, teks caption)
 SEGS = [
  [("Tiap bulan beli kuota,", None), ("tapi kamu tahu enggak,", None), ("kuota itu sebenarnya apa?", None)],
