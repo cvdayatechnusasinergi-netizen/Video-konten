@@ -78,6 +78,7 @@ Naskah lama: `vo/build_timeline_v1.py`. Uji gaya: `style-test.html`, `gaya-A-vs-
 - Render: `cd remotion && npx remotion render src/index.ts Video3 out/video3.mp4 --browser-executable=/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell --concurrency=4 --crf=18`
   (±6,5 menit), lalu salin ke `videoN/output/`. Frame pertama tetap berisi judul besar.
 - Lisensi Remotion: gratis untuk individu/usaha kecil (≤3 orang).
+- **Frame penutup: tanpa foto profil**, cukup nama akun "Reyo Bian" + "Tips teknologi sehari-hari" + tombol Follow & Share.
 
 ## Alat bersama (`tools/`, mulai video 3)
 - `tools/timeline.py` — TTS cepat + deteksi awal frasa (`align`, bisa dikoreksi manual lewat `fix`) -> `timing.js` (SC, CUE, EVENTS, SHAKE, CAPS).

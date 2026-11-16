@@ -1,6 +1,6 @@
 // Video 3 — "HP Ini Sempat Diketawain" (gaya Remotion). Timing dari VO: ../data/video3.json
 import React from 'react';
-import { AbsoluteFill, Audio, Img, Sequence, interpolate, staticFile, useCurrentFrame, Easing } from 'remotion';
+import { AbsoluteFill, Audio, Sequence, interpolate, staticFile, useCurrentFrame, Easing } from 'remotion';
 import T from '../data/video3.json';
 import { ACCENT, Background, Callout, Captions, CommentCard, FONT, KeypadPhone, Phone, Scene, WALLS, cl, fr, useSpring } from './common';
 
@@ -271,17 +271,13 @@ const S8: React.FC<{ dur: number }> = ({ dur }) => {
   const press = (at: number) => 1 - .07 * Math.sin(Math.PI * interpolate(f, [at, at + 8], [0, 1], cl));
   return (
     <Scene dur={dur + 1}>
-      <div style={{ position: 'absolute', top: 330, width: '100%', textAlign: 'center', fontFamily: FONT, fontSize: 34, fontWeight: 600, letterSpacing: 12, color: 'rgba(255,255,255,.6)', opacity: a }}>SEJARAH iPHONE</div>
-      <div style={{ position: 'absolute', top: 430, width: '100%', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: 300, height: 300, borderRadius: 150, overflow: 'hidden', transform: `scale(${a})`, boxShadow: `0 0 0 6px rgba(255,255,255,.9), 0 0 80px ${ACCENT}88` }}>
-          <Img src={staticFile('foto-profil.png')} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-        </div>
+      {/* penutup tanpa foto profil: hanya nama akun */}
+      <div style={{ position: 'absolute', top: 470, width: '100%', textAlign: 'center', fontFamily: FONT, fontSize: 34, fontWeight: 600, letterSpacing: 12, color: 'rgba(255,255,255,.6)', opacity: a }}>SEJARAH iPHONE</div>
+      <div style={{ position: 'absolute', top: 560, width: '100%', textAlign: 'center', fontFamily: FONT, opacity: b, transform: `translateY(${(1 - b) * 30}px) scale(${.9 + .1 * b})` }}>
+        <div style={{ fontSize: 110, fontWeight: 800, color: '#fff', letterSpacing: -3 }}>Reyo Bian</div>
+        <div style={{ fontSize: 36, fontWeight: 500, color: 'rgba(255,255,255,.6)', marginTop: 8 }}>Tips teknologi sehari-hari</div>
       </div>
-      <div style={{ position: 'absolute', top: 780, width: '100%', textAlign: 'center', fontFamily: FONT, opacity: b, transform: `translateY(${(1 - b) * 30}px)` }}>
-        <div style={{ fontSize: 70, fontWeight: 800, color: '#fff' }}>Reyo Bian</div>
-        <div style={{ fontSize: 34, fontWeight: 500, color: 'rgba(255,255,255,.6)', marginTop: 6 }}>Tips teknologi sehari-hari</div>
-      </div>
-      <div style={{ position: 'absolute', top: 1010, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 26, fontFamily: FONT, opacity: c, transform: `translateY(${(1 - c) * 40}px)` }}>
+      <div style={{ position: 'absolute', top: 900, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 26, fontFamily: FONT, opacity: c, transform: `translateY(${(1 - c) * 40}px)` }}>
         <div style={{ width: 600, height: 110, borderRadius: 55, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 44, fontWeight: 800, letterSpacing: 2,
           background: followed ? 'rgba(255,255,255,.12)' : ACCENT, color: '#fff', border: followed ? '2px solid rgba(255,255,255,.4)' : 'none', transform: `scale(${press(36)})`,
           boxShadow: followed ? 'none' : `0 0 60px ${ACCENT}99` }}>{followed ? '✓  Mengikuti' : '+  Follow'}</div>
