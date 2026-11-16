@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Style Test 3</title>
+<style>html,body{margin:0;background:#222}canvas{display:block}</style>
+</head>
+<body>
+<canvas id="e" width="1080" height="1920"></canvas>
+<canvas id="f" width="1080" height="1920"></canvas>
+<canvas id="g" width="1080" height="1920"></canvas>
+<script>
+// Uji gaya 3: E = terang bersih, F = editorial berita, G = UI HP (kartu notifikasi kaca).
+const SANS = 'Inter, sans-serif', MONO = '"JetBrains Mono", monospace', SERIF = 'Caladea, "DejaVu Serif", serif';
+function t(c, s, x, y, size, w, col, al = 'center', f = SANS, ls = 0) { c.font = `${w} ${size}px ${f}`; c.letterSpacing = ls + 'px'; c.fillStyle = col; c.textAlign = al; c.textBaseline = 'middle'; c.fillText(s, x, y); c.letterSpacing = '0px'; }
+// HP realistis (gaya keynote)
+function realPhone(c, x, y, s, rot = 0) {
+  c.save(); c.translate(x, y); c.rotate(rot); c.scale(s, s);
+  c.shadowColor = 'rgba(0,0,0,.8)'; c.shadowBlur = 80; c.shadowOffsetY = 40;
+  const edge = c.createLinearGradient(-160, 0, 160, 0); edge.addColorStop(0, '#5a5d63'); edge.addColorStop(.08, '#c9ccd1'); edge.addColorStop(.5, '#8d9096'); edge.addColorStop(.92, '#d7dadf'); edge.addColorStop(1, '#4c4f55');
+  c.fillStyle = edge; c.beginPath(); c.roundRect(-160, -320, 320, 640, 58); c.fill(); c.shadowColor = 'transparent';
+  c.fillStyle = '#050505'; c.beginPath(); c.roundRect(-150, -310, 300, 620, 50); c.fill();
+  const sc = c.createLinearGradient(0, -290, 0, 290); sc.addColorStop(0, '#0d1b3d'); sc.addColorStop(.55, '#1a3a7a'); sc.addColorStop(1, '#0a1226');
+  c.fillStyle = sc; c.beginPath(); c.roundRect(-138, -298, 276, 596, 42); c.fill();
+  const orb = c.createRadialGradient(40, 60, 0, 40, 60, 260); orb.addColorStop(0, 'rgba(90,160,255,.55)'); orb.addColorStop(1, 'rgba(90,160,255,0)');
+  c.fillStyle = orb; c.fillRect(-138, -298, 276, 596);
+  t(c, '9:41', 0, -190, 64, 300, 'rgba(255,255,255,.92)');
+  t(c, 'Selasa, 9 Januari', 0, -140, 20, 500, 'rgba(255,255,255,.6)');
+  c.fillStyle = '#000'; c.beginPath(); c.roundRect(-42, -288, 84, 24, 12); c.fill();
+  const gl = c.createLinearGradient(-150, -310, 150, 310); gl.addColorStop(0, 'rgba(255,255,255,.14)'); gl.addColorStop(.4, 'rgba(255,255,255,0)'); gl.addColorStop(1, 'rgba(255,255,255,0)');
+  c.fillStyle = gl; c.beginPath(); c.roundRect(-150, -310, 300, 620, 50); c.fill();
+  c.fillStyle = '#9a9da2'; c.fillRect(-164, -170, 4, 60); c.fillRect(-164, -90, 4, 60); c.fillRect(160, -130, 4, 90);
+  c.restore();
+}
+function realKeypad(c, x, y, s) {
+  c.save(); c.translate(x, y); c.scale(s, s);
+  c.shadowColor = 'rgba(0,0,0,.8)'; c.shadowBlur = 60; c.shadowOffsetY = 30;
+  const b = c.createLinearGradient(-120, 0, 120, 0); b.addColorStop(0, '#26282c'); b.addColorStop(.5, '#3a3d42'); b.addColorStop(1, '#1f2124');
+  c.fillStyle = b; c.beginPath(); c.roundRect(-120, -280, 240, 560, 46); c.fill(); c.shadowColor = 'transparent';
+  c.fillStyle = '#0b0d10'; c.beginPath(); c.roundRect(-92, -230, 184, 150, 10); c.fill();
+  c.fillStyle = 'rgba(140,200,255,.25)'; c.beginPath(); c.roundRect(-84, -222, 168, 134, 6); c.fill();
+  for (let r = 0; r < 4; r++) for (let k = 0; k < 3; k++) { const g = c.createLinearGradient(0, -20 + r * 64, 0, 24 + r * 64); g.addColorStop(0, '#55595f'); g.addColorStop(1, '#2d3035'); c.fillStyle = g; c.beginPath(); c.roundRect(-84 + k * 60, -20 + r * 64, 48, 44, 10); c.fill(); }
+  c.restore();
+}
+
+
+function card(c, x, y, w, h, r, fill, shadow = 'rgba(0,0,0,.08)') { c.save(); c.shadowColor = shadow; c.shadowBlur = 40; c.shadowOffsetY = 12; c.fillStyle = fill; c.beginPath(); c.roundRect(x, y, w, h, r); c.fill(); c.restore(); }
+
+// ===== E: terang bersih =====
+function drawE() {
+  const c = document.getElementById('e').getContext('2d'), W = 1080, H = 1920;
+  c.fillStyle = '#F5F5F7'; c.fillRect(0, 0, W, H);
+  const sp = c.createRadialGradient(W / 2, 1060, 0, W / 2, 1060, 620); sp.addColorStop(0, 'rgba(255,255,255,1)'); sp.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = sp; c.fillRect(0, 0, W, H);
+  card(c, W / 2 - 80, 290, 160, 56, 28, '#fff'); t(c, '2007', W / 2, 319, 28, 600, '#6e6e73');
+  t(c, 'HP ini sempat', W / 2, 440, 90, 700, '#1d1d1f', 'center', SANS, -2);
+  t(c, 'diketawain.', W / 2, 545, 90, 700, '#0A66FF', 'center', SANS, -2);
+  realKeypad(c, 300, 1100, .58); realPhone(c, 640, 1070, .95);
+  card(c, 150, 1430, 780, 150, 30, '#fff');
+  t(c, '“Enggak ada keyboard-nya.”', W / 2, 1480, 38, 600, '#1d1d1f');
+  t(c, '“Kemahalan.”', W / 2, 1535, 34, 500, '#6e6e73');
+}
+
+// ===== F: editorial berita =====
+function drawF() {
+  const c = document.getElementById('f').getContext('2d'), W = 1080, H = 1920, RED = '#E1251B';
+  c.fillStyle = '#F2EFE9'; c.fillRect(0, 0, W, H);
+  c.fillStyle = '#111'; c.fillRect(0, 230, W, 70);
+  t(c, 'SEJARAH TEKNOLOGI', 60, 266, 26, 700, '#fff', 'left', MONO, 3); t(c, 'EP. 03', 1020, 266, 26, 700, RED, 'right', MONO, 3);
+  t(c, 'HP INI', 60, 400, 120, 900, '#111', 'left', SANS, -4);
+  t(c, 'SEMPAT', 60, 515, 120, 900, '#111', 'left', SANS, -4);
+  c.font = `900 120px ${SANS}`; c.letterSpacing = '-4px'; const tw = c.measureText('DIKETAWAIN').width; c.letterSpacing = '0px';
+  c.fillStyle = RED; c.fillRect(52, 590, tw + 20, 110); t(c, 'DIKETAWAIN', 60, 648, 120, 900, '#F2EFE9', 'left', SANS, -4);
+  c.fillStyle = '#111'; c.fillRect(60, 750, 960, 3);
+  // foto berbingkai
+  c.fillStyle = '#e4e0d8'; c.fillRect(60, 790, 960, 560);
+  const ph = c.createRadialGradient(560, 1070, 0, 560, 1070, 500); ph.addColorStop(0, '#2b2b2b'); ph.addColorStop(1, '#0d0d0d'); c.fillStyle = ph; c.fillRect(60, 790, 960, 560);
+  realKeypad(c, 380, 1080, .45); realPhone(c, 660, 1070, .75);
+  t(c, 'Ilustrasi: HP layar sentuh vs HP keypad, 2007.', 60, 1385, 24, 500, '#6b6560', 'left', SERIF);
+  c.fillStyle = RED; c.fillRect(60, 1440, 8, 150);
+  t(c, '“Enggak ada keyboard-nya.', 100, 1485, 46, 400, '#111', 'left', SERIF);
+  t(c, 'Kemahalan.”', 100, 1545, 46, 400, '#111', 'left', SERIF);
+}
+
+// ===== G: UI HP (kartu notifikasi kaca) =====
+function drawG() {
+  const c = document.getElementById('g').getContext('2d'), W = 1080, H = 1920;
+  const bg = c.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#1c2a3a'); bg.addColorStop(1, '#0c1118'); c.fillStyle = bg; c.fillRect(0, 0, W, H);
+  [[250, 700, '80,140,200'], [850, 1300, '60,170,160']].forEach(([x, y, col]) => { const g = c.createRadialGradient(x, y, 0, x, y, 600); g.addColorStop(0, `rgba(${col},.35)`); g.addColorStop(1, `rgba(${col},0)`); c.fillStyle = g; c.fillRect(0, 0, W, H); });
+  t(c, '9 Januari 2007', W / 2, 300, 34, 500, 'rgba(255,255,255,.7)');
+  t(c, '9:41', W / 2, 420, 170, 300, '#fff', 'center', SANS, -4);
+  const note = (y, app, title, body, time) => {
+    c.save(); c.fillStyle = 'rgba(255,255,255,.14)'; c.strokeStyle = 'rgba(255,255,255,.18)'; c.lineWidth = 2;
+    c.beginPath(); c.roundRect(90, y, 900, 170, 40); c.fill(); c.stroke(); c.restore();
+    c.fillStyle = '#fff'; c.beginPath(); c.roundRect(125, y + 35, 64, 64, 16); c.fill();
+    t(c, app, 215, y + 50, 26, 600, 'rgba(255,255,255,.7)', 'left'); t(c, time, 955, y + 50, 24, 500, 'rgba(255,255,255,.55)', 'right');
+    t(c, title, 215, y + 92, 36, 700, '#fff', 'left'); t(c, body, 215, y + 134, 30, 400, 'rgba(255,255,255,.8)', 'left');
+  };
+  note(600, 'BERITA TEKNO', 'HP layar sentuh diluncurkan', 'Tanpa keypad. Banyak yang meremehkan.', 'sekarang');
+  note(800, 'KOMENTAR', '“Enggak ada keyboard-nya?”', 'Disukai 1.204 orang', '2 mnt');
+  note(1000, 'KOMENTAR', '“Kemahalan, enggak bakal laku.”', 'Disukai 987 orang', '5 mnt');
+  t(c, 'HP ini sempat diketawain.', W / 2, 1300, 64, 700, '#fff');
+  c.fillStyle = 'rgba(255,255,255,.5)'; c.beginPath(); c.roundRect(W / 2 - 120, 1600, 240, 10, 5); c.fill();
+}
+window.ready = Promise.all([document.fonts.load(`700 40px Inter`), document.fonts.load(`900 40px Inter`), document.fonts.load(`300 40px Inter`), document.fonts.load(`700 40px "JetBrains Mono"`), document.fonts.load(`400 40px Caladea`)]).then(() => { drawE(); drawF(); drawG(); return true; });
+</script>
+</body>
+</html>
