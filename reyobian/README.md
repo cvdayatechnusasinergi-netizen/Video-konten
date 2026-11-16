@@ -26,6 +26,7 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 | 3 | Perusahaan Ini Pernah Hampir Bangkrut (Sejarah Apple, **Remotion**) | `video3/output/sejarah-apple.mp4` (49,9 dtk) — versi iPhone lama: `sejarah-iphone.mp4` (tidak dipakai) |
 | 4 | Dulu Raja HP, Terus Ke Mana? (Sejarah Nokia, **Remotion**) | `video4/output/sejarah-nokia.mp4` (48,2 dtk) |
 | 5 | Ditolak Facebook, Lalu Dibeli $19 Miliar (Sejarah WhatsApp, **Remotion**) | `video5/output/sejarah-whatsapp.mp4` (44,4 dtk) |
+| 6 | Google Pernah Mau Dijual Cuma $1 Juta (Sejarah Google, **Remotion**) | `video6/output/sejarah-google.mp4` (48,5 dtk) |
 
 Render: `node render.js --page reyobian/video1 --out reyobian/video1/output/jangan-buka-apk.mp4`
 VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
@@ -103,6 +104,21 @@ Remotion: komposisi `Video4Nokia` (`remotion/src/v4/Nokia.tsx`). HP digambar gen
 > #whatsapp #sejarahteknologi #motivasi #teknologi #pangkalanbun
 
 Remotion: komposisi `Video5WhatsApp` (`remotion/src/v5/WhatsApp.tsx`). Tampilan aplikasi generik (ikon biru), tanpa logo asli.
+
+### #6 — Caption Facebook (Sejarah Google)
+> Google pernah mau dijual cuma $1 juta. Dan pembelinya MENOLAK 😳
+> 1996: Larry Page & Sergey Brin bikin mesin pencari "BackRub" di Stanford — server pertamanya dibungkus LEGO.
+> Namanya diganti jadi Google, dari "googol" (angka 1 dengan 100 nol).
+> 1999 mereka mau fokus kuliah, tawarkan Google ke Excite $1 juta, turun jadi $750 ribu… tetap ditolak.
+> Sekarang Google dipakai miliaran kali sehari. Perusahaan induk Excite? Bangkrut 2001.
+>
+> Pelajarannya: jangan buru-buru melepas sesuatu cuma karena sekarang kelihatan kecil. Kasih waktu, catat perkembangannya tiap bulan.
+>
+> Ada ide atau usaha yang hampir kamu lepas? Cerita di komentar 👇
+>
+> #google #sejarahteknologi #faktaunik #teknologi #pangkalanbun
+
+Remotion: komposisi `Video6Google` (`remotion/src/v6/Google.tsx`). Kotak pencarian generik, tanpa logo asli.
 
 ## Gaya tetap: Remotion (mulai video 3) — disukai user
 - Proyek `remotion/` (React). Tampilan: latar gelap halus (gumpalan biru tua + grid titik), **HP 3D realistis** (CSS 3D,
