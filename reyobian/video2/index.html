@@ -22,7 +22,7 @@ const CONFIG = {
 };
 // ================================
 
-const W = 1080, H = 1920, FPS = 30, DURATION = 65.5;
+const W = 1080, H = 1920, FPS = 30, DURATION = 52.3;
 const GOLD = '#F5B301', GOLD_GLOW = 'rgba(245,179,1,.65)';
 const cv = document.getElementById('c');
 const ctx = cv.getContext('2d');
@@ -188,7 +188,9 @@ function overlay(t, frame) {
   ctx.fillStyle = 'rgba(255,255,255,.15)'; ctx.fillRect(0, 0, W, 4);
   ctx.fillStyle = GOLD; ctx.fillRect(0, 0, W * (t / DURATION), 4);
 }
-function scene(t, a, b, fn, fi = .3, fo = .5) {
+// peta waktu per adegan: [waktu baru, waktu animasi lama] supaya animasi ikut VO yang lebih cepat
+function warp(lt, P) { if (!P) return lt; for (let i = 1; i < P.length; i++) if (lt <= P[i][0]) return lerp(P[i - 1][1], P[i][1], (lt - P[i - 1][0]) / (P[i][0] - P[i - 1][0])); const L = P[P.length - 1]; return L[1] + (lt - L[0]); }
+function scene(t, a, b, fn, fi = .3, fo = .5, P = null) {
   if (t < a || t > b) return;
   const inp = fi <= 0 ? 1 : prog(t, a, a + fi), outp = prog(t, b - fo, b);
   ctx.save();
@@ -196,7 +198,7 @@ function scene(t, a, b, fn, fi = .3, fo = .5) {
   const s = 1 + eio(outp) * .08;
   ctx.translate(W / 2, H / 2); ctx.scale(s, s); ctx.translate(-W / 2, -H / 2);
   if (outp > 0) ctx.filter = `blur(${(outp * 10).toFixed(1)}px)`;
-  fn(t - a, t);
+  fn(warp(t - a, P), t);
   ctx.restore();
 }
 
@@ -255,14 +257,14 @@ function s1(lt) {
   // draining quota
   const f = lerp(1, .12, eio(prog(lt, .4, 3.8)));
   quotaBar(170, 960, 740, f, (f).toFixed(2).replace('.', ',') + ' GB');
-  words('Beli kuota tiap bulan…', W / 2, 1180, 52, lt, .5, { weight: 600, color: '#bdbdbd', stagger: .06 });
-  words('tapi kuota itu sebenernya apa?', W / 2, 1265, 52, lt, 2.2, { weight: 800, stagger: .06 });
+  words('Tiap bulan beli kuota…', W / 2, 1180, 52, lt, .5, { weight: 600, color: '#bdbdbd', stagger: .06 });
+  words('tapi kuota itu sebenarnya apa?', W / 2, 1265, 52, lt, 2.2, { weight: 800, stagger: .06 });
 }
 
 // ---------- S2: how it works (4.3 - 12.4) ----------
 function s2(lt, t) {
-  words('Tiap kamu buka apa pun di HP…', W / 2, 420, 52, lt, .2, { weight: 700, stagger: .06, end: 4.2 });
-  words('Data yang lewat = kuota kepake', W / 2, 420, 52, lt, 4.25, { weight: 800, stagger: .06, color: GOLD });
+  words('Setiap kamu buka apa pun di HP…', W / 2, 420, 52, lt, .2, { weight: 700, stagger: .06, end: 4.2 });
+  words('Data yang lewat = kuota terpakai', W / 2, 420, 52, lt, 4.25, { weight: 800, stagger: .06, color: GOLD });
   const y = 760, P = 200, T = 540, C = 880;
   phoneIcon(P, y, 1, eo(prog(lt, .2, .6)));
   towerIcon(T, y, 1.1, t, eo(prog(lt, .5, .9)));
@@ -285,8 +287,8 @@ function s2(lt, t) {
       ctx.fillStyle = out ? '#fff' : GOLD; if (!out) { ctx.shadowColor = GOLD_GLOW; ctx.shadowBlur = 14; }
       ctx.beginPath(); ctx.roundRect(x - 11, yy - 11, 22, 22, 5); ctx.fill(); ctx.restore();
     }
-    cap('ngirim →', (P + T) / 2, y - 60, la * .9, '#cfcfcf', 24);
-    cap('← nerima', (P + T) / 2, y + 62, la * .9, GOLD, 24);
+    cap('kirim →', (P + T) / 2, y - 60, la * .9, '#cfcfcf', 24);
+    cap('← terima', (P + T) / 2, y + 62, la * .9, GOLD, 24);
   }
   // counter
   const ca = eo(prog(lt, 4.3, 4.7));
@@ -328,12 +330,12 @@ function s3(lt) {
   });
   ['kilobyte', 'megabyte', 'gigabyte'].forEach((n, i) => cap(n.toUpperCase(), items[i].x, by + 50, eo(prog(lt, items[i].st + .2, items[i].st + .6)), '#8a8a8a', 22));
   words('1 GB = 1.000 MB = 1.000.000 KB', W / 2, 1150, 46, lt, 5.6, { weight: 800, stagger: .05 });
-  words('*dibulatkan biar gampang', W / 2, 1220, 26, lt, 6.0, { weight: 400, color: '#666', stagger: .02 });
+  words('*dibulatkan supaya mudah', W / 2, 1220, 26, lt, 6.0, { weight: 400, color: '#666', stagger: .02 });
 }
 
 // ---------- S4: what 1 GB buys (19.7 - 38.3) ----------
 function s4(lt) {
-  words('1 GB bisa buat apa?', W / 2, 410, 72, lt, .2, { weight: 900, stagger: .08 });
+  words('1 GB cukup buat apa?', W / 2, 410, 72, lt, .2, { weight: 900, stagger: .08 });
   const rows = [
     [3.0, 'Chat WhatsApp', 'ribuan pesan', 1.0],
     [5.6, 'Telepon WA', '±16 jam', .82],
@@ -364,13 +366,13 @@ function s4(lt) {
 
 // ---------- S5: why it runs out (38.3 - 49.8) ----------
 function s5(lt) {
-  words('Kuota cepet abis', W / 2, 410, 66, lt, .2, { weight: 900, stagger: .08 });
-  words('padahal jarang dipake?', W / 2, 490, 52, lt, 1.2, { weight: 500, color: '#bdbdbd', stagger: .06 });
-  words('Biasanya gara-gara 3 ini:', W / 2, 590, 42, lt, 3.0, { weight: 600, color: GOLD, stagger: .05 });
+  words('Kuota cepat habis,', W / 2, 410, 66, lt, .2, { weight: 900, stagger: .08 });
+  words('padahal jarang dipakai?', W / 2, 490, 52, lt, 1.2, { weight: 500, color: '#bdbdbd', stagger: .06 });
+  words('Biasanya gara-gara 3 hal ini:', W / 2, 590, 42, lt, 3.0, { weight: 600, color: GOLD, stagger: .05 });
   const rows = [
-    [4.8, 'Video autoplay', 'jalan sendiri pas kamu scroll', 'play'],
-    [6.85, 'Update otomatis', 'aplikasi download diam-diam', 'down'],
-    [9.1, 'Backup foto', 'upload ke cloud tiap hari', 'up'],
+    [4.8, 'Video autoplay', 'jalan sendiri saat kamu scroll', 'play'],
+    [6.85, 'Update otomatis', 'aplikasi mengunduh diam-diam', 'down'],
+    [9.1, 'Backup foto', 'diunggah ke cloud tiap hari', 'up'],
   ];
   rows.forEach(([st, a, b, ic], i) => {
     const p = prog(lt, st, st + .45); if (p <= 0) return;
@@ -394,8 +396,8 @@ function s5(lt) {
 function s6(lt) {
   label('SOLUSINYA', 420, lt, .1);
   const rows = [
-    [.8, 'Matiin autoplay video'],
-    [2.3, 'Update cuma lewat WiFi'],
+    [.8, 'Matikan autoplay video'],
+    [2.3, 'Update hanya lewat WiFi'],
     [4.0, 'Cek pemakaian data'],
   ];
   rows.forEach(([st, txt], i) => {
@@ -413,7 +415,7 @@ function s6(lt) {
   const cp = eo(prog(lt, 5.0, 5.5));
   if (cp > 0) {
     ctx.save(); ctx.globalAlpha *= cp; ctx.translate(0, (1 - cp) * 30);
-    font(34, 700); const txt = 'Setelan  ›  Penggunaan data'; const tw = ctx.measureText(txt).width;
+    font(34, 700); const txt = 'Setelan  ›  Penggunaan Data'; const tw = ctx.measureText(txt).width;
     ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.roundRect(W / 2 - tw / 2 - 40, 1150, tw + 80, 84, 42); ctx.fill(); ctx.stroke();
     ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, W / 2, 1193);
@@ -425,8 +427,8 @@ function s6(lt) {
 // ---------- S7: comment prompt (57.2 - 61.3) ----------
 function s7(lt, t) {
   words('Kuota kamu', W / 2, 470, 70, lt, .2, { weight: 800 });
-  words('biasanya abis buat apa?', W / 2, 560, 62, lt, .6, { weight: 900, color: GOLD, stagger: .07, glow: GOLD_GLOW });
-  const replies = ['YouTube', 'TikTok sampe subuh', 'Video call keluarga', 'Tiba-tiba abis'];
+  words('biasanya habis buat apa?', W / 2, 560, 62, lt, .6, { weight: 900, color: GOLD, stagger: .07, glow: GOLD_GLOW });
+  const replies = ['YouTube', 'TikTok sampai subuh', 'Video call keluarga', 'Tiba-tiba habis'];
   replies.forEach((r, i) => {
     const p = prog(lt, 1.3 + i * .45, 1.7 + i * .45); if (p <= 0) return;
     const y = 740 + i * 130, x = i % 2 ? 470 : 140;
@@ -517,7 +519,7 @@ function cta(lt, t) {
   };
   btn(1210, 1.4, ['FOLLOW', 'FOLLOWING'], true, iconUser, 2.6);
   btn(1345, 1.6, ['SHARE', 'TERKIRIM'], false, iconShare, 3.4);
-  words('Tips IT sehari-hari, bahasa gampang.', W / 2, 1465, 36, lt, 2.0, { weight: 500, color: '#a8a8a8', stagger: .04 });
+  words('Tips teknologi sehari-hari.', W / 2, 1465, 36, lt, 2.0, { weight: 500, color: '#a8a8a8', stagger: .04 });
 }
 
 // ---------- master ----------
@@ -525,14 +527,17 @@ function renderFrame(t) {
   const frame = Math.round(t * FPS);
   ctx.save(); ctx.globalAlpha = 1; ctx.filter = 'none';
   background(t);
-  scene(t, 0, 4.3, s1, 0, .4);
-  scene(t, 4.3, 12.4, s2, .3, .5);
-  scene(t, 12.4, 19.7, s3, .3, .5);
-  scene(t, 19.7, 38.3, s4, .3, .5);
-  scene(t, 38.3, 49.8, s5, .3, .5);
-  scene(t, 49.8, 57.2, s6, .3, .5);
-  scene(t, 57.2, 61.3, s7, .3, .4);
-  scene(t, 61.1, 65.51, cta, .2, .01);
+  // denyut zoom kecil tiap ketukan musik (124 BPM)
+  const ph = (t / (60 / 124)) % 1, bz = 1 + .012 * Math.exp(-ph * 9);
+  ctx.translate(W / 2, H / 2); ctx.scale(bz, bz); ctx.translate(-W / 2, -H / 2);
+  scene(t, 0, 3.65, s1, 0, .3, [[0, 0], [.15, .5], [1.39, 2.2], [3.65, 4.3]]);
+  scene(t, 3.65, 10.2, s2, .2, .4, [[0, 0], [.15, .2], [4.0, 4.25], [6.55, 8.1]]);
+  scene(t, 10.2, 15.4, s3, .2, .4, [[0, 0], [1.2, .3], [2.3, 1.9], [4.0, 4.5], [4.4, 5.6], [5.2, 7.3]]);
+  scene(t, 15.4, 29.05, s4, .2, .4, [[0, 0], [.15, .2], [2.3, 3.0], [4.17, 5.6], [6.48, 8.6], [8.62, 11.3], [10.85, 13.7], [12.05, 15.6], [13.65, 18.6]]);
+  scene(t, 29.05, 37.6, s5, .2, .4, [[0, 0], [.15, .2], [1.33, 1.2], [2.59, 3.0], [4.38, 4.8], [5.6, 6.85], [7.25, 9.1], [8.55, 11.5]]);
+  scene(t, 37.6, 44.5, s6, .2, .4, [[0, 0], [1.36, .8], [2.63, 2.3], [4.42, 4.0], [5.2, 5.0], [6.9, 7.4]]);
+  scene(t, 44.5, 48.1, s7, .2, .3, [[0, 0], [.15, .2], [3.6, 4.1]]);
+  scene(t, 48.0, 52.31, cta, .2, .01);
   ctx.restore();
   overlay(t, frame);
 }

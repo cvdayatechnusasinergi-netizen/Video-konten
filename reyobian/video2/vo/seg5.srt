@@ -1,4 +1,16 @@
 1
-00:00:00,100 --> 00:00:07,974
-Solusinya, matiin autoplay video, atur update cuma lewat WiFi, dan cek pemakaian di setelan, penggunaan data.
+00:00:00,100 --> 00:00:01,880
+Solusinya gampang!
+
+2
+00:00:01,830 --> 00:00:03,669
+Matikan autoplay.
+
+3
+00:00:03,669 --> 00:00:05,994
+Atur update hanya lewat WiFi.
+
+4
+00:00:05,994 --> 00:00:09,220
+Lalu cek pemakaian di Setelan, Penggunaan Data.
 

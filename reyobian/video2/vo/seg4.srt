@@ -1,16 +1,20 @@
 1
-00:00:00,100 --> 00:00:05,110
-Kalau kuota cepet abis padahal ngerasa jarang dipake, biasanya gara-gara tiga ini.
+00:00:00,100 --> 00:00:03,085
+Kuota cepat habis, padahal jarang dipakai?
 
 2
-00:00:05,060 --> 00:00:07,258
-Video yang autoplay.
+00:00:03,035 --> 00:00:05,396
+Biasanya gara-gara tiga hal ini.
 
 3
-00:00:07,258 --> 00:00:09,697
-Aplikasi yang update sendiri.
+00:00:05,396 --> 00:00:07,202
+Video autoplay.
 
 4
-00:00:09,697 --> 00:00:12,149
-Sama backup foto otomatis.
+00:00:07,202 --> 00:00:09,396
+Aplikasi yang update sendiri.
+
+5
+00:00:09,396 --> 00:00:11,515
+Dan backup foto otomatis.
 

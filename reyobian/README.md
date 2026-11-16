@@ -5,7 +5,12 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 
 ## Gaya
 - 1080×1920, 30 fps, ±45–60 dtk, latar hitam + grid titik + grain, aksen **kuning/emas `#F5B301`** (warna sampul profil).
-- Bahasa santai pakai **"kamu"** (penonton FB lebih dewasa), bukan "lo/gue".
+- Bahasa santai pakai **"kamu"** (penonton FB lebih dewasa), bukan "lo/gue". **Ejaan bahasa Indonesia yang benar**
+  di VO & teks layar (tahu, enggak, habis, dipakai, sebenarnya, matikan) — tetap asik, bukan kaku.
+- **Tempo cepat & ramai** (mulai video 2): edge-tts `--rate=+15% --pitch=+4Hz`, jeda dalam segmen dipadatkan
+  (`silenceremove ... stop_duration=0.18:stop_silence=0.14`), musik beat 124 BPM + whoosh/pop/ding dari
+  `vo/make_audio.py` (musik di-duck saat VO), denyut zoom kecil tiap ketukan. Animasi lama disinkronkan
+  ke VO baru lewat `warp()` (pasangan [waktu baru, waktu lama] per adegan).
 - Frame pertama = judul besar (tidak perlu `add_cover.sh`).
 - Penutup: judul, logo RB (node jaringan), nama Reyo Bian, FOLLOW & SHARE.
 - Upload MP4 langsung ke Facebook Reels (tanpa watermark TikTok).
@@ -14,7 +19,7 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 | # | Judul | File |
 |---|---|---|
 | 1 | Jangan Buka File "Undangan.apk"! | `video1/output/jangan-buka-apk.mp4` (57,5 dtk) |
-| 2 | Cara Kerja Kuota: 1 GB Buat Apa Aja? | `video2/output/cara-kerja-kuota.mp4` (65,5 dtk) |
+| 2 | Cara Kerja Kuota: 1 GB Cukup Buat Apa? | `video2/output/cara-kerja-kuota.mp4` (52,3 dtk) |
 
 Render: `node render.js --page reyobian/video1 --out reyobian/video1/output/jangan-buka-apk.mp4`
 VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
@@ -32,13 +37,13 @@ VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
 > #penipuanonline #waspadapenipuan #tipsIT #keamanandigital #pangkalanbun
 
 ### #2 — Caption Facebook
-> Kuota 1 GB itu sebenernya cukup buat apa aja sih? 🤔
-> Ternyata tiap kamu buka apa pun di HP, ada data yang bolak-balik lewat tower — itu yang dihitung jadi kuota.
+> Kuota 1 GB itu sebenarnya cukup buat apa, sih? 🤔
+> Ternyata setiap kamu buka apa pun di HP, ada data yang bolak-balik lewat tower — itulah yang dihitung sebagai kuota.
 >
 > 📱 1 GB kira-kira: chat WA ribuan pesan · telepon WA ±16 jam · video call ±2 jam · Reels ±1 jam · YouTube HD ±20–30 menit
-> 🔥 Cepet abis? Cek autoplay video, update otomatis, sama backup foto.
+> 🔥 Cepat habis? Cek autoplay video, update otomatis, dan backup foto.
 >
-> Kuota kamu biasanya abis buat apa? Tulis di komen 👇
+> Kuota kamu biasanya habis buat apa? Tulis di kolom komentar 👇
 >
 > #kuotainternet #tipsHP #kuotacepathabis #tekno #pangkalanbun
 

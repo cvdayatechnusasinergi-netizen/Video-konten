@@ -1,8 +1,8 @@
 1
-00:00:00,100 --> 00:00:02,781
-Kuota kamu biasanya abis buat apa?
+00:00:00,100 --> 00:00:02,553
+Kuota kamu biasanya habis buat apa?
 
 2
-00:00:02,731 --> 00:00:04,758
-Tulis di komen ya.
+00:00:02,503 --> 00:00:04,948
+Tulis di kolom komentar, ya!
 

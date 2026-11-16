@@ -1,28 +1,44 @@
 1
-00:00:00,100 --> 00:00:03,121
-Terus, satu ge be itu bisa buat apa?
+00:00:00,100 --> 00:00:02,814
+Terus, satu GB itu cukup buat apa?
 
 2
-00:00:03,071 --> 00:00:05,741
-Chat WhatsApp, ribuan pesan.
+00:00:02,764 --> 00:00:04,321
+Chat WhatsApp?
 
 3
-00:00:05,741 --> 00:00:08,896
-Telepon WA, kira-kira enam belas jam.
+00:00:04,321 --> 00:00:05,897
+Ribuan pesan!
 
 4
-00:00:08,896 --> 00:00:11,833
-Video call, sekitar dua jam.
+00:00:05,897 --> 00:00:07,365
+Telepon WA?
 
 5
-00:00:11,833 --> 00:00:14,454
-Scroll Reels, sejam-an.
+00:00:07,365 --> 00:00:09,296
+Kira-kira enam belas jam.
 
 6
-00:00:14,454 --> 00:00:16,482
-Nonton YouTube HD?
+00:00:09,296 --> 00:00:10,789
+Video call?
 
 7
-00:00:16,482 --> 00:00:19,211
-Paling dua puluh sampai tiga puluh menit.
+00:00:10,789 --> 00:00:12,570
+Sekitar dua jam.
+
+8
+00:00:12,570 --> 00:00:14,180
+Scroll Reels?
+
+9
+00:00:14,180 --> 00:00:15,952
+Satu jam saja.
+
+10
+00:00:15,952 --> 00:00:17,734
+Nonton YouTube HD?
+
+11
+00:00:17,734 --> 00:00:20,135
+Cuma dua puluh sampai tiga puluh menit!
 
