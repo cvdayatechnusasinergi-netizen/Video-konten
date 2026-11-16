@@ -31,7 +31,7 @@ VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
 > #penipuanonline #waspadapenipuan #tipsIT #keamanandigital #pangkalanbun
 
 ## Foto profil & sampul
-- `profil/foto-profil.png` (1080×1080, stiker kartun dari `profil/foto-asli.jpg`).
+- `profil/foto-profil.png` (1080×1080): opsi 3, foto natural + cincin emas tipis (dari `profil/foto-asli.jpg`).
 - `profil/sampul.png` (1640×624): "ngoprek teknologi sehari-hari" (simpel, tanpa slogan). Teks di tengah atas
   supaya tidak ketutup foto profil & ikon menu di HP.
-- Render ulang: `node reyobian/profil/render.js` (sumber gambar kartun: `profil/var-a.png`).
+- Render ulang sampul: `node reyobian/profil/render.js`.
