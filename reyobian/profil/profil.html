@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Profil Reyo Bian</title>
+<style>html,body{margin:0;background:#111}canvas{display:block;margin:10px}</style>
+</head>
+<body>
+<canvas id="pp" width="1080" height="1080"></canvas>
+<canvas id="cover" width="1640" height="624"></canvas>
+<script>
+// Foto profil (stiker) + sampul Facebook untuk akun Reyo Bian.
+// Sampul 1640x624 (2x ukuran desktop 820x312). Di HP sisi kiri/kanan terpotong dan
+// foto profil menutupi bagian bawah-tengah, jadi teks utama ditaruh di tengah atas.
+const GOLD = '#F5B301', GLOW = 'rgba(245,179,1,.6)', FONT = 'Inter, sans-serif';
+const img = new Image(); img.src = 'var-a.png';
+
+function dots(ctx, w, h, a = .09) {
+  ctx.fillStyle = `rgba(255,255,255,${a})`;
+  for (let y = 20; y < h; y += 40) for (let x = 20; x < w; x += 40) { ctx.beginPath(); ctx.arc(x, y, 1.6, 0, 7); ctx.fill(); }
+}
+function grain(ctx, w, h, amt = 12) {
+  const d = ctx.getImageData(0, 0, w, h); let s = 7;
+  const r = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  for (let i = 0; i < d.data.length; i += 4) { const v = (r() - .5) * amt; d.data[i] += v; d.data[i + 1] += v; d.data[i + 2] += v; }
+  ctx.putImageData(d, 0, 0);
+}
+
+function profile() {
+  const c = document.getElementById('pp').getContext('2d'), W = 1080, cx = 540, cy = 540;
+  c.fillStyle = '#060606'; c.fillRect(0, 0, W, W);
+  const g = c.createRadialGradient(cx, cy, 0, cx, cy, 620); g.addColorStop(0, 'rgba(245,179,1,.35)'); g.addColorStop(1, 'rgba(245,179,1,0)');
+  c.fillStyle = g; c.fillRect(0, 0, W, W); dots(c, W, W, .1);
+  // sticker: slight tilt, shadow, thick white die-cut border, gold ring
+  c.save(); c.translate(cx, cy); c.scale(1.12, 1.12); c.rotate(-.05);
+  c.shadowColor = 'rgba(0,0,0,.7)'; c.shadowBlur = 40; c.shadowOffsetY = 18;
+  c.fillStyle = '#fff'; c.beginPath(); c.arc(0, 0, 440, 0, 7); c.fill();
+  c.shadowColor = 'transparent';
+  c.strokeStyle = GOLD; c.lineWidth = 10; c.beginPath(); c.arc(0, 0, 432, 0, 7); c.stroke();
+  c.save(); c.beginPath(); c.arc(0, 0, 404, 0, 7); c.clip();
+  c.drawImage(img, -430, -440, 880, 880);
+  // soft gold rim light inside
+  const rg = c.createRadialGradient(0, 0, 300, 0, 0, 404); rg.addColorStop(0, 'rgba(245,179,1,0)'); rg.addColorStop(1, 'rgba(245,179,1,.28)');
+  c.fillStyle = rg; c.fillRect(-410, -410, 820, 820);
+  c.restore();
+  c.strokeStyle = '#111'; c.lineWidth = 6; c.beginPath(); c.arc(0, 0, 404, 0, 7); c.stroke();
+  // sticker shine
+  c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = 12; c.lineCap = 'round';
+  c.beginPath(); c.arc(0, 0, 372, Math.PI * 1.08, Math.PI * 1.3); c.stroke();
+  c.restore();
+  grain(c, W, W, 10);
+}
+
+function icon(c, kind, x, y, s, col = GOLD) {
+  c.save(); c.translate(x, y); c.scale(s, s); c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 7; c.lineCap = 'round'; c.lineJoin = 'round';
+  if (kind === 'warn') { c.beginPath(); c.moveTo(0, -46); c.lineTo(50, 40); c.lineTo(-50, 40); c.closePath(); c.fill(); c.fillStyle = '#000'; c.fillRect(-5, -18, 10, 34); c.beginPath(); c.arc(0, 28, 6, 0, 7); c.fill(); }
+  if (kind === 'wifi') { [44, 30, 16].forEach(r => { c.beginPath(); c.arc(0, 26, r, Math.PI * 1.22, Math.PI * 1.78); c.stroke(); }); c.beginPath(); c.arc(0, 26, 6, 0, 7); c.fill(); }
+  if (kind === 'lock') { c.beginPath(); c.arc(0, -10, 22, Math.PI, 0); c.stroke(); c.beginPath(); c.roundRect(-34, -10, 68, 52, 10); c.fill(); c.fillStyle = '#000'; c.beginPath(); c.arc(0, 12, 7, 0, 7); c.fill(); c.fillRect(-3, 12, 6, 16); }
+  if (kind === 'phone') { c.beginPath(); c.roundRect(-26, -46, 52, 92, 12); c.stroke(); c.beginPath(); c.moveTo(-8, -34); c.lineTo(8, -34); c.stroke(); c.beginPath(); c.arc(0, 32, 4, 0, 7); c.fill(); }
+  if (kind === 'shield') { c.beginPath(); c.moveTo(0, -46); c.lineTo(40, -32); c.quadraticCurveTo(40, 26, 0, 46); c.quadraticCurveTo(-40, 26, -40, -32); c.closePath(); c.stroke(); c.beginPath(); c.moveTo(-15, 0); c.lineTo(-3, 13); c.lineTo(18, -12); c.stroke(); }
+  c.restore();
+}
+function chip(c, text, x, y, kind) {
+  c.font = `700 26px ${FONT}`; const tw = c.measureText(text).width, w = tw + 96, h = 58;
+  c.fillStyle = 'rgba(255,255,255,.06)'; c.strokeStyle = 'rgba(245,179,1,.6)'; c.lineWidth = 2.5;
+  c.beginPath(); c.roundRect(x - w / 2, y - h / 2, w, h, 32); c.fill(); c.stroke();
+  icon(c, kind, x - w / 2 + 38, y, .32);
+  c.fillStyle = '#fff'; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillText(text, x - w / 2 + 70, y + 1);
+}
+
+function cover() {
+  const c = document.getElementById('cover').getContext('2d'), W = 1640, H = 624, cx = W / 2;
+  c.fillStyle = '#060606'; c.fillRect(0, 0, W, H);
+  const g = c.createRadialGradient(cx, H * .38, 0, cx, H * .38, 760); g.addColorStop(0, 'rgba(245,179,1,.16)'); g.addColorStop(1, 'rgba(245,179,1,0)');
+  c.fillStyle = g; c.fillRect(0, 0, W, H); dots(c, W, H, .08);
+  // network lines decoration on the sides
+  c.strokeStyle = 'rgba(245,179,1,.22)'; c.lineWidth = 2;
+  const nodes = [[90, 120], [230, 260], [120, 420], [300, 520], [1550, 110], [1410, 250], [1520, 430], [1340, 520]];
+  [[0, 1], [1, 2], [2, 3], [1, 3], [4, 5], [5, 6], [6, 7], [5, 7]].forEach(([a, b]) => { c.beginPath(); c.moveTo(...nodes[a]); c.lineTo(...nodes[b]); c.stroke(); });
+  nodes.forEach(([x, y]) => { c.fillStyle = 'rgba(245,179,1,.5)'; c.beginPath(); c.arc(x, y, 6, 0, 7); c.fill(); });
+
+  c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.font = `700 26px ${FONT}`; c.letterSpacing = '12px'; c.fillStyle = GOLD;
+  c.fillText('TIPS IT · BAHASA GAMPANG', cx + 6, 118); c.letterSpacing = '0px';
+  c.font = `900 92px ${FONT}`; c.fillStyle = '#fff'; c.fillText('Melek Teknologi,', cx, 215);
+  // gold pill
+  c.font = `900 92px ${FONT}`; const tw = c.measureText('Anti Kena Tipu').width;
+  c.save(); c.shadowColor = GLOW; c.shadowBlur = 45; c.fillStyle = GOLD; c.beginPath(); c.roundRect(cx - tw / 2 - 36, 266, tw + 72, 112, 22); c.fill(); c.restore();
+  c.fillStyle = '#000'; c.fillText('Anti Kena Tipu', cx, 324);
+  // side icons (visible on desktop, safe if cropped on mobile)
+  icon(c, 'warn', 250, 140, 1.1); icon(c, 'wifi', 1390, 130, 1.4);
+  // chips: left & right of the profile-photo zone (bottom centre stays empty)
+  chip(c, 'Anti Penipuan', 460, 470, 'shield');
+  chip(c, 'WiFi & Internet', 460, 552, 'wifi');
+  chip(c, 'HP & Laptop', 1180, 470, 'phone');
+  chip(c, 'Keamanan Akun', 1180, 552, 'lock');
+  grain(c, W, H, 10);
+}
+
+window.ready = new Promise(r => img.onload = r).then(() => document.fonts.load(`900 40px Inter`)).then(() => document.fonts.load(`700 40px Inter`)).then(() => { profile(); cover(); return true; });
+</script>
+</body>
+</html>

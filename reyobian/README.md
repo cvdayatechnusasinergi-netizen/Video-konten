@@ -29,3 +29,9 @@ VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
 > Kamu atau keluarga pernah dapet file kayak gini? Cerita di komen 👇
 >
 > #penipuanonline #waspadapenipuan #tipsIT #keamanandigital #pangkalanbun
+
+## Foto profil & sampul
+- `profil/foto-profil.png` (1080×1080, stiker kartun dari `profil/foto-asli.jpg`).
+- `profil/sampul.png` (1640×624): "Melek Teknologi, Anti Kena Tipu". Teks utama di tengah atas, chip di kiri/kanan
+  supaya tidak ketutup foto profil di HP.
+- Render ulang: `node reyobian/profil/render.js` (sumber gambar kartun: `profil/var-a.png`).
