@@ -8,7 +8,10 @@ Motion graphic TikTok, tema motivasi hidup & keuangan. Tiap video: folder `video
 
 ## Gaya visual
 - Hitam-putih: latar hitam, elemen putih/abu, grid titik, grain, glow putih. Tanpa warna lain.
-- 1080×1920, 30 fps, ±45–60 detik. Teks penting di area aman (y ±350–1550, jauh dari tepi kanan/bawah).
+- 1080×1920, 30 fps, **20–35 detik** (akun masih cari audiens; video 8 = 81 dtk dinilai kepanjangan). Struktur short:
+  0–2 dtk hook (idealnya **hook kamera**: wajah user ngomong 1 kalimat ke kamera, dibuat hitam-putih), 2–25 dtk 1 ide + 1 angka besar,
+  25–30 dtk punchline + CTA singkat (±2 dtk).
+- (lama: ±45–60 detik.) Teks penting di area aman (y ±350–1550, jauh dari tepi kanan/bawah).
 - Penutup selalu: judul, logo SUARA (gelombang pulse), handle, tombol FOLLOW & SHARE.
 - **Handle: `@.suaraduit`** (nama profil "Suara | Duit dan Mindset") mulai video 6. Saat menyalin template
   dari video sebelumnya, ganti default `handle` di CONFIG `index.html` jadi `'@.suaraduit'`.
