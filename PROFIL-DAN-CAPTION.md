@@ -65,10 +65,16 @@ Pola: hook pendek + pertanyaan biar orang komen + 3–5 hashtag (campur niche & 
 >
 > #utang #paylater #keuangan #tipskeuangan #fyp
 
+### #8 — Psychology of Money · Bab 4 (Rahasia Buffett)
+> 70 tahun investasi. 97% hartanya baru dateng setelah umur 65. Yang lo kira bakat, ternyata cuma sabar.
+> Lo tim Andi atau tim Rina? 👇
+>
+> #psychologyofmoney #investasipemula #warrenbuffett #keuangan #fyp
+
 ---
 
 ## Cover
-File cover ada di `covers/cover-1.png` … `cover-7.png`.
+File cover ada di `covers/cover-1.png` … `cover-8.png`.
 Video MP4 sekarang dibuka dengan cover (0,6 detik), jadi thumbnail otomatis sudah berisi judul.
 Saat upload: **Pilih sampul → geser ke frame paling awal** (atau unggah gambar cover kalau opsinya ada).
 
