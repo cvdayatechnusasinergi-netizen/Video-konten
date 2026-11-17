@@ -59,3 +59,25 @@
 
 **Pinned comment**
 > Be honest: $800 safe today… or 10% of a garage startup? 👇
+
+## Brain vs Wallet EP 2 (`video4/output/brain-vs-wallet-ep2-decoy.mp4`)
+**Title** (≤100 chars)
+> Why the Large Popcorn Is Always Just $0.50 More 🍿 #BrainVsWallet #shorts
+
+**Description**
+> Small $3. Medium $6.50. Large $7. The medium isn't there to be bought — it's a decoy that makes the large look like a steal.
+>
+> It's called the decoy effect. In Dan Ariely's famous experiment (Predictably Irrational), MIT students saw three Economist subscriptions: web $59, print $125, web + print $125. 84% chose web + print. Remove the print-only option nobody picked… and only 32% chose the combo.
+>
+> Coffee sizes, streaming plans, phone plans — once you see it, you can't unsee it.
+> The fix: cover the middle option and ask "do I actually want more?"
+>
+> Brain vs Wallet — EP 2. New episode tomorrow.
+> Where have you spotted a decoy? 👇
+>
+> *Popcorn, coffee, streaming & phone prices are examples.
+>
+> #BrainVsWallet #psychology #marketing #decoyeffect #shorts
+
+**Pinned comment**
+> Name a decoy you fell for 👇 (mine: the "medium" coffee that costs 25¢ less than the large)

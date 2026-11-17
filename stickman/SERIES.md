@@ -14,7 +14,7 @@ and double down on the stronger series. Each series = one YouTube playlist.
 | Ep | Title | Effect | Folder | Status |
 |---|---|---|---|---|
 | 1 | Why $5 Coffee Feels Cheap But a $5 App Feels Expensive | Mental accounting | `video2/` | ✅ rendered |
-| 2 | Why You Always Order the Medium Size | Decoy effect | | |
+| 2 | Why the Large Popcorn Is Always Just $0.50 More | Decoy effect | `video4/` | ✅ rendered |
 | 3 | Why $9.99 Tricks Your Brain | Left-digit bias | | |
 | 4 | Why Your Paycheck Disappears in 3 Days | Lifestyle creep | | |
 | 5 | Why You Keep Paying for Apps You Don't Use | Status quo bias | | |
