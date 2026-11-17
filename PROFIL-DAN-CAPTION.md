@@ -71,6 +71,12 @@ Pola: hook pendek + pertanyaan biar orang komen + 3–5 hashtag (campur niche & 
 >
 > #psychologyofmoney #investasipemula #warrenbuffett #keuangan #fyp
 
+### #8 Short — Yang Sabar Nggak Viral
+> Orang yang sabar nggak bakal viral. Tapi coba liat Buffett: 97% hartanya dateng setelah umur 65.
+> Lo sabar atau pengen cepet? 👇
+>
+> #warrenbuffett #investasipemula #psychologyofmoney #keuangan #fyp
+
 ---
 
 ## Cover
