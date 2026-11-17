@@ -219,6 +219,16 @@ function drawFace(cx, cy, r, face, s, color, { mouthOpen = 0, blink = false } = 
       line(cx - ex + 10 * s, cy + ey - 6 * s, cx + ex - 10 * s, cy + ey - 6 * s);
       ctx.beginPath(); ctx.arc(cx, cy + r * .22, r * .3, .3, Math.PI - .3); ctx.stroke();
       break;
+    case 'laugh':
+      arc(cx - ex, cy + ey + 4 * s, 9 * s, Math.PI * 1.1, Math.PI * 1.9); arc(cx + ex, cy + ey + 4 * s, 9 * s, Math.PI * 1.1, Math.PI * 1.9);
+      ctx.beginPath(); ctx.arc(cx, cy + r * .12, r * .45, 0, Math.PI); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = C.red; ctx.beginPath(); ctx.arc(cx, cy + r * .42, r * .18, Math.PI, 0); ctx.fill();
+      break;
+    case 'puff': // holding in a laugh
+      line(cx - ex - 9 * s, cy + ey, cx - ex + 9 * s, cy + ey); line(cx + ex - 9 * s, cy + ey, cx + ex + 9 * s, cy + ey);
+      ctx.fillStyle = 'rgba(232,50,43,.35)'; ctx.beginPath(); ctx.arc(cx - r * .55, cy + r * .3, r * .22, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(cx + r * .55, cy + r * .3, r * .22, 0, 7); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(cx - r * .18, cy + r * .42); ctx.lineTo(cx + r * .18, cy + r * .42); ctx.stroke();
+      break;
     case 'neutral':
       if (!blink) { dot(cx - ex, cy + ey, 6 * s); dot(cx + ex, cy + ey, 6 * s); }
       line(cx - r * .2, cy + r * .42, cx + r * .2, cy + r * .42);
@@ -421,4 +431,13 @@ function seriesBadge(series, ep, t, opts = {}) {
   ctx.fillStyle = C.red; roughRect(x + wa + 36, y - 30, wb + 36, 60, 10); ctx.fill();
   ctx.fillStyle = C.white; ctx.fillText(a, x + 18, y + 2); ctx.fillText(b, x + wa + 54, y + 2);
   ctx.restore(); ctx.letterSpacing = '0px';
+}
+
+// necktie accessory (boss / CEO); m = return value of stick()
+function necktie(m, s = 1, color = C.red) {
+  const [nx, ny] = m.neck, dx = m.hip[0] - nx, dy = m.hip[1] - ny, L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L;
+  ctx.save(); ctx.translate(nx, ny); ctx.rotate(Math.atan2(uy, ux) - Math.PI / 2);
+  ctx.fillStyle = color; ctx.strokeStyle = C.ink; ctx.lineWidth = 4 * s;
+  ctx.beginPath(); ctx.moveTo(-10 * s, 4 * s); ctx.lineTo(10 * s, 4 * s); ctx.lineTo(16 * s, 80 * s); ctx.lineTo(0, 100 * s); ctx.lineTo(-16 * s, 80 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.restore();
 }

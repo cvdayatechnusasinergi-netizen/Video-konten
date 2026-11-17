@@ -81,3 +81,22 @@
 
 **Pinned comment**
 > Name a decoy you fell for 👇 (mine: the "medium" coffee that costs 25¢ less than the large)
+
+## Worst Money Decisions EP 3 (`video5/output/worst-money-ep3-blockbuster.mp4`)
+**Title** (≤100 chars)
+> Blockbuster Could Have Bought Netflix for $50 Million 📼 #WorstMoneyDecisions #shorts
+
+**Description**
+> In 2000, Netflix was a tiny, money-losing startup mailing DVDs. Its founders flew to Dallas and offered to sell the whole company to Blockbuster — the giant with around 9,000 stores — for $50 million.
+> According to co-founder Marc Randolph, Blockbuster's CEO was trying not to laugh. Too niche.
+>
+> Ten years later, Blockbuster went bankrupt. Netflix is now worth around $265 billion*. And today there's exactly one Blockbuster left — in Bend, Oregon.
+>
+> The thing you laugh at today might replace you tomorrow. What are you laughing at right now? 👇
+>
+> *Market cap, Nov 2026. Story per Marc Randolph's book "That Will Never Work".
+>
+> #WorstMoneyDecisions #netflix #blockbuster #business #shorts
+
+**Pinned comment**
+> What's something everyone laughs at today that'll be huge in 10 years? 👇

@@ -1,0 +1,205 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Blockbuster Netflix</title>
+<style>
+  html,body{margin:0;background:#222;}
+  canvas{display:block;width:360px;height:640px;}
+  body.render canvas{width:1080px;height:1920px;}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="../lib/stick.js"></script>
+<script>
+// ============ CONFIG ============
+const params = new URLSearchParams(location.search);
+const CONFIG = {
+  channel: params.get('channel') || 'StickWise',
+  series: 'Worst Money Decisions',
+  ep: 3,
+};
+// ================================
+const FPS = 30, DURATION = 34.1;
+// VO starts: 0.15 4.8 12.0 15.8 19.1 21.7 25.55 28.95
+const BLUE = '#2a4fa0';
+
+function sceneIn(t, a) { const p = prog(t, a, a + .2); zoomAt(W / 2, H / 2, 1 + (1 - eo(p)) * .06); }
+
+// ---------- local props ----------
+function store(x, base, w, h, opts = {}) { // generic video-rental megastore, (x, base) bottom center
+  const { crack = 0, fall = 0, label = 'BLOCKBUSTER', sub = 'VIDEO' } = opts;
+  ctx.save(); ctx.translate(x, base); ctx.rotate(fall * .25); ctx.translate(0, fall * 120);
+  ctx.lineWidth = 8; ctx.strokeStyle = C.ink; ctx.lineJoin = 'round';
+  ctx.fillStyle = BLUE; roughRect(-w / 2, -h, w, h, 6); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.gold; roughRect(-w * .42, -h * .9, w * .84, h * .28, 6); ctx.fill(); ctx.stroke();
+  font(Math.min(w * .1, 58), 900); ctx.fillStyle = BLUE; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, 0, -h * .76);
+  ctx.fillStyle = '#dbe6ff'; for (let i = 0; i < 3; i++) { roughRect(-w * .4 + i * w * .28, -h * .52, w * .22, h * .2, 4); ctx.fill(); ctx.stroke(); }
+  ctx.fillStyle = C.ink; roughRect(-w * .1, -h * .26, w * .2, h * .26, 4); ctx.fill();
+  if (crack > 0) { ctx.strokeStyle = C.ink; ctx.lineWidth = 7; ctx.beginPath(); const pts = [[0, -h], [-30, -h * .8], [20, -h * .62], [-25, -h * .42], [15, -h * .2]]; const n = Math.ceil(pts.length * crack); pts.slice(0, n).forEach(([a, b], i) => i ? ctx.lineTo(a, b) : ctx.moveTo(a, b)); ctx.stroke(); }
+  ctx.restore();
+}
+function dvdMailer(x, y, s, rot) { ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.fillStyle = C.red; ctx.strokeStyle = C.ink; ctx.lineWidth = 6; roughRect(-90, -55, 180, 110, 8); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.white; ctx.beginPath(); ctx.arc(40, 0, 32, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = C.red; ctx.beginPath(); ctx.arc(40, 0, 8, 0, 7); ctx.fill();
+  font(24, 900); ctx.fillStyle = C.white; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('DVD', -70, -18); ctx.restore(); }
+function playIcon(x, y, r) { // generic TV with a play triangle (not any brand logo)
+  ctx.save(); ctx.translate(x, y); ctx.lineJoin = 'round';
+  ctx.fillStyle = C.ink; roughRect(-r * 1.1, -r * .78, r * 2.2, r * 1.56, r * .12); ctx.fill();
+  ctx.fillStyle = C.white; roughRect(-r * .98, -r * .66, r * 1.96, r * 1.32, r * .06); ctx.fill();
+  ctx.fillStyle = C.red; ctx.strokeStyle = C.ink; ctx.lineWidth = r * .05;
+  ctx.beginPath(); ctx.moveTo(-r * .32, -r * .42); ctx.lineTo(r * .45, 0); ctx.lineTo(-r * .32, r * .42); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = C.ink; ctx.lineWidth = r * .08; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-r * .4, r * .78); ctx.lineTo(-r * .55, r * 1.0); ctx.moveTo(r * .4, r * .78); ctx.lineTo(r * .55, r * 1.0); ctx.stroke();
+  ctx.restore(); }
+function table(y) { ctx.fillStyle = '#c9a77a'; ctx.strokeStyle = C.ink; ctx.lineWidth = 9; roughRect(130, y, 820, 50, 8); ctx.fill(); ctx.stroke();
+  inkLine([[200, y + 50], [200, y + 260]], 10, C.ink, 950); inkLine([[880, y + 50], [880, y + 260]], 10, C.ink, 960); }
+function ceo(x, base, t, face, pose = POSE.stand, s = 1, opts = {}) {
+  const m = stick(x, base, pose, { s, face, id: 21, ...opts }); necktie(m, s); return m;
+}
+function laughText(t, x, y, start, n = 3) {
+  for (let i = 0; i < n; i++) pop('HA', x + (i - 1) * 140 + Math.sin(t * 20 + i) * 6, y - i * 40, 80 + i * 10, t, start + i * .15, { color: C.red, rot: (i - 1) * 12 });
+}
+
+// ---------- S0 hook ----------
+function hookLayout(t, still) {
+  const T = still ? 99 : t;
+  store(820, 1500, 360, 380);
+  const bounce = still ? 0 : Math.abs(Math.sin(t * 9)) * 12;
+  const m = ceo(380, 1400 - bounce, t, 'laugh', POSE.cheer, 1.1);
+  cheque2(560, 980, 1, -.1, '$50M');
+  pop('THEY LAUGHED AT', 540, 420, 80, T, -1, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop('$50 MILLION', 540, 560, 120, T, -1, { color: C.white, bg: 1, rot: 2 });
+  if (!still) laughText(t, 380, 760, 1.0);
+}
+function cheque2(x, y, s, rot, amount) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.fillStyle = '#eaf3df'; ctx.strokeStyle = C.ink; ctx.lineWidth = 6; roughRect(-150, -70, 300, 140, 8); ctx.fill(); ctx.stroke();
+  font(22, 800); ctx.fillStyle = C.soft; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('OFFER: BUY NETFLIX', -130, -40);
+  font(70, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.fillText(amount, 0, 18); ctx.restore();
+}
+function s0(t) { ctx.save(); zoomAt(540, 1000, 1 + t * .02); hookLayout(t, false); ctx.restore(); }
+
+// ---------- S1 giant vs tiny ----------
+function s1(t) {
+  sceneIn(t, 4.65);
+  pop('THE YEAR 2000', 540, 380, 70, t, 4.8, { color: C.soft });
+  const sp = eo(prog(t, 5.6, 6.2));
+  store(310, 1250, 480 * (.6 + .4 * sp), 560 * (.6 + .4 * sp));
+  const n = Math.round(lerp(0, 9000, eo(prog(t, 5.7, 7.3))));
+  if (t > 5.6) pop(n.toLocaleString('en-US') + ' STORES', 310, 1340, 58, t, 5.6, { color: C.white, bg: 1, bgColor: BLUE });
+  // tiny Netflix guy
+  if (t > 7.85) {
+    const m = stick(820, 1300, POSE.hold, { s: .6, face: t > 10.9 ? 'worried' : 'smile', id: 22, look: -.4 });
+    dvdMailer(m.lh[0], m.lh[1] - 20, .55, -.1);
+    pop('NETFLIX', 820, 900, 50, t, 7.9, { color: C.white, bg: 1 });
+    pop('tiny startup', 820, 970, 36, t, 8.8, { color: C.soft, weight: 800 });
+    pop('mailing DVDs', 820, 1020, 36, t, 9.4, { color: C.soft, weight: 800 });
+    if (t > 10.9) { pop('LOSING $$$', 820, 1420, 46, t, 10.9, { color: C.white, bg: 1, bgColor: C.ink, rot: -4 }); }
+  }
+}
+
+// ---------- S2 the meeting ----------
+function s2(t) {
+  sceneIn(t, 11.85);
+  pop('DALLAS', 540, 380, 70, t, 12.0, { color: C.soft });
+  stick(200, 1150, POSE.give, { s: .8, face: 'smile', id: 22, look: .6 });
+  stick(360, 1150, POSE.stand, { s: .8, face: 'smile', id: 23, look: .6 });
+  ceo(840, 1150, t, t > 14.9 ? 'smug' : 'neutral', POSE.hips, .9, { look: -.6, flip: true });
+  table(1080);
+  const p = back(prog(t, 13.2, 13.5));
+  if (p > 0) { ctx.save(); ctx.translate(560, 1050); ctx.scale(p, p); ctx.rotate(-.05);
+    ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 6; roughRect(-140, -90, 280, 120, 6); ctx.fill(); ctx.stroke();
+    font(28, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('SELL NETFLIX', 0, -55); ctx.restore(); }
+  pop('$50,000,000', 540, 620, 110, t, 14.88, { color: C.white, bg: 1, rot: -3 });
+}
+
+// ---------- S3 trying not to laugh ----------
+function s3(t) {
+  sceneIn(t, 15.65);
+  const burstOut = t > 16.9;
+  ctx.save(); if (!burstOut) shake(t, 3 + prog(t, 15.8, 16.9) * 6);
+  const m = ceo(540, 1380, t, burstOut ? 'laugh' : 'puff', burstOut ? POSE.cheer : POSE.stand, 1.25);
+  ctx.restore();
+  pop('TRYING NOT TO LAUGH', 540, 400, 72, t, 15.9, { color: C.white, bg: 1, bgColor: C.ink, rot: -2, end: 17.75 });
+  if (burstOut) laughText(t, 540, 760, 16.9);
+  pop('"TOO NICHE."', 540, 420, 110, t, 17.8, { color: C.white, bg: 1, rot: 3 });
+  pop("— per Netflix co-founder Marc Randolph", 540, 540, 32, t, 16.2, { color: C.soft, weight: 700 });
+}
+
+// ---------- S4 bankrupt ----------
+function s4(t) {
+  sceneIn(t, 18.95);
+  const yr = Math.round(lerp(2000, 2010, eio(prog(t, 19.1, 19.8))));
+  pop(String(yr), 540, 400, 120, t, 19.1, { color: yr === 2010 ? C.red : C.ink });
+  const crack = prog(t, 20.0, 20.6), fall = eio(prog(t, 20.6, 21.4));
+  shake(t, crack > 0 && fall < 1 ? 10 : 0);
+  ctx.save(); ctx.globalAlpha = 1 - fall * .6; store(540, 1400, 560, 620, { crack, fall }); ctx.restore();
+  if (t > 20.8) {
+    const p = prog(t, 20.8, 21.0), s = lerp(2.2, 1, eo(p));
+    ctx.save(); ctx.translate(540, 900); ctx.rotate(-8 * D2R); ctx.scale(s, s); ctx.globalAlpha = p;
+    ctx.fillStyle = 'rgba(246,243,236,.9)'; roughRect(-360, -90, 720, 180, 16); ctx.fill();
+    ctx.strokeStyle = C.red; ctx.lineWidth = 12; roughRect(-360, -90, 720, 180, 16); ctx.stroke();
+    font(120, 900); ctx.fillStyle = C.red; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('BANKRUPT', 0, 6); ctx.restore();
+  }
+}
+
+// ---------- S5 Netflix today ----------
+function s5(t) {
+  sceneIn(t, 21.55);
+  const k = 1 - Math.pow(1 - prog(t, 22.7, 24.9), 4);
+  const v = Math.exp(lerp(Math.log(5e7), Math.log(2.65e11), k));
+  const hit = t > 24.9;
+  shake(t, hit ? Math.max(0, 12 - (t - 24.9) * 25) : 0);
+  playIcon(540, 1180, lerp(120, 260, eo(prog(t, 21.7, 24.9))));
+  pop('NETFLIX TODAY', 540, 380, 70, t, 21.7, { color: C.white, bg: 1, bgColor: C.ink });
+  if (hit) burst(540, 640, 200 + Math.sin(t * 9) * 6, C.gold, 18, t * .3);
+  if (t > 22.6) pop('$' + Math.round(v).toLocaleString('en-US'), 540, 640, hit ? 104 : 96, t, 22.6, { color: hit ? C.white : C.ink, bg: hit ? 1 : null, rot: -2 });
+  pop('*market cap, Nov 2026', 540, 900, 32, t, 24.95, { color: C.ink, weight: 700, bg: 1, bgColor: C.paper, pad: 8 });
+}
+
+// ---------- S6 one store left ----------
+function s6(t) {
+  sceneIn(t, 25.4);
+  pop('TODAY', 540, 380, 70, t, 25.55, { color: C.soft });
+  const zoom = eo(prog(t, 26.1, 27.6));
+  // empty ground with ghost stores fading
+  for (let i = 0; i < 8; i++) { const x = 140 + i * 115, a = (1 - zoom) * .35; if (a > .02) { ctx.save(); ctx.globalAlpha = a; store(x, 1300, 100, 110, { label: '', sub: '' }); ctx.restore(); } }
+  store(540, 1300, lerp(100, 420, zoom), lerp(110, 440, zoom));
+  stick(860, 1360, POSE.stand, { s: .55, face: 'sad', id: 24, look: -.6 });
+  pop('THE LAST ONE', 540, 520, 96, t, 26.2, { color: C.white, bg: 1, rot: -2 });
+  pop('BEND, OREGON', 540, 1420, 50, t, 27.0, { color: C.white, bg: 1, bgColor: BLUE });
+  pop('ONE.', 540, 680, 120, t, 28.35, { color: C.red, rot: 4 });
+}
+
+// ---------- S7 lesson + loop ----------
+function s7(t) {
+  sceneIn(t, 28.8);
+  pop('WHAT YOU LAUGH AT', 540, 420, 82, t, 28.95, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop('MIGHT REPLACE YOU', 540, 560, 90, t, 30.3, { color: C.white, bg: 1, rot: 2 });
+  const m = stick(540, 1380, t > 31.75 ? POSE.point : POSE.think, { s: 1.05, face: t > 31.75 ? 'smug' : 'neutral', id: 22 });
+  pop("WHAT ARE YOU LAUGHING AT?", 540, 760, 56, t, 31.8, { color: C.red });
+  pop('EP 4 TOMORROW →', 540, 1580, 44, t, 32.4, { color: C.soft, weight: 800 });
+  const k = prog(t, 33.65, 34.1);
+  if (k > 0) { ctx.save(); ctx.globalAlpha = k; paper(); hookLayout(0, true); ctx.restore(); }
+}
+
+const SCENES = [[s0, 0, 4.65], [s1, 4.65, 11.85], [s2, 11.85, 15.65], [s3, 15.65, 18.95], [s4, 18.95, 21.55], [s5, 21.55, 25.4], [s6, 25.4, 28.8], [s7, 28.8, 99]];
+
+function renderFrame(t) {
+  setTime(t);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none';
+  paper();
+  for (const [fn, a, b] of SCENES) if (inScene(t, a, b)) { ctx.save(); fn(t); ctx.restore(); }
+  for (const [, a] of SCENES) { const k = prog(t, a - .06, a + .08); if (a > 0 && k > 0 && k < 1) { ctx.fillStyle = `rgba(20,20,20,${(1 - Math.abs(k * 2 - 1)) * .45})`; ctx.fillRect(0, 0, W, H); } }
+  vignette();
+  seriesBadge(CONFIG.series, CONFIG.ep, t);
+}
+
+window.FPS = FPS; window.DURATION = DURATION;
+if (params.get('render')) document.body.classList.add('render');
+window.ready = document.fonts.load('900 100px Inter').then(() => document.fonts.load('700 50px Inter')).then(() => { renderFrame(0); return true; });
+if (!params.get('render')) { const t0 = performance.now(); const loop = () => { renderFrame(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); }; loop(); }
+</script>
+</body>
+</html>
