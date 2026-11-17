@@ -18,6 +18,17 @@ Motion graphic TikTok, tema motivasi hidup & keuangan. Tiap video: folder `video
   lalu tempel ke MP4: `covers/add_cover.sh covers/cover-N.png videoN/output/<nama>.mp4`.
 - Caption + hashtag tiap video dicatat di `PROFIL-DAN-CAPTION.md`.
 
+## Format wajib mulai video 8 (terinspirasi format "48 Laws of Power" ala The Brighter Mind)
+- **Subtitle per kata** di 1/3 bawah layar (y ±1250–1350), muncul kata demi kata mengikuti VO
+  (timing dari `--write-subtitles`/WordBoundary edge-tts). Kata kunci disorot: kotak putih + teks hitam.
+- **Badge seri bernomor dari buku/prinsip terkenal** di atas judul, contoh
+  `PSYCHOLOGY OF MONEY · BAB 4` atau `RICH DAD POOR DAD · PELAJARAN 1`. Ringkas pakai kata sendiri, jangan kutip panjang.
+- **Judul prinsip besar** di bawah badge (boleh judul asli Inggris + terjemahan santai).
+- **Hook kecil persisten** di atas (mis. "Cara Duitmu Bekerja") dan **logo SUARA kecil** di pojok kanan atas sepanjang video
+  (hindari area UI kanan bawah).
+- Caption TikTok berbentuk **cerita kontras** ("Dua tahun ditonton 300 orang. Satu kalimat: dua juta.").
+- Warna tetap hitam-putih; sorotan pakai kotak putih (bukan kuning).
+
 ## Gaya bahasa (berlaku mulai video 5)
 - **Santai, gaya Gen Z, jangan kaku.** Pakai "lo/gue", kalimat pendek, kayak ngobrol sama temen.
 - Boleh pakai kata gaul secukupnya: *literally, jujurly, bestie, boncos, ceban, self-reward, nongki, sisihin, kerasa, gaskeun* — jangan berlebihan sampai maksa.
