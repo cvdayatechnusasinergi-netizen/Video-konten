@@ -38,6 +38,11 @@ Motion graphic TikTok, tema motivasi hidup & keuangan. Tiap video: folder `video
 - Video 1–4 tetap memakai gaya lama (tidak dirender ulang).
 
 ## Voice over
+- **Mulai video 8: suara dari CapCut (gratis).** Claude kirim naskah → user bikin TTS di CapCut (satu suara tetap),
+  kirim file audio/video ke chat → potong jadi audio, deteksi waktu tiap kata pakai faster-whisper
+  (`word_timestamps`) → timeline animasi & subtitle per kata mengikuti timestamp itu. Jangan pakai edge-tts lagi
+  kecuali user minta. Voice clone suara user sudah dicoba (tools/clone_voice.py, energize.py) tapi user tidak puas.
+- Jangan meniru/clone suara kreator lain (mis. narator The Brighter Mind).
 - `edge-tts`, suara `id-ID-ArdiNeural`, `--rate=+3%`. Host `speech.platform.bing.com` diizinkan di environment "Video-konten".
 - Satu baris naskah per adegan di `vo/script.txt`; potong hening tiap segmen, gabung dengan `vo/build_vo.sh` (atur STARTS & durasi).
 - Angka keuangan diberi catatan "*ilustrasi, asumsi …" bila memakai imbal hasil.
