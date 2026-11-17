@@ -27,6 +27,7 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 | 4 | Dulu Raja HP, Terus Ke Mana? (Sejarah Nokia, **Remotion**) | `video4/output/sejarah-nokia.mp4` (48,2 dtk) |
 | 5 | Ditolak Facebook, Lalu Dibeli $19 Miliar (Sejarah WhatsApp, **Remotion**) | `video5/output/sejarah-whatsapp.mp4` (44,4 dtk) |
 | 6 | Google Pernah Mau Dijual Cuma $1 Juta (Sejarah Google, **Remotion**) | `video6/output/sejarah-google.mp4` (48,5 dtk) |
+| 7 | Perusahaan Ini Pernah Membakar 150 Ribu HP (Sejarah Samsung, **Remotion**) | `video7/output/sejarah-samsung.mp4` (47,3 dtk) |
 
 Render: `node render.js --page reyobian/video1 --out reyobian/video1/output/jangan-buka-apk.mp4`
 VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
@@ -119,6 +120,21 @@ Remotion: komposisi `Video5WhatsApp` (`remotion/src/v5/WhatsApp.tsx`). Tampilan 
 > #google #sejarahteknologi #faktaunik #teknologi #pangkalanbun
 
 Remotion: komposisi `Video6Google` (`remotion/src/v6/Google.tsx`). Kotak pencarian generik, tanpa logo asli.
+
+### #7 — Caption Facebook (Sejarah Samsung)
+> Perusahaan ini pernah sengaja membakar 150 ribu HP buatannya sendiri 🔥
+> Samsung lahir 1938 di Korea — awalnya jualan ikan kering, sayur, dan mi. Namanya berarti "tiga bintang".
+> 1969 masuk elektronik, tapi dikenal murah & kualitasnya pas-pasan.
+> 1995, Lee Kun-hee tahu banyak HP Samsung rusak. Sekitar 150 ribu HP dikumpulkan, dihancurkan, lalu dibakar di depan karyawan.
+> Pesannya: kualitas nomor satu. Sekarang Samsung jadi salah satu pembuat HP & chip memori terbesar di dunia.
+>
+> Pelajarannya: lebih baik buang yang setengah jadi, daripada menyerahkan hasil yang jelek. Sebelum kirim kerjaan ke klien atau atasan, cek ulang sekali lagi.
+>
+> Kamu tim Samsung, atau merek lain? Tulis di komentar 👇
+>
+> #samsung #sejarahteknologi #faktaunik #teknologi #pangkalanbun
+
+Remotion: komposisi `Video7Samsung` (`remotion/src/v7/Samsung.tsx`). HP digambar generik, tanpa logo asli.
 
 ## Gaya tetap: Remotion (mulai video 3) — disukai user
 - Proyek `remotion/` (React). Tampilan: latar gelap halus (gumpalan biru tua + grid titik), **HP 3D realistis** (CSS 3D,
