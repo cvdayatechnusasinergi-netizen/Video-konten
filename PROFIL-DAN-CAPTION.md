@@ -59,10 +59,16 @@ Pola: hook pendek + pertanyaan biar orang komen + 3–5 hashtag (campur niche & 
 >
 > #investasipemula #keuangan #reksadana #financialfreedom #fyp
 
+### #7 — Utang Baik vs Utang Buruk
+> Cicilan "cuma" 680rb sebulan… tapi total yang lo bayar 8,2 juta buat HP yang setahun lagi tinggal 3,5 juta 😵
+> Utang lo masuk tim baik atau buruk? 👇
+>
+> #utang #paylater #keuangan #tipskeuangan #fyp
+
 ---
 
 ## Cover
-File cover ada di `covers/cover-1.png` … `cover-6.png`.
+File cover ada di `covers/cover-1.png` … `cover-7.png`.
 Video MP4 sekarang dibuka dengan cover (0,6 detik), jadi thumbnail otomatis sudah berisi judul.
 Saat upload: **Pilih sampul → geser ke frame paling awal** (atau unggah gambar cover kalau opsinya ada).
 

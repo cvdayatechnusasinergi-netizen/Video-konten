@@ -1,0 +1,16 @@
+1
+00:00:00,100 --> 00:00:01,778
+Coba itung.
+
+2
+00:00:01,728 --> 00:00:06,644
+HP enam juta, dicicil dua belas bulan, bunga tiga persen sebulan.
+
+3
+00:00:06,644 --> 00:00:10,072
+Totalnya, lo bayar delapan koma dua juta.
+
+4
+00:00:10,072 --> 00:00:14,190
+Padahal setahun lagi, HP-nya paling laku tiga setengah juta.
+

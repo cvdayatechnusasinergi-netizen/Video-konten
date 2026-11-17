@@ -1,0 +1,16 @@
+1
+00:00:00,100 --> 00:00:01,921
+Batas amannya?
+
+2
+00:00:01,871 --> 00:00:05,025
+Total cicilan maksimal tiga puluh persen gaji.
+
+3
+00:00:05,025 --> 00:00:09,370
+Gaji lima juta, berarti cicilan maksimal satu setengah juta.
+
+4
+00:00:09,370 --> 00:00:12,025
+Lewat dari itu, bahaya.
+
