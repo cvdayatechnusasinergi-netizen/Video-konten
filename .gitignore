@@ -1,3 +1,4 @@
 output/still-*.png
 node_modules/
 .claude/settings.local.json
+demo-suara/
