@@ -123,3 +123,23 @@
 
 **Pinned comment**
 > Be honest: does $9.99 still feel cheaper than $10 after this? 😅👇
+
+## Worst Money Decisions EP 4 (`video7/output/worst-money-ep4-lottery-myth.mp4`)
+**Title** (≤100 chars)
+> "70% of Lottery Winners Go Broke" Is Fake. The Truth Is Worse 🎟️ #WorstMoneyDecisions #shorts
+
+**Description**
+> You've heard it a thousand times: 70% of lottery winners go broke. That number is fake.
+> It was said by one participant at a meeting — and the National Endowment for Financial Education, the group it's always credited to, says it was never verified.
+>
+> But a real study (Hankins, Hoekstra & Skiba, Review of Economics and Statistics, 2011) tracked about 35,000 Florida lottery winners. People who won $50K–$150K were about half as likely to go bankrupt in the first two years… but within five years they were just as likely to go bankrupt as people who won almost nothing.
+>
+> The money didn't fix the problem. It just delayed it.
+> If your bucket has a hole, more water won't save you. 🪣
+>
+> *One Florida study (1993–2002); chart shape is illustrative.
+>
+> #WorstMoneyDecisions #lottery #money #psychology #shorts
+
+**Pinned comment**
+> If you won $100K tomorrow, what's the FIRST thing you'd do? Be honest 👇

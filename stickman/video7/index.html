@@ -1,0 +1,202 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Lottery Myth</title>
+<style>
+  html,body{margin:0;background:#222;}
+  canvas{display:block;width:360px;height:640px;}
+  body.render canvas{width:1080px;height:1920px;}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="../lib/stick.js"></script>
+<script>
+// ============ CONFIG ============
+const params = new URLSearchParams(location.search);
+const CONFIG = {
+  channel: params.get('channel') || 'StickWise',
+  series: 'Worst Money Decisions',
+  ep: 4,
+};
+// ================================
+const FPS = 30, DURATION = 32.3;
+// VO starts: 0.15 4.37 7.4 10.3 14.3 19.25 23.6 26.3
+
+function sceneIn(t, a) { const p = prog(t, a, a + .2); zoomAt(W / 2, H / 2, 1 + (1 - eo(p)) * .06); }
+
+// ---------- local props ----------
+function ticket(x, y, s, rot) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  const w = 640, h = 300;
+  ctx.fillStyle = C.gold; ctx.strokeStyle = C.ink; ctx.lineWidth = 9; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(-w / 2, -h / 2); ctx.lineTo(w / 2, -h / 2); ctx.lineTo(w / 2, -30); ctx.arc(w / 2, 0, 30, -Math.PI / 2, Math.PI / 2, true); ctx.lineTo(w / 2, h / 2); ctx.lineTo(-w / 2, h / 2); ctx.lineTo(-w / 2, 30); ctx.arc(-w / 2, 0, 30, Math.PI / 2, -Math.PI / 2, true); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.setLineDash([14, 12]); ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(w / 2 - 120, -h / 2 + 10); ctx.lineTo(w / 2 - 120, h / 2 - 10); ctx.stroke(); ctx.setLineDash([]);
+  font(70, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('LOTTO', -60, -80);
+  font(40, 900); [7, 13, 21, 34, 42].forEach((n, i) => { const cx = -230 + i * 85; ctx.fillStyle = C.white; ctx.beginPath(); ctx.arc(cx, 40, 34, 0, 7); ctx.fill(); ctx.lineWidth = 5; ctx.stroke(); ctx.fillStyle = C.ink; ctx.fillText(String(n), cx, 42); });
+  ctx.save(); ctx.translate(w / 2 - 60, 0); ctx.rotate(-Math.PI / 2); font(36, 900); ctx.fillStyle = C.red; ctx.fillText('WIN!', 0, 0); ctx.restore();
+  ctx.restore();
+}
+function stamp(x, y, text, s, rot, color = C.red, size = 110) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  font(size, 900); const w = ctx.measureText(text).width + 60, h = size * 1.4;
+  ctx.fillStyle = 'rgba(246,243,236,.88)'; roughRect(-w / 2, -h / 2, w, h, 16); ctx.fill();
+  ctx.strokeStyle = color; ctx.lineWidth = 12; roughRect(-w / 2, -h / 2, w, h, 16); ctx.stroke();
+  ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, 0, 6);
+  ctx.restore();
+}
+function slam(t, at, x, y, text, rot, color, size) { const p = prog(t, at, at + .2); if (p <= 0) return; ctx.save(); ctx.globalAlpha *= p; stamp(x, y, text, lerp(2.2, 1, eo(p)), rot, color, size); ctx.restore(); }
+function headline(x, y, s, rot, text) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 6; roughRect(-200, -120, 400, 240, 6); ctx.fill(); ctx.stroke();
+  font(26, 900); ctx.fillStyle = C.soft; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('THE DAILY NEWS', 0, -90);
+  ctx.fillStyle = C.ink; ctx.fillRect(-180, -70, 360, 5);
+  font(48, 900); ctx.fillStyle = C.ink; text.split('\n').forEach((l, i) => ctx.fillText(l, 0, -20 + i * 54));
+  ctx.fillStyle = C.line; for (let i = 0; i < 2; i++) ctx.fillRect(-170, 70 + i * 20, 340 - i * 80, 9);
+  ctx.restore();
+}
+function bucketLeak(x, y, s, t, patched = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  // water/coins leaking
+  if (patched < 1) for (let i = 0; i < 6; i++) { const k = ((t * 1.2 + i / 6) % 1); ctx.globalAlpha = (1 - patched) * (1 - k); coin(70 + k * 30, 120 + k * 380, 26, k * 6, { spin: Math.cos(t * 5 + i) }); }
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = '#c9ccd2'; ctx.strokeStyle = C.ink; ctx.lineWidth = 9; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(-150, -150); ctx.lineTo(150, -150); ctx.lineTo(115, 150); ctx.lineTo(-115, 150); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.gold; ctx.beginPath(); ctx.ellipse(0, -150, 150, 30, 0, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(0, -150, 170, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke();
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(70, 110, 16, 0, 7); ctx.fill();
+  if (patched > 0) { ctx.save(); ctx.translate(70, 110); ctx.rotate(.3); ctx.scale(back(patched), back(patched)); ctx.fillStyle = '#9ad48a'; ctx.strokeStyle = C.ink; ctx.lineWidth = 5; ctx.fillRect(-36, -24, 72, 48); ctx.strokeRect(-36, -24, 72, 48); ctx.restore(); }
+  ctx.restore();
+}
+
+// ---------- S0 hook ----------
+function hookLayout(t, still) {
+  const T = still ? 99 : t;
+  ticket(540, 880, 1.15, -.06);
+  stamp(560, 870, '70% GO BROKE', 1, .05, C.ink, 76);
+  if (still || t < 3.25) stamp(560, 880, 'FAKE', 1.15, -.18, C.red, 150); else { const p = prog(t, 3.25, 3.5); stamp(560, 880, 'FAKE', 1.15 * (1 + Math.sin(p * Math.PI) * .25), -.18, C.red, 150); }
+  stick(830, 1480, still || t > 3.3 ? POSE.point : POSE.think, { s: .8, face: still || t > 3.3 ? 'smug' : 'neutral', id: 1, look: -.5, flip: true, blink: !still && blinkAt(t) });
+  pop('"70% OF LOTTERY', 540, 410, 82, T, -1, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop('WINNERS GO BROKE"', 540, 545, 82, T, -1, { color: C.white, bg: 1, bgColor: C.ink, rot: 1 });
+}
+function s0(t) { ctx.save(); zoomAt(540, 900, 1 + t * .02); hookLayout(t, false); ctx.restore(); }
+
+// ---------- S1 where it came from ----------
+function s1(t) {
+  sceneIn(t, 4.2);
+  pop('WHERE IT CAME FROM', 540, 380, 70, t, 4.4, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  if (t < 6.2) {
+    ctx.fillStyle = '#c9a77a'; ctx.strokeStyle = C.ink; ctx.lineWidth = 9; roughRect(200, 1180, 680, 40, 8); ctx.fill(); ctx.stroke();
+    const sp = stick(300, 1150, POSE.point, { s: .75, face: 'happy', id: 2, look: .5, mouthOpen: talk(t, 4.4, 6) });
+    stick(560, 1150, POSE.stand, { s: .75, face: 'neutral', id: 3, look: -.4 });
+    stick(780, 1150, POSE.stand, { s: .75, face: 'neutral', id: 4, look: -.6 });
+    pop('"70%!"', 400, 760, 90, t, 4.7, { color: C.red, rot: -5 });
+    pop('ONE GUY. ONE MEETING.', 540, 1460, 58, t, 5.0, {});
+  } else {
+    // headlines multiplying
+    const n = Math.min(7, 1 + Math.floor((t - 6.2) * 8));
+    for (let i = 0; i < n; i++) headline(280 + (i % 3) * 260 + hash(i, 1) * 40, 720 + Math.floor(i / 3) * 280 + hash(i, 2) * 40, .7, (hash(i, 3) - .5) * .4, '70% OF WINNERS\nGO BROKE!');
+    pop('NOBODY CHECKED', 540, 1520, 70, t, 6.25, { color: C.white, bg: 1, rot: 2 });
+  }
+}
+
+// ---------- S2 never verified ----------
+function s2(t) {
+  sceneIn(t, 7.2);
+  paperLike(540, 900, 1.3, -.04);
+  slam(t, 8.6, 540, 920, 'NEVER VERIFIED', -.12, C.red, 90);
+  pop('THE "SOURCE" ITSELF:', 540, 400, 66, t, 7.45, {});
+  pop('(NEFE, 2018)', 540, 1360, 44, t, 8.0, { color: C.soft, weight: 800 });
+}
+function paperLike(x, y, s, rot) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 6; roughRect(-220, -260, 440, 520, 8); ctx.fill(); ctx.stroke();
+  font(34, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('STATEMENT', 0, -210);
+  ctx.fillStyle = C.line; for (let i = 0; i < 9; i++) ctx.fillRect(-180, -150 + i * 44, 360 - (i % 3) * 50, 12);
+  ctx.restore();
+}
+
+// ---------- S3 the real study ----------
+function s3(t) {
+  sceneIn(t, 10.1);
+  pop('A REAL STUDY', 540, 380, 84, t, 10.3, { color: C.white, bg: 1, rot: -2 });
+  pop('FLORIDA · 1993–2002', 540, 500, 52, t, 10.8, { color: C.soft, weight: 800 });
+  const n = Math.floor(lerp(0, 48, eo(prog(t, 10.9, 12.8))));
+  for (let i = 0; i < n; i++) { const c = i % 8, r = Math.floor(i / 8); stick(170 + c * 105, 760 + r * 120, POSE.stand, { s: .22, face: 'smile', id: 30 + i, lw: 22 }); }
+  const k = Math.round(lerp(0, 35000, eo(prog(t, 11.0, 13.2))));
+  pop(k.toLocaleString('en-US') + ' WINNERS', 540, 1520, 76, t, 11.0, { color: C.white, bg: 1, bgColor: C.ink });
+}
+
+// ---------- S4 + S5 the chart ----------
+// bankruptcy risk over years 0..5 (illustrative shape of the study's finding)
+const SMALL = y => .5;
+const BIG = y => y < 1 ? .5 - .25 * eo(y) : y < 2 ? .25 : .25 + .25 * eio(clamp((y - 2) / 3));
+function chart(t, upTo, x0 = 160, y0 = 1350, w = 780, h = 560) {
+  inkLine([[x0, y0 - h], [x0, y0], [x0 + w, y0]], 9, C.ink, 700);
+  font(32, 800); ctx.fillStyle = C.soft; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  for (let i = 0; i <= 5; i++) ctx.fillText('YR ' + i, x0 + i * w / 5, y0 + 18);
+  ctx.save(); ctx.translate(x0 - 40, y0 - h / 2); ctx.rotate(-Math.PI / 2); ctx.textBaseline = 'middle'; ctx.fillText('BANKRUPTCY RISK', 0, 0); ctx.restore();
+  const line = (fn, col, lw) => { ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath();
+    for (let i = 0; i <= 60 * upTo / 5; i++) { const yr = i / 12; const px = x0 + yr * w / 5, py = y0 - fn(yr) * h; i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } ctx.stroke(); ctx.restore(); };
+  line(SMALL, C.soft, 10); line(BIG, C.red, 14);
+  const ly = y0 - h - 10;
+  ctx.fillStyle = C.soft; ctx.fillRect(x0 + 40, ly - 6, 50, 10); font(30, 800); ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('won < $10K', x0 + 100, ly);
+  ctx.fillStyle = C.red; ctx.fillRect(x0 + 380, ly - 7, 50, 14); ctx.fillStyle = C.red; ctx.fillText('won $50K–$150K', x0 + 440, ly);
+}
+function s4(t) {
+  sceneIn(t, 14.1);
+  pop('WON $50K–$150K?', 540, 380, 80, t, 14.3, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  chart(t, lerp(0, 2, eo(prog(t, 16.9, 18.0))));
+  if (t > 17.0) pop('50% LESS LIKELY', 540, 520, 64, t, 17.0, { color: '#2f9e44' });
+  pop('...at first', 760, 1000, 54, t, 18.3, { color: C.ink, rot: 6 });
+}
+function s5(t) {
+  sceneIn(t, 19.1);
+  pop('5 YEARS LATER', 540, 380, 84, t, 19.25, { color: C.white, bg: 1, rot: -2 });
+  chart(t, lerp(2, 5, eo(prog(t, 19.4, 21.6))));
+  slam(t, 21.9, 540, 560, 'SAME RISK', -.06, C.red, 100);
+}
+
+// ---------- S6 delayed ----------
+function s6(t) {
+  sceneIn(t, 23.4);
+  pop("MONEY DIDN'T FIX IT.", 540, 400, 76, t, 23.6, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop('IT JUST DELAYED IT.', 540, 540, 80, t, 25.25, { color: C.white, bg: 1, rot: 2 });
+  bucketLeak(540, 1020, 1.1, t);
+  stick(220, 1480, POSE.facepalm, { s: .75, face: 'sad', id: 1 });
+}
+
+// ---------- S7 lesson + loop ----------
+function s7(t) {
+  sceneIn(t, 26.1);
+  bucketLeak(540, 1040, 1.0, t, prog(t, 28.9, 29.3));
+  pop('BUCKET HAS A HOLE?', 540, 400, 76, t, 26.3, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop('MORE WATER WON\'T HELP', 540, 530, 64, t, 27.75, {});
+  pop('FIX THE HABIT, NOT THE AMOUNT', 540, 1360, 50, t, 29.0, { color: C.white, bg: 1, bgColor: '#2f9e44' });
+  stick(900, 1680, POSE.aha, { s: .55, face: 'happy', id: 1, flip: true });
+  pop('MORE MONEY = ANSWER?', 540, 650, 58, t, 29.8, { color: C.red });
+  pop('EP 5 TOMORROW →', 380, 1600, 44, t, 30.4, { color: C.soft, weight: 800 });
+  const k = prog(t, 31.85, 32.3);
+  if (k > 0) { ctx.save(); ctx.globalAlpha = k; paper(); hookLayout(0, true); ctx.restore(); }
+}
+
+const SCENES = [[s0, 0, 4.2], [s1, 4.2, 7.2], [s2, 7.2, 10.1], [s3, 10.1, 14.1], [s4, 14.1, 19.1], [s5, 19.1, 23.4], [s6, 23.4, 26.1], [s7, 26.1, 99]];
+
+function renderFrame(t) {
+  setTime(t);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none';
+  paper();
+  for (const [fn, a, b] of SCENES) if (inScene(t, a, b)) { ctx.save(); fn(t); ctx.restore(); }
+  for (const [, a] of SCENES) { const k = prog(t, a - .06, a + .08); if (a > 0 && k > 0 && k < 1) { ctx.fillStyle = `rgba(20,20,20,${(1 - Math.abs(k * 2 - 1)) * .45})`; ctx.fillRect(0, 0, W, H); } }
+  vignette();
+  seriesBadge(CONFIG.series, CONFIG.ep, t);
+}
+
+window.FPS = FPS; window.DURATION = DURATION;
+if (params.get('render')) document.body.classList.add('render');
+window.ready = document.fonts.load('900 100px Inter').then(() => document.fonts.load('700 50px Inter')).then(() => { renderFrame(0); return true; });
+if (!params.get('render')) { const t0 = performance.now(); const loop = () => { renderFrame(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); }; loop(); }
+</script>
+</body>
+</html>

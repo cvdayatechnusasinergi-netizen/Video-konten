@@ -26,5 +26,5 @@ and double down on the stronger series. Each series = one YouTube playlist.
 | 1 | This Guy Paid 10,000 Bitcoin for 2 Pizzas | `video1/` | ✅ uploaded (no badge, made before the series format) |
 | 2 | He Gave Up 10% of Apple for $800 | `video3/` | ✅ rendered |
 | 3 | Blockbuster Could Have Bought Netflix for $50 Million | `video5/` | ✅ rendered |
-| 4 | The Lottery Winner Who Went Broke in 5 Years | | |
+| 4 | "70% of Lottery Winners Go Broke" Is Fake. The Truth Is Worse | `video7/` | ✅ rendered |
 | 5 | Kodak Invented the Digital Camera… and Hid It | | |
