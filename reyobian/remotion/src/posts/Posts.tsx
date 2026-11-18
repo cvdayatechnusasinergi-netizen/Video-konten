@@ -15,7 +15,7 @@ const Post: React.FC<PostData> = ({ n, tag, title, sub, art, facts, lesson }) =>
     <div style={{ position: 'absolute', inset: '52px 64px 26px', display: 'flex', flexDirection: 'column', gap: 22 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: 4, background: ACCENT, padding: '9px 20px', borderRadius: 999 }}>FAKTA TEKNOLOGI</div>
-        <div style={{ fontSize: 24, fontWeight: 700, color: 'rgba(255,255,255,.6)', letterSpacing: 3 }}>{tag} · {n}/5</div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: 'rgba(255,255,255,.6)', letterSpacing: 3 }}>{tag}</div>
       </div>
       <div>
         <div style={{ fontSize: 68, fontWeight: 900, lineHeight: 1.04, letterSpacing: -2 }}>{title}</div>

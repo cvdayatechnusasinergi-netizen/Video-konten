@@ -154,7 +154,7 @@ Remotion: komposisi `Video7Samsung` (`remotion/src/v7/Samsung.tsx`). HP digambar
 Remotion: komposisi `Video8YouTube` (`remotion/src/v8/YouTube.tsx`). Pemutar video generik (aksen biru), tanpa logo asli.
 
 ## Postingan gambar (seri "Fakta Teknologi", 1080×1350)
-File: `gambar/fakta-1.png` … `fakta-5.png`. Sumber: `remotion/src/posts/Posts.tsx` (Still `Post1`–`Post5`).
+File terpisah per topik: `gambar/1-simbol-at-email.png`, `2-kamera-digital-kodak.png`, `3-sms-pertama.png`, `4-bug-pertama.png`, `5-hard-disk-pertama.png` (tanpa penanda "1/5"). Sumber: `remotion/src/posts/Posts.tsx` (Still `Post1`–`Post5`).
 Render: `cd remotion && npx remotion still src/index.ts Post1 ../gambar/fakta-1.png --browser-executable=<headless_shell>`.
 
 | # | Topik | Caption singkat |
