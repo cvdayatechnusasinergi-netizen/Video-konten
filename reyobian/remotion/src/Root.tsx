@@ -7,8 +7,10 @@ import { NokiaHistory, NOKIA_FRAMES } from './v4/Nokia';
 import { WhatsAppHistory, WA_FRAMES } from './v5/WhatsApp';
 import { GoogleHistory, GOOGLE_FRAMES } from './v6/Google';
 import { SamsungHistory, SAMSUNG_FRAMES } from './v7/Samsung';
+import { YouTubeHistory, YT_FRAMES } from './v8/YouTube';
 export const RemotionRoot: React.FC = () => (
   <>
+    <Composition id="Video8YouTube" component={YouTubeHistory} durationInFrames={YT_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="Video7Samsung" component={SamsungHistory} durationInFrames={SAMSUNG_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="Video6Google" component={GoogleHistory} durationInFrames={GOOGLE_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="Video5WhatsApp" component={WhatsAppHistory} durationInFrames={WA_FRAMES} fps={30} width={1080} height={1920} />

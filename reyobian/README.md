@@ -28,6 +28,7 @@ Terpisah dari seri SUARA: niche **IT untuk orang awam**.
 | 5 | Ditolak Facebook, Lalu Dibeli $19 Miliar (Sejarah WhatsApp, **Remotion**) | `video5/output/sejarah-whatsapp.mp4` (44,4 dtk) |
 | 6 | Google Pernah Mau Dijual Cuma $1 Juta (Sejarah Google, **Remotion**) | `video6/output/sejarah-google.mp4` (48,5 dtk) |
 | 7 | Perusahaan Ini Pernah Membakar 150 Ribu HP (Sejarah Samsung, **Remotion**) | `video7/output/sejarah-samsung.mp4` (47,3 dtk) |
+| 8 | YouTube Awalnya Situs Cari Jodoh (Sejarah YouTube, **Remotion**) | `video8/output/sejarah-youtube.mp4` (47,4 dtk) |
 
 Render: `node render.js --page reyobian/video1 --out reyobian/video1/output/jangan-buka-apk.mp4`
 VO: `reyobian/video1/vo/script.txt` → seg0..6.wav → `vo/build_vo.sh`.
@@ -135,6 +136,22 @@ Remotion: komposisi `Video6Google` (`remotion/src/v6/Google.tsx`). Kotak pencari
 > #samsung #sejarahteknologi #faktaunik #teknologi #pangkalanbun
 
 Remotion: komposisi `Video7Samsung` (`remotion/src/v7/Samsung.tsx`). HP digambar generik, tanpa logo asli.
+
+### #8 — Caption Facebook (Sejarah YouTube)
+> YouTube awalnya situs CARI JODOH 😳 Dan hampir enggak ada yang mau pakai.
+> 2005: Chad Hurley, Steve Chen & Jawed Karim (eks PayPal) bikin situs video kencan — slogannya "Tune In, Hook Up".
+> Sampai nawarin $20 buat yang mau upload… tetap sepi.
+> Akhirnya mereka sadar: orang mau upload video apa saja. Batasannya dibuang.
+> Video pertamanya cuma 19 detik di kebun binatang. 2006 dibeli Google $1,65 miliar. Sekarang 500+ jam video diunggah tiap menit.
+>
+> Pelajarannya: kalau ide kamu sepi peminat, jangan langsung menyerah — lihat apa yang orang butuhkan, lalu ubah arah.
+> Coba minggu ini: tanya 3 pelanggan/teman, apa yang paling mereka butuhkan dari kamu.
+>
+> Video YouTube apa yang paling sering kamu tonton? Tulis di komentar 👇
+>
+> #youtube #sejarahteknologi #faktaunik #teknologi #pangkalanbun
+
+Remotion: komposisi `Video8YouTube` (`remotion/src/v8/YouTube.tsx`). Pemutar video generik (aksen biru), tanpa logo asli.
 
 ## Gaya tetap: Remotion (mulai video 3) — disukai user
 - Proyek `remotion/` (React). Tampilan: latar gelap halus (gumpalan biru tua + grid titik), **HP 3D realistis** (CSS 3D,
