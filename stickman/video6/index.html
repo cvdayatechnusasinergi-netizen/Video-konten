@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Nine Ninety Nine</title>
+<style>
+  html,body{margin:0;background:#222;}
+  canvas{display:block;width:360px;height:640px;}
+  body.render canvas{width:1080px;height:1920px;}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="../lib/stick.js"></script>
+<script>
+// ============ CONFIG ============
+const params = new URLSearchParams(location.search);
+const CONFIG = {
+  channel: params.get('channel') || 'StickWise',
+  series: 'Brain vs Wallet',
+  ep: 3,
+};
+// ================================
+const FPS = 30, DURATION = 32.5;
+// VO starts: 0.15 4.5 9.4 11.05 16.65 20.15 22.5 27.15 29.5
+const GREEN = '#2f9e44';
+
+function sceneIn(t, a) { const p = prog(t, a, a + .2); zoomAt(W / 2, H / 2, 1 + (1 - eo(p)) * .06); }
+
+// ---------- local props ----------
+function bigTag(x, y, text, opts = {}) {
+  const { s = 1, rot = 0, size = 110, color = C.ink, fill = C.white } = opts;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  font(size, 900); const w = ctx.measureText(text).width + 120, h = size * 1.9;
+  ctx.fillStyle = fill; ctx.strokeStyle = C.ink; ctx.lineWidth = 9; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(-w / 2, 0); ctx.lineTo(-w / 2 + 50, -h / 2); ctx.lineTo(w / 2, -h / 2); ctx.lineTo(w / 2, h / 2); ctx.lineTo(-w / 2 + 50, h / 2); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.paper; ctx.beginPath(); ctx.arc(-w / 2 + 42, 0, 14, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, 25, 6);
+  ctx.restore();
+}
+function dress(x, y, s) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.lineJoin = 'round';
+  ctx.fillStyle = C.red; ctx.strokeStyle = C.ink; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.moveTo(-60, -180); ctx.lineTo(60, -180); ctx.lineTo(80, -60); ctx.lineTo(170, 200); ctx.quadraticCurveTo(0, 230, -170, 200); ctx.lineTo(-80, -60); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-50, -180); ctx.lineTo(-40, -240); ctx.moveTo(50, -180); ctx.lineTo(40, -240); ctx.stroke();
+  ctx.fillStyle = C.ink; ctx.fillRect(-82, -70, 164, 22);
+  // hanger
+  ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(-90, -240); ctx.lineTo(0, -280); ctx.lineTo(90, -240); ctx.closePath(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, -280); ctx.lineTo(0, -300); ctx.arc(14, -300, 14, Math.PI, Math.PI * 1.9); ctx.stroke();
+  ctx.restore();
+}
+function eye(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 7;
+  ctx.beginPath(); ctx.moveTo(-80, 0); ctx.quadraticCurveTo(0, -70, 80, 0); ctx.quadraticCurveTo(0, 70, -80, 0); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(14, 0, 26, 0, 7); ctx.fill(); ctx.fillStyle = C.white; ctx.beginPath(); ctx.arc(22, -8, 7, 0, 7); ctx.fill(); ctx.restore(); }
+function gameBox(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.fillStyle = '#7ec8f2'; ctx.strokeStyle = C.ink; ctx.lineWidth = 7;
+  roughRect(-110, -150, 220, 300, 10); ctx.fill(); ctx.stroke(); ctx.fillStyle = C.ink; roughRect(-110, -150, 220, 50, 10); ctx.fill();
+  font(30, 900); ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('GAME', 0, -124);
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 9; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-50, 20); ctx.lineTo(-10, 20); ctx.moveTo(-30, 0); ctx.lineTo(-30, 40); ctx.stroke();
+  ctx.fillStyle = C.red; ctx.beginPath(); ctx.arc(40, 10, 13, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(65, 35, 13, 0, 7); ctx.fill(); ctx.restore(); }
+function sneaker(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 8; ctx.lineJoin = 'round';
+  ctx.beginPath(); ctx.moveTo(-150, 40); ctx.lineTo(-140, -60); ctx.lineTo(-60, -60); ctx.quadraticCurveTo(-20, 0, 60, 0); ctx.quadraticCurveTo(150, 5, 160, 40); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.red; ctx.beginPath(); ctx.moveTo(-100, 0); ctx.quadraticCurveTo(-20, 30, 80, 10); ctx.lineTo(80, 30); ctx.quadraticCurveTo(-20, 50, -100, 25); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = C.ink; ctx.fillRect(-155, 40, 320, 22); ctx.restore(); }
+
+// ---------- S0 hook ----------
+function hookLayout(t, still, face = 'happy') {
+  const T = still ? 99 : t;
+  bigTag(300, 860, '$9.99', { s: .9, rot: -.08, color: GREEN });
+  bigTag(790, 860, '$10', { s: .9, rot: .08, color: C.red });
+  font(60, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('vs', 545, 860);
+  stick(300, 1440, POSE.point, { s: .95, face, id: 1, look: .3, blink: !still && blinkAt(t) });
+  pop('1 CENT CHEAPER', 540, 420, 86, T, -1, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop('FEELS WAY CHEAPER?!', 540, 560, 84, T, -1, { color: C.white, bg: 1, rot: 2 });
+}
+function s0(t) {
+  ctx.save(); zoomAt(540, 900, 1 + t * .02); hookLayout(t, false); ctx.restore();
+  pop("IT'S 1 CENT.", 790, 1120, 60, t, 3.5, { color: C.red, rot: 6 });
+}
+
+// ---------- S1 reading left to right ----------
+function s1(t) {
+  sceneIn(t, 4.3);
+  pop('LEFT → RIGHT', 540, 400, 80, t, 4.5, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  const chars = ['$', '9', '.', '9', '9'];
+  font(250, 900); const ws = chars.map(c => ctx.measureText(c).width), total = ws.reduce((a, b) => a + b, 0);
+  let x = 540 - total / 2; const y = 860;
+  const fade = prog(t, 7.7, 8.4);
+  chars.forEach((c, i) => {
+    const locked = i === 1 && t > 5.8;
+    ctx.save(); ctx.globalAlpha = i >= 2 ? 1 - fade * .8 : 1;
+    if (locked) { ctx.fillStyle = 'rgba(232,50,43,.15)'; roughRect(x - 10, y - 150, ws[i] + 20, 300, 14); ctx.fill(); }
+    font(250, 900); ctx.fillStyle = locked ? C.red : C.ink; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(c, x, y);
+    ctx.restore(); x += ws[i];
+  });
+  const ex = lerp(540 - total / 2 + 20, 540 + total / 2 - 40, eio(prog(t, 4.6, 5.4)) * (t < 5.8 ? 1 : 0) + (t >= 5.8 ? .32 : 0));
+  eye(ex, 620, .7);
+  pop('LOCKED IN', 540 - total / 2 + ws[0] + ws[1] / 2, 1060, 54, t, 5.85, { color: C.white, bg: 1, rot: -4 });
+  pop('...rest ignored', 700, 1140, 44, t, 7.75, { color: C.soft, weight: 800 });
+  stick(540, 1520, POSE.think, { s: .7, face: 'neutral', id: 1, blink: blinkAt(t) });
+}
+
+// ---------- S2 left-digit bias ----------
+function s2(t) {
+  sceneIn(t, 9.2);
+  shake(t, t > 9.45 ? Math.max(0, 14 - (t - 9.45) * 40) : 0);
+  const p = prog(t, 9.45, 9.65);
+  if (p > 0) {
+    const s = lerp(2.2, 1, eo(p));
+    ctx.save(); ctx.translate(540, 700); ctx.rotate(-6 * D2R); ctx.scale(s, s); ctx.globalAlpha = p;
+    ctx.strokeStyle = C.red; ctx.lineWidth = 12; roughRect(-420, -150, 840, 300, 18); ctx.stroke();
+    font(110, 900); ctx.fillStyle = C.red; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('LEFT-DIGIT', 0, -52); ctx.fillText('BIAS', 0, 62); ctx.restore();
+  }
+  stick(540, 1400, POSE.facepalm, { s: 1, face: 'sad', id: 1 });
+}
+
+// ---------- S3 the dress study ----------
+const PRICES = [['$34', 14.0], ['$39', 14.85], ['$44', 15.65]];
+function s3(t) {
+  sceneIn(t, 10.85);
+  pop('REAL STUDY · 2003', 540, 380, 60, t, 11.1, { color: C.white, bg: 1, bgColor: C.ink });
+  pop('SAME DRESS', 540, 480, 70, t, 11.6, {});
+  const d = back(prog(t, 11.4, 11.8)); if (d > 0) dress(540, 900, .95 * d);
+  PRICES.forEach(([p, at], i) => { const k = back(prog(t, at, at + .3)); if (k > 0) bigTag(220 + i * 320, 1290, p, { s: .75 * k, rot: (i - 1) * .08, size: 90 }); });
+  pop('3 PRICES', 540, 1500, 56, t, 13.0, { color: C.soft });
+}
+
+// ---------- S4 the winner ----------
+function s4(t) {
+  sceneIn(t, 16.5);
+  pop('THE WINNER?', 540, 380, 84, t, 16.65, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  const k = eo(prog(t, 16.8, 17.5)), hs = [.72, 1, .7];
+  hs.forEach((h, i) => {
+    const x = 260 + i * 280, base = 1120, hh = h * 520 * k;
+    ctx.fillStyle = i === 1 ? C.red : C.ink; roughRect(x - 90, base - hh, 180, Math.max(2, hh), 8); ctx.fill();
+    font(64, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(PRICES[i][0], x, base + 60);
+  });
+  ctx.fillStyle = C.ink; ctx.fillRect(130, 1120, 820, 8);
+  if (t > 17.45) {
+    const c = back(prog(t, 17.45, 17.75));
+    ctx.save(); ctx.translate(540, 1120 - 520 - 90); ctx.scale(c, c); ctx.fillStyle = C.gold; ctx.strokeStyle = C.ink; ctx.lineWidth = 7;
+    ctx.beginPath(); ctx.moveTo(-70, 40); ctx.lineTo(-80, -40); ctx.lineTo(-35, 0); ctx.lineTo(0, -55); ctx.lineTo(35, 0); ctx.lineTo(80, -40); ctx.lineTo(70, 40); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
+    pop('SOLD THE MOST', 540, 1260, 50, t, 17.6, { color: C.white, bg: 1 });
+  }
+  if (t > 18.3) {
+    const m = stick(860, 1500, POSE.shock, { s: .7, face: 'shock', id: 1, mouthOpen: .4 });
+    pop('BEAT THE CHEAPER $34', 450, 1400, 50, t, 18.35, { color: C.white, bg: 1, bgColor: C.ink, rot: -3 });
+  }
+}
+
+// ---------- S5 nine feels like a deal ----------
+function s5(t) {
+  sceneIn(t, 19.95);
+  font(230, 900);
+  const a = '$4', b = '.99', wa = ctx.measureText(a).width, wb = ctx.measureText(b).width, x0 = 540 - (wa + wb) / 2;
+  const glow = .5 + .5 * Math.sin(t * 8);
+  ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillStyle = C.ink; ctx.fillText(a, x0, 820);
+  ctx.shadowColor = C.gold; ctx.shadowBlur = 30 + glow * 30; ctx.fillStyle = C.red; ctx.fillText(b, x0 + wa, 820); ctx.restore();
+  for (let i = 0; i < 6; i++) { const ang = i / 6 * 6.28 + t, r = 300 + Math.sin(t * 3 + i) * 20; pop('✦', 540 + Math.cos(ang) * r, 820 + Math.sin(ang) * r * .6, 50, t, 20.2 + i * .05, { color: C.gold }); }
+  pop('= "DEAL" VIBES', 540, 1100, 90, t, 20.4, { color: C.white, bg: 1, rot: -2 });
+  stick(540, 1500, POSE.cheer, { s: .7, face: 'happy', id: 1 });
+}
+
+// ---------- S6 nines everywhere ----------
+function s6(t) {
+  sceneIn(t, 22.3);
+  const items = [[gameBox, '$59.99', 22.5], [sneaker, '$99.99', 23.1], [phone, '$999', 23.7]];
+  items.forEach(([fn, price, at], i) => {
+    const k = back(prog(t, at, at + .3)); if (k <= 0) return;
+    const x = 200 + i * 340, y = 760;
+    if (fn === phone) phone(x, y, 1.4 * k, .05, () => appIcon(0, -10, 50, 1)); else fn(x, y, .9 * k);
+    bigTag(x, 1010, price, { s: .55 * k, size: 90, rot: (i - 1) * .07 });
+  });
+  pop('*example prices', 540, 1130, 30, t, 22.6, { color: C.soft, weight: 700 });
+  [24.6, 25.15, 25.85].forEach((at, i) => pop('9', 300 + i * 240, 1320, 200, t, at, { color: C.red, rot: (i - 1) * 10 }));
+  pop('EVERYWHERE', 540, 1530, 80, t, 26.0, { color: C.white, bg: 1, bgColor: C.ink });
+}
+
+// ---------- S7 the fix ----------
+function s7(t) {
+  sceneIn(t, 27.0);
+  pop('THE FIX', 540, 380, 90, t, 27.15, { color: C.white, bg: 1, bgColor: GREEN, rot: -2 });
+  pop('ROUND UP IN YOUR HEAD', 540, 510, 60, t, 28.05, {});
+  [['$9.99', '$10', 28.1], ['$59.99', '$60', 28.4], ['$999', '$1,000', 28.7]].forEach(([a, b, at], i) => {
+    const y = 700 + i * 170;
+    pop(a, 330, y, 80, t, at, { color: C.soft });
+    pop('→', 540, y, 80, t, at + .1, {});
+    pop(b, 760, y, 90, t, at + .2, { color: C.white, bg: 1, bgColor: GREEN });
+  });
+  stick(540, 1500, POSE.aha, { s: .7, face: 'happy', id: 1 });
+}
+
+// ---------- S8 loop ----------
+function s8(t) {
+  sceneIn(t, 29.35);
+  hookLayout(t, false, 'smug');
+  pop('REALLY CHEAPER?', 540, 1060, 90, t, 30.05, { color: C.white, bg: 1, rot: -3 });
+  pop('EP 4 TOMORROW →', 540, 1580, 44, t, 30.6, { color: C.soft, weight: 800 });
+  const k = prog(t, 32.05, 32.5);
+  if (k > 0) { ctx.save(); ctx.globalAlpha = k; paper(); hookLayout(0, true); ctx.restore(); }
+}
+
+const SCENES = [[s0, 0, 4.3], [s1, 4.3, 9.2], [s2, 9.2, 10.85], [s3, 10.85, 16.5], [s4, 16.5, 19.95], [s5, 19.95, 22.3], [s6, 22.3, 27.0], [s7, 27.0, 29.35], [s8, 29.35, 99]];
+
+function renderFrame(t) {
+  setTime(t);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none';
+  paper();
+  for (const [fn, a, b] of SCENES) if (inScene(t, a, b)) { ctx.save(); fn(t); ctx.restore(); }
+  for (const [, a] of SCENES) { const k = prog(t, a - .06, a + .08); if (a > 0 && k > 0 && k < 1) { ctx.fillStyle = `rgba(20,20,20,${(1 - Math.abs(k * 2 - 1)) * .45})`; ctx.fillRect(0, 0, W, H); } }
+  vignette();
+  seriesBadge(CONFIG.series, CONFIG.ep, t);
+}
+
+window.FPS = FPS; window.DURATION = DURATION;
+if (params.get('render')) document.body.classList.add('render');
+window.ready = document.fonts.load('900 100px Inter').then(() => document.fonts.load('700 50px Inter')).then(() => { renderFrame(0); return true; });
+if (!params.get('render')) { const t0 = performance.now(); const loop = () => { renderFrame(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); }; loop(); }
+</script>
+</body>
+</html>

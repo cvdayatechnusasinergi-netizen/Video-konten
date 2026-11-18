@@ -15,7 +15,7 @@ and double down on the stronger series. Each series = one YouTube playlist.
 |---|---|---|---|---|
 | 1 | Why $5 Coffee Feels Cheap But a $5 App Feels Expensive | Mental accounting | `video2/` | ✅ rendered |
 | 2 | Why the Large Popcorn Is Always Just $0.50 More | Decoy effect | `video4/` | ✅ rendered |
-| 3 | Why $9.99 Tricks Your Brain | Left-digit bias | | |
+| 3 | Why $9.99 Tricks Your Brain (Even When You Know It) | Left-digit bias | `video6/` | ✅ rendered |
 | 4 | Why Your Paycheck Disappears in 3 Days | Lifestyle creep | | |
 | 5 | Why You Keep Paying for Apps You Don't Use | Status quo bias | | |
 | 6 | Why "Free Shipping" Makes You Spend More | Zero-price effect | | |

@@ -100,3 +100,26 @@
 
 **Pinned comment**
 > What's something everyone laughs at today that'll be huge in 10 years? 👇
+
+## Brain vs Wallet EP 3 (`video6/output/brain-vs-wallet-ep3-999.mp4`)
+**Title** (≤100 chars)
+> Why $9.99 Tricks Your Brain (Even When You Know It) 🧠 #BrainVsWallet #shorts
+
+**Description**
+> $9.99 vs $10. One cent apart — but your brain files one under "9-something" and the other under "10".
+> You read left to right, so your brain locks in the first digit and kind of ignores the rest. It's called left-digit bias.
+>
+> In a real 2003 study (Anderson & Simester, MIT & University of Chicago), a catalog sold the same dress at $34, $39 and $44. The winner? $39 — it even outsold the cheaper $34.
+>
+> Games, sneakers, phones: nine, nine, nine everywhere.
+> The fix: always round up in your head.
+>
+> Brain vs Wallet — EP 3. New episode tomorrow.
+> What's the most "…99" thing you bought recently? 👇
+>
+> *Game, sneaker & phone prices are examples.
+>
+> #BrainVsWallet #psychology #pricing #money #shorts
+
+**Pinned comment**
+> Be honest: does $9.99 still feel cheaper than $10 after this? 😅👇
