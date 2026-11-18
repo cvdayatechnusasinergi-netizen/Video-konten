@@ -153,6 +153,20 @@ Remotion: komposisi `Video7Samsung` (`remotion/src/v7/Samsung.tsx`). HP digambar
 
 Remotion: komposisi `Video8YouTube` (`remotion/src/v8/YouTube.tsx`). Pemutar video generik (aksen biru), tanpa logo asli.
 
+## Postingan gambar (seri "Fakta Teknologi", 1080×1350)
+File: `gambar/fakta-1.png` … `fakta-5.png`. Sumber: `remotion/src/posts/Posts.tsx` (Still `Post1`–`Post5`).
+Render: `cd remotion && npx remotion still src/index.ts Post1 ../gambar/fakta-1.png --browser-executable=<headless_shell>`.
+
+| # | Topik | Caption singkat |
+|---|---|---|
+| 1 | Simbol @ di email (1971) | Simbol @ yang kamu ketik tiap hari dipilih dalam sekejap tahun 1971 😮 Ide kecil, dipakai miliaran orang. Setuju ide sederhana sering paling berguna? 👇 #faktateknologi #email |
+| 2 | Kamera digital pertama, Kodak bangkrut (1975/2012) | Kodak yang menemukan kamera digital… tapi malah bangkrut karena takut berubah 📸 Pernah nunda ide baru karena takut? 👇 #faktateknologi #kodak |
+| 3 | SMS pertama "Merry Christmas" (1992) | SMS pertama di dunia cuma 2 kata — dan dikirim dari komputer 📱 SMS pertama kamu ke siapa? 👇 #faktateknologi #sms |
+| 4 | "Bug" pertama = ngengat (1947) | Istilah "bug" komputer berawal dari ngengat sungguhan 🦋 Tips: catat kapan error muncul, perbaikan jadi lebih cepat. 👇 #faktateknologi #tipsIT |
+| 5 | Hard disk pertama 5 MB, 1 ton (1956) | 5 MB beratnya 1 ton. Sekarang 1 TB seukuran kuku 💾 Kapan terakhir kamu backup foto & dokumen? 👇 #faktateknologi #backup |
+
+Saran posting: 1 gambar per hari (selang-seling dengan Reels), jam 12.00–13.00 atau 19.00–21.00.
+
 ## Gaya tetap: Remotion (mulai video 3) — disukai user
 - Proyek `remotion/` (React). Tampilan: latar gelap halus (gumpalan biru tua + grid titik), **HP 3D realistis** (CSS 3D,
   bingkai logam, kilau kaca), **kartu UI asli** (komentar FB, berita, panel pengaturan), animasi pegas, kedalaman

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Composition } from 'remotion';
+import { Composition, Still } from 'remotion';
 import { HookTest } from './HookTest';
 import { Video3, V3_FRAMES } from './v3/Video3';
 import { AppleHistory, APPLE_FRAMES } from './v3/AppleHistory';
@@ -8,8 +8,10 @@ import { WhatsAppHistory, WA_FRAMES } from './v5/WhatsApp';
 import { GoogleHistory, GOOGLE_FRAMES } from './v6/Google';
 import { SamsungHistory, SAMSUNG_FRAMES } from './v7/Samsung';
 import { YouTubeHistory, YT_FRAMES } from './v8/YouTube';
+import { PostStill } from './posts/Posts';
 export const RemotionRoot: React.FC = () => (
   <>
+    {[0, 1, 2, 3, 4].map(i => <Still key={i} id={`Post${i + 1}`} component={() => <PostStill i={i} />} width={1080} height={1350} />)}
     <Composition id="Video8YouTube" component={YouTubeHistory} durationInFrames={YT_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="Video7Samsung" component={SamsungHistory} durationInFrames={SAMSUNG_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="Video6Google" component={GoogleHistory} durationInFrames={GOOGLE_FRAMES} fps={30} width={1080} height={1920} />
