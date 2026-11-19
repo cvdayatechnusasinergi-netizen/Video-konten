@@ -67,9 +67,9 @@ function store(x, base, w, h, opts = {}) { // generic video-rental megastore, (x
   const { crack = 0, fall = 0, label = 'BLOCKBUSTER', sub = 'VIDEO' } = opts;
   ctx.save(); ctx.translate(x, base); ctx.rotate(fall * .25); ctx.translate(0, fall * 120);
   ctx.lineWidth = 8; ctx.strokeStyle = C.ink; ctx.lineJoin = 'round';
-  ctx.fillStyle = BLUE; roughRect(-w / 2, -h, w, h, 6); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = opts.color || BLUE; roughRect(-w / 2, -h, w, h, 6); ctx.fill(); ctx.stroke();
   ctx.fillStyle = C.gold; roughRect(-w * .42, -h * .9, w * .84, h * .28, 6); ctx.fill(); ctx.stroke();
-  font(Math.min(w * .1, 58), 900); ctx.fillStyle = BLUE; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, 0, -h * .76);
+  font(Math.min(w * .1, 58), 900); ctx.fillStyle = opts.color || BLUE; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, 0, -h * .76);
   ctx.fillStyle = '#dbe6ff'; for (let i = 0; i < 3; i++) { roughRect(-w * .4 + i * w * .28, -h * .52, w * .22, h * .2, 4); ctx.fill(); ctx.stroke(); }
   ctx.fillStyle = C.ink; roughRect(-w * .1, -h * .26, w * .2, h * .26, 4); ctx.fill();
   if (crack > 0) { ctx.strokeStyle = C.ink; ctx.lineWidth = 7; ctx.beginPath(); const pts = [[0, -h], [-30, -h * .8], [20, -h * .62], [-25, -h * .42], [15, -h * .2]]; const n = Math.ceil(pts.length * crack); pts.slice(0, n).forEach(([a, b], i) => i ? ctx.lineTo(a, b) : ctx.moveTo(a, b)); ctx.stroke(); }

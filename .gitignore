@@ -2,3 +2,4 @@ output/still-*.png
 node_modules/
 stickman/**/vo/*.log
 stickman/**/vo/raw*.mp3
+stickman/**/output/render.log
