@@ -19,7 +19,8 @@ Rules for a good script:
 - **30–40 s**, 8–9 VO lines, one line per scene. Completion rate beats length. Hook in the first line (a shocking number, a weird fact, "you do this every day").
 - Short spoken sentences, casual American tone ("basically", "a little crazy", "here's the twist"). One twist + one takeaway.
 - Facts must be real; put the source year/number on screen. Prices that move (crypto, stocks) → use a dated peak/value and a footnote.
-- Last VO line loops back to the hook (a question that restates it), so the Short replays seamlessly. No spoken CTA, no long outro.
+- **Goal = subscribers.** Last VO line: `Tomorrow: <teaser of the next upload>. Subscribe so you don't miss it.`
+  The teaser is the next episode in the upload order (the other series) — check SERIES.md, and pitch both concepts together so they can tease each other.
 
 ## 2. Voice over
 - Next folder: `stickman/videoN/` (copy `stickman/video1/` as a template; keep `../lib/stick.js`).
@@ -37,10 +38,10 @@ Rules for a good script:
 - 1080×1920, 30 fps. Important text in y 330–1450 and away from the right edge (YouTube Shorts UI).
 - **Frame 0 = the hook title** fully visible (start = -1), so the auto thumbnail reads.
 - Series badge: `seriesBadge(CONFIG.series, CONFIG.ep, t)` drawn last in `renderFrame`.
-- Ending: "EP N+1 TOMORROW →" over the last scene, then dissolve (last ~0.45 s) into the frame-0 hook layout — see `stickman/video2/index.html` (`hookLayout`, `s8`).
+- Ending: `nextUp(t, start, CONFIG.nextSeries, CONFIG.nextTitle, clickTime)` (teaser card + SUBSCRIBE click, time the click on the spoken word "Subscribe"), then dissolve (last ~0.45 s) into the frame-0 hook layout — see `stickman/video8/index.html` (`hookLayout`, `s7`).
 
 ## 4. Check, render, ship
 - Stills: `node render.js --page stickman/videoN --out stickman/videoN/output/stills/x.mp4 --stills 0,5,12,...` — look at them (contact sheet), fix overlaps, delete the stills folder.
 - Render: `node render.js --page stickman/videoN --out stickman/videoN/output/<slug>.mp4`
 - Add the YouTube **title (≤100 chars, mobile upload only has this field)**, description and pinned comment to `stickman/CAPTIONS.md`.
-- Commit + push, then send the MP4 to the user **together with the title, description and pinned comment** in separate labelled code blocks (title goes in the upload screen; description is added afterwards in YouTube Studio → Content → Edit).
+- Commit + push, then send the MP4 to the user **together with the title, description and pinned comment** in separate labelled code blocks (title goes in the upload screen; description is added afterwards in YouTube Studio → Content → Edit), plus which video to set as **Related video** (previous episode of the same series). Pinned comment = engagement question + series playlist + "new episode every day".

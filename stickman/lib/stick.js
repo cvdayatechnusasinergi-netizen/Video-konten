@@ -441,3 +441,45 @@ function necktie(m, s = 1, color = C.red) {
   ctx.beginPath(); ctx.moveTo(-10 * s, 4 * s); ctx.lineTo(10 * s, 4 * s); ctx.lineTo(16 * s, 80 * s); ctx.lineTo(0, 100 * s); ctx.lineTo(-16 * s, 80 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
   ctx.restore();
 }
+
+// ---------- subscribe-focused ending ----------
+// "NEXT EPISODE" teaser card + SUBSCRIBE button that a stick arm clicks.
+// start = when the card pops; click = when the button is pressed.
+function nextUp(t, start, nextSeries, nextTitle, click, opts = {}) {
+  const { y = 820 } = opts;
+  const p = back(prog(t, start, start + .35));
+  if (p <= 0) return;
+  ctx.save(); ctx.translate(540, y); ctx.scale(p, p); ctx.rotate(-1.5 * D2R);
+  ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 9;
+  roughRect(-440, -230, 880, 460, 26); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.red; roughRect(-440, -230, 880, 90, 26); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const head = 'TOMORROW · ' + nextSeries.toUpperCase();
+  let hs = 44; font(hs, 900); while (ctx.measureText(head).width > 800 && hs > 24) { hs -= 2; font(hs, 900); }
+  ctx.fillText(head, 0, -184);
+  ctx.fillStyle = C.ink;
+  const wrapAt = (size) => { font(size, 900); const words = nextTitle.split(' '); const out = []; let cur = '';
+    for (const w of words) { const tt = cur ? cur + ' ' + w : w; if (ctx.measureText(tt).width > 790 && cur) { out.push(cur); cur = w; } else cur = tt; }
+    out.push(cur); return out; };
+  let size = 64, lines = wrapAt(size);
+  while ((lines.length > 3 || lines[lines.length - 1].split(' ').length < 2 && lines.length > 1) && size > 40) { size -= 2; lines = wrapAt(size); }
+  lines.forEach((l, i) => ctx.fillText(l, 0, 20 + (i - (lines.length - 1) / 2) * size * 1.15));
+  ctx.restore();
+  // subscribe button
+  const bp = back(prog(t, start + .3, start + .6));
+  if (bp > 0) {
+    const pressed = t > click, squish = pressed && t < click + .15 ? .92 : 1;
+    ctx.save(); ctx.translate(540, y + 400); ctx.scale(bp * squish, bp * squish);
+    ctx.fillStyle = pressed ? C.ink : C.red; ctx.strokeStyle = C.ink; ctx.lineWidth = 8;
+    roughRect(-280, -75, 560, 150, 75); ctx.fill(); ctx.stroke();
+    font(64, 900); ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(pressed ? 'SUBSCRIBED ✓' : 'SUBSCRIBE', 0, 4);
+    ctx.restore();
+    // stick arm pressing it
+    const cp = eio(prog(t, click - .55, click));
+    const hx = lerp(1000, 640, cp), hy = lerp(y + 720, y + 430, cp);
+    inkLine([[hx, hy], [hx + 140, hy + 170]], 16, C.ink, 990);
+    ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(hx, hy, 15, 0, 7); ctx.fill();
+    if (pressed) { const k = prog(t, click, click + .5); ctx.save(); ctx.globalAlpha = 1 - k; ctx.strokeStyle = C.gold; ctx.lineWidth = 8; ctx.beginPath(); ctx.arc(640, y + 420, 30 + k * 90, 0, 7); ctx.stroke(); ctx.restore(); }
+  }
+}

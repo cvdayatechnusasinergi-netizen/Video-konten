@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Lifestyle Creep</title>
+<style>
+  html,body{margin:0;background:#222;}
+  canvas{display:block;width:360px;height:640px;}
+  body.render canvas{width:1080px;height:1920px;}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="../lib/stick.js"></script>
+<script>
+// ============ CONFIG ============
+const params = new URLSearchParams(location.search);
+const CONFIG = {
+  channel: params.get('channel') || 'StickWise',
+  series: 'Brain vs Wallet',
+  ep: 4,
+  nextSeries: 'Worst Money Decisions',
+  nextTitle: "Kodak invented the digital camera... and didn't want it",
+};
+// ================================
+const FPS = 30, DURATION = 32.6;
+// VO starts: 0.15 2.47 8.1 14.5 16.55 18.0 22.75 26.45
+const GREEN = '#2f9e44';
+
+function sceneIn(t, a) { const p = prog(t, a, a + .2); zoomAt(W / 2, H / 2, 1 + (1 - eo(p)) * .06); }
+
+// ---------- local props ----------
+function payslip(x, y, s, rot) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 6; roughRect(-150, -190, 300, 380, 6); ctx.fill(); ctx.stroke();
+  font(32, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('PAYSLIP', 0, -150);
+  ctx.fillStyle = C.line; for (let i = 0; i < 4; i++) ctx.fillRect(-110, -100 + i * 32, 220 - i * 30, 10);
+  ctx.fillStyle = GREEN; roughRect(-125, 50, 250, 100, 10); ctx.fill();
+  font(44, 900); ctx.fillStyle = C.white; ctx.fillText('+$500/mo', 0, 102);
+  ctx.restore();
+}
+function wallet(x, y, s, t, empty = true) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.fillStyle = '#8a5a35'; ctx.strokeStyle = C.ink; ctx.lineWidth = 8; ctx.lineJoin = 'round';
+  roughRect(-150, -90, 300, 180, 18); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#6e4628'; roughRect(-150, -90, 300, 70, 18); ctx.fill(); ctx.stroke();
+  if (empty) { // moth
+    const mx = Math.sin(t * 2) * 60, my = -150 - Math.abs(Math.sin(t * 3)) * 40, f = Math.abs(Math.sin(t * 18));
+    ctx.fillStyle = C.soft; ctx.beginPath(); ctx.ellipse(mx - 18, my, 20, 10 + f * 10, -.4, 0, 7); ctx.fill(); ctx.beginPath(); ctx.ellipse(mx + 18, my, 20, 10 + f * 10, .4, 0, 7); ctx.fill();
+    ctx.fillStyle = C.ink; ctx.beginPath(); ctx.ellipse(mx, my, 6, 14, 0, 0, 7); ctx.fill();
+  }
+  ctx.restore();
+}
+function deliveryBag(x, y, s) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); ctx.fillStyle = '#e9d3a6'; ctx.strokeStyle = C.ink; ctx.lineWidth = 7; ctx.lineJoin = 'round';
+  roughRect(-90, -80, 180, 170, 8); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.arc(0, -80, 45, Math.PI, 0); ctx.stroke();
+  ctx.fillStyle = C.red; ctx.beginPath(); ctx.arc(0, 10, 32, 0, 7); ctx.fill(); ctx.restore(); }
+function upgradeItem(i, x, y, s, t) {
+  if (i === 0) coffeeCup(x, y, 1.0 * s, 0, t);
+  if (i === 1) { for (let k = 0; k < 3; k++) appIcon(x - 70 + k * 70, y, 60 * s, k); }
+  if (i === 2) deliveryBag(x, y, .9 * s);
+  if (i === 3) phone(x, y, 1.0 * s, .08, () => appIcon(0, -10, 50, 3));
+}
+function treadmill(x, y, t) {
+  ctx.save(); ctx.fillStyle = C.ink; roughRect(x - 260, y, 520, 40, 20); ctx.fill();
+  ctx.strokeStyle = C.paper; ctx.lineWidth = 6; for (let i = 0; i < 8; i++) { const k = ((i / 8 - t * .8) % 1 + 1) % 1; const xx = x - 240 + k * 480; ctx.beginPath(); ctx.moveTo(xx, y + 6); ctx.lineTo(xx, y + 34); ctx.stroke(); }
+  inkLine([[x + 220, y], [x + 260, y - 300], [x + 180, y - 330]], 14, C.ink, 777);
+  ctx.restore();
+}
+
+// ---------- S0 hook ----------
+function hookLayout(t, still) {
+  const T = still ? 99 : t;
+  const m = stick(430, 1420, POSE.present, { s: 1.0, face: 'worried', id: 1, blink: !still && blinkAt(t) });
+  payslip(m.lh[0] - 50, m.lh[1] - 90, .7, -.1);
+  wallet(790, 1160, 1.0, still ? 0 : t);
+  pop('EMPTY', 790, 1300, 54, T, -1, { color: C.white, bg: 1, bgColor: C.ink, rot: 4 });
+  pop('GOT A RAISE...', 540, 420, 96, T, -1, { color: C.white, bg: 1, bgColor: GREEN, rot: -2 });
+  pop('STILL BROKE?!', 540, 570, 110, T, -1, { color: C.white, bg: 1, rot: 2 });
+}
+function s0(t) { ctx.save(); zoomAt(540, 900, 1 + t * .02); hookLayout(t, false); ctx.restore(); }
+
+// ---------- S1 even the rich ----------
+function s1(t) {
+  sceneIn(t, 2.3);
+  pop('EVEN PEOPLE EARNING', 540, 400, 66, t, 2.5, {});
+  pop('$500K+ A YEAR', 540, 510, 96, t, 3.3, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  for (let i = 0; i < 3; i++) {
+    const p = back(prog(t, 4.2 + i * .2, 4.55 + i * .2)); if (p <= 0) continue;
+    ctx.save(); ctx.translate(250 + i * 290, 1130); ctx.scale(p, p); ctx.translate(-(250 + i * 290), -1130);
+    const m = stick(250 + i * 290, 1130, i === 1 ? POSE.shrug : POSE.stand, { s: .75, face: i === 1 ? 'worried' : 'smile', id: 2 + i, color: i === 1 ? C.red : C.ink });
+    necktie(m, .75, i === 1 ? C.ink : C.red);
+    ctx.restore();
+  }
+  pop('1 IN 3', 540, 1360, 120, t, 5.6, { color: C.white, bg: 1, rot: -3 });
+  pop('LIVE PAYCHECK TO PAYCHECK', 540, 1500, 50, t, 6.3, {});
+  pop('Goldman Sachs Retirement Survey, 2026 (36.6%)', 540, 1580, 30, t, 6.5, { color: C.soft, weight: 700 });
+}
+
+// ---------- S2 where the raise goes ----------
+const UP = [['FANCIER COFFEE', 60, 9.6], ['+1 SUBSCRIPTION', 45, 10.7], ['DELIVERY', 250, 11.95], ['NEW PHONE', 145, 13.6]];
+function raiseLeft(t) { let v = 500; UP.forEach(([, c, at]) => { v -= c * eo(prog(t, at, at + .4)); }); return Math.max(0, Math.round(v)); }
+function s2(t) {
+  sceneIn(t, 7.9);
+  const v = raiseLeft(t);
+  pop('RAISE LEFT:', 540, 380, 56, t, 8.1, { color: C.soft });
+  pop('$' + v, 540, 490, 120, t, 8.15, { color: C.white, bg: 1, bgColor: v > 200 ? GREEN : C.red, rot: -2 });
+  UP.forEach(([label, cost, at], i) => {
+    const p = back(prog(t, at, at + .35)); if (p <= 0) return;
+    const x = 290 + (i % 2) * 500, y = 850 + Math.floor(i / 2) * 420;
+    ctx.save(); ctx.translate(x, y); ctx.scale(p, p); ctx.translate(-x, -y);
+    upgradeItem(i, x, y, 1, t);
+    ctx.restore();
+    pop(label, x, y + 150, 40, t, at + .05, {});
+    pop('-$' + cost, x + 150, y - 110, 56, t, at + .15, { color: C.red, rot: 8 });
+  });
+}
+
+// ---------- S3 gone ----------
+function s3(t) {
+  sceneIn(t, 14.35);
+  pop('RAISE LEFT:', 540, 380, 56, t, -1, { color: C.soft });
+  pop('$0', 540, 500, 140, t, -1, { color: C.white, bg: 1, rot: -2 });
+  wallet(540, 1000, 1.3, t);
+  const p = prog(t, 15.25, 15.45);
+  if (p > 0) { ctx.save(); ctx.globalAlpha = p; ctx.translate(540, 1300); ctx.rotate(-.1); ctx.scale(lerp(2.2, 1, eo(p)), lerp(2.2, 1, eo(p)));
+    ctx.strokeStyle = C.red; ctx.lineWidth = 12; roughRect(-260, -80, 520, 160, 14); ctx.stroke(); font(110, 900); ctx.fillStyle = C.red; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('GONE', 0, 6); ctx.restore(); }
+}
+
+// ---------- S4 lifestyle creep ----------
+function s4(t) {
+  sceneIn(t, 16.4);
+  shake(t, t > 16.6 ? Math.max(0, 14 - (t - 16.6) * 40) : 0);
+  const p = prog(t, 16.6, 16.8);
+  if (p > 0) {
+    const s = lerp(2.2, 1, eo(p));
+    ctx.save(); ctx.translate(540, 700); ctx.rotate(-6 * D2R); ctx.scale(s, s); ctx.globalAlpha = p;
+    ctx.strokeStyle = C.red; ctx.lineWidth = 12; roughRect(-420, -150, 840, 300, 18); ctx.stroke();
+    font(110, 900); ctx.fillStyle = C.red; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('LIFESTYLE', 0, -52); ctx.fillText('CREEP', 0, 62); ctx.restore();
+  }
+  stick(540, 1400, POSE.facepalm, { s: 1, face: 'sad', id: 1 });
+}
+
+// ---------- S5 hedonic treadmill ----------
+function s5(t) {
+  sceneIn(t, 17.85);
+  const stage = Math.min(2, Math.floor(prog(t, 18.2, 21.8) * 3));
+  const labels = ['$4 COFFEE', '$7 COFFEE', '$12 COFFEE'];
+  // the "luxury" behind him keeps upgrading
+  ctx.save(); ctx.globalAlpha = .9;
+  coffeeCup(800, 820, [1.0, 1.4, 1.8][stage], 0, t);
+  ctx.restore();
+  pop(labels[stage], 800, 1060, 46, t, 18.2 + stage * 1.2, { color: C.white, bg: 1, bgColor: C.ink });
+  treadmill(420, 1440, t);
+  stick(400, 1400, Math.floor(t * 5) % 2 ? POSE.walk1 : POSE.walk2, { s: .9, face: 'neutral', id: 1 });
+  pop('NEW NORMAL', 280, 1000, 50, t, 19.0, { color: C.soft, rot: -4 });
+  pop("YESTERDAY'S LUXURY", 540, 400, 68, t, 20.25, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop("= TODAY'S NORMAL", 540, 520, 76, t, 21.2, { color: C.white, bg: 1, rot: 2 });
+}
+
+// ---------- S6 the fix ----------
+function s6(t) {
+  sceneIn(t, 22.6);
+  pop('THE FIX', 540, 380, 90, t, 22.75, { color: C.white, bg: 1, bgColor: GREEN, rot: -2 });
+  pop('BEFORE YOU UPGRADE:', 540, 510, 56, t, 23.65, {});
+  const f = prog(t, 25.1, 26.0);
+  jar(320, 1050, 300, 380, 'FUTURE YOU', .1 + .5 * eo(f), { size: 40 });
+  jar(760, 1050, 300, 380, 'ENJOY', .1 + .5 * eo(f), { size: 40, fillColor: '#9ad48a' });
+  if (f > 0 && f < 1) for (let i = 0; i < 6; i++) { const k = (f * 3 + i / 6) % 1; coin(i % 2 ? 760 : 320, 700 + k * 260, 30, k * 5, { spin: Math.cos(t * 6 + i) }); }
+  pop('SAVE HALF THE RAISE', 540, 1400, 70, t, 25.15, { color: C.white, bg: 1, bgColor: C.ink });
+}
+
+// ---------- S7 next episode + subscribe, then loop ----------
+function s7(t) {
+  sceneIn(t, 26.3);
+  nextUp(t, 26.5, CONFIG.nextSeries, CONFIG.nextTitle, 29.5, { y: 760 });
+  pop("DON'T MISS IT", 540, 1470, 50, t, 30.4, { color: C.soft, weight: 800 });
+  const k = prog(t, 32.15, 32.6);
+  if (k > 0) { ctx.save(); ctx.globalAlpha = k; paper(); hookLayout(0, true); ctx.restore(); }
+}
+
+const SCENES = [[s0, 0, 2.3], [s1, 2.3, 7.9], [s2, 7.9, 14.35], [s3, 14.35, 16.4], [s4, 16.4, 17.85], [s5, 17.85, 22.6], [s6, 22.6, 26.3], [s7, 26.3, 99]];
+
+function renderFrame(t) {
+  setTime(t);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none';
+  paper();
+  for (const [fn, a, b] of SCENES) if (inScene(t, a, b)) { ctx.save(); fn(t); ctx.restore(); }
+  for (const [, a] of SCENES) { const k = prog(t, a - .06, a + .08); if (a > 0 && k > 0 && k < 1) { ctx.fillStyle = `rgba(20,20,20,${(1 - Math.abs(k * 2 - 1)) * .45})`; ctx.fillRect(0, 0, W, H); } }
+  vignette();
+  seriesBadge(CONFIG.series, CONFIG.ep, t);
+}
+
+window.FPS = FPS; window.DURATION = DURATION;
+if (params.get('render')) document.body.classList.add('render');
+window.ready = document.fonts.load('900 100px Inter').then(() => document.fonts.load('700 50px Inter')).then(() => { renderFrame(0); return true; });
+if (!params.get('render')) { const t0 = performance.now(); const loop = () => { renderFrame(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); }; loop(); }
+</script>
+</body>
+</html>

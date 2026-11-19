@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Kodak Camera</title>
+<style>
+  html,body{margin:0;background:#222;}
+  canvas{display:block;width:360px;height:640px;}
+  body.render canvas{width:1080px;height:1920px;}
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="../lib/stick.js"></script>
+<script>
+// ============ CONFIG ============
+const params = new URLSearchParams(location.search);
+const CONFIG = {
+  channel: params.get('channel') || 'StickWise',
+  series: 'Worst Money Decisions',
+  ep: 5,
+  nextSeries: 'Brain vs Wallet',
+  nextTitle: "Why you keep paying for apps you don't even use",
+};
+// ================================
+const FPS = 30, DURATION = 35.3;
+// VO starts: 0.15 3.25 11.1 15.7 20.2 24.2 27.35 29.85
+
+function sceneIn(t, a) { const p = prog(t, a, a + .2); zoomAt(W / 2, H / 2, 1 + (1 - eo(p)) * .06); }
+
+// ---------- local props ----------
+function prototype(x, y, s, rot = 0) { // 1975 "toaster with a lens"
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s); ctx.lineJoin = 'round';
+  ctx.fillStyle = '#b9bcc2'; ctx.strokeStyle = C.ink; ctx.lineWidth = 8; roughRect(-170, -110, 340, 220, 14); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#8f939b'; roughRect(-150, -150, 120, 40, 8); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(-70, 10, 62, 0, 7); ctx.fill();
+  ctx.fillStyle = '#5a6b80'; ctx.beginPath(); ctx.arc(-70, 10, 40, 0, 7); ctx.fill(); ctx.fillStyle = C.white; ctx.beginPath(); ctx.arc(-84, -4, 10, 0, 7); ctx.fill();
+  ctx.fillStyle = C.white; roughRect(30, -60, 110, 70, 6); ctx.fill(); ctx.stroke(); // cassette
+  ctx.fillStyle = C.ink; [55, 115].forEach(cx => { ctx.beginPath(); ctx.arc(cx, -25, 12, 0, 7); ctx.fill(); });
+  ctx.fillStyle = C.red; [50, 90, 130].forEach(cx => { ctx.beginPath(); ctx.arc(cx, 60, 11, 0, 7); ctx.fill(); });
+  ctx.restore();
+}
+function filmRoll(x, y, s, rot = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s); ctx.lineJoin = 'round';
+  ctx.fillStyle = C.ink; ctx.beginPath(); ctx.moveTo(40, -30); ctx.lineTo(190, -30); ctx.lineTo(190, 30); ctx.lineTo(40, 30); ctx.fill();
+  ctx.fillStyle = C.paper; for (let i = 0; i < 6; i++) { ctx.fillRect(55 + i * 24, -24, 12, 8); ctx.fillRect(55 + i * 24, 16, 12, 8); }
+  ctx.fillStyle = C.gold; ctx.strokeStyle = C.ink; ctx.lineWidth = 7; roughRect(-60, -70, 120, 140, 14); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.red; ctx.fillRect(-56, -20, 112, 40); ctx.fillStyle = C.ink; ctx.fillRect(-30, -86, 60, 18);
+  font(24, 900); ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('FILM', 0, 2);
+  ctx.restore();
+}
+function camPhone(x, y, s, rot) { phone(x, y, s, rot, () => { ctx.fillStyle = C.ink; roughRect(-30, -40, 60, 44, 8); ctx.fill(); ctx.fillStyle = C.white; ctx.beginPath(); ctx.arc(0, -18, 14, 0, 7); ctx.fill(); ctx.fillStyle = C.red; ctx.beginPath(); ctx.arc(0, 40, 16, 0, 7); ctx.fill(); }); }
+function hq(x, base, s, opts = {}) { // generic company HQ with a text name
+  const { crack = 0, fall = 0 } = opts;
+  ctx.save(); ctx.translate(x, base); ctx.rotate(fall * .25); ctx.translate(0, fall * 120); ctx.scale(s, s);
+  ctx.fillStyle = C.gold; ctx.strokeStyle = C.ink; ctx.lineWidth = 8; roughRect(-200, -520, 400, 520, 6); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.red; roughRect(-200, -520, 400, 100, 6); ctx.fill(); ctx.stroke();
+  font(70, 900); ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('KODAK', 0, -468);
+  ctx.fillStyle = '#fff4c7'; for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) { roughRect(-160 + c * 115, -390 + r * 90, 80, 60, 4); ctx.fill(); ctx.stroke(); }
+  if (crack > 0) { ctx.strokeStyle = C.ink; ctx.lineWidth = 8; ctx.beginPath(); const pts = [[0, -520], [-40, -400], [30, -300], [-30, -180], [20, -60]]; pts.slice(0, Math.ceil(pts.length * crack)).forEach(([a, b], i) => i ? ctx.lineTo(a, b) : ctx.moveTo(a, b)); ctx.stroke(); }
+  ctx.restore();
+}
+function boss(x, base, pose, face, s = 1, opts = {}) { const m = stick(x, base, pose, { s, face, ...opts }); necktie(m, s); return m; }
+
+// ---------- S0 hook ----------
+function hookLayout(t, still) {
+  const T = still ? 99 : t;
+  const e = stick(300, 1420, POSE.hold, { s: .95, face: 'happy', id: 1, look: .4, blink: !still && blinkAt(t) });
+  prototype(e.lh[0], e.lh[1] + 30, .7, -.05);
+  boss(800, 1420, POSE.point, 'smug', .95, { id: 2, flip: true, look: -.5 });
+  pop('NO.', 860, 1000, 90, T, still ? -1 : 2.3, { color: C.red, rot: 8 });
+  pop('KODAK INVENTED IT...', 540, 420, 82, T, -1, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop("...AND DIDN'T WANT IT", 540, 560, 80, T, -1, { color: C.white, bg: 1, rot: 2 });
+}
+function s0(t) { ctx.save(); zoomAt(540, 900, 1 + t * .02); hookLayout(t, false); ctx.restore(); }
+
+// ---------- S1 1975 ----------
+function s1(t) {
+  sceneIn(t, 3.05);
+  pop('1975', 540, 400, 130, t, 3.25, { color: C.white, bg: 1, rot: -3 });
+  const e = stick(250, 1450, POSE.cheer, { s: .85, face: 'happy', id: 1 });
+  pop('STEVE SASSON', 250, 1000, 44, t, 5.6, { color: C.white, bg: 1, bgColor: C.ink });
+  pop('Kodak engineer', 250, 1060, 34, t, 5.9, { color: C.soft, weight: 800 });
+  const p = back(prog(t, 6.6, 7.0)); if (p > 0) prototype(700, 820, 1.25 * p, .03);
+  pop('1ST DIGITAL CAMERA', 700, 600, 50, t, 7.0, { color: C.white, bg: 1 });
+  pop('8 LBS', 620, 1100, 70, t, 8.25, { rot: -6 });
+  pop('23 SEC / PHOTO', 740, 1220, 60, t, 9.3, { color: C.red, rot: 4 });
+  pop('0.01 MP', 820, 1330, 50, t, 9.9, { color: C.soft });
+  if (t > 9.3) { const k = clamp((t - 9.3) / 1.4); ctx.save(); ctx.strokeStyle = C.ink; ctx.lineWidth = 10; ctx.beginPath(); ctx.arc(900, 1000, 50, -Math.PI / 2, -Math.PI / 2 + k * 6.283); ctx.stroke(); ctx.restore(); }
+}
+
+// ---------- S2 bosses' reaction ----------
+function s2(t) {
+  sceneIn(t, 10.9);
+  pop("THE BOSSES' REACTION", 540, 380, 64, t, 11.1, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop('(per Sasson)', 540, 470, 40, t, 12.35, { color: C.soft, weight: 800 });
+  prototype(540, 860, .7, 0);
+  const faces = t > 14.5 ? 'smug' : t > 13.6 ? 'smile' : 'neutral';
+  boss(200, 1450, POSE.hips, faces, .8, { id: 3, look: .5 });
+  boss(880, 1450, t > 14.5 ? POSE.point : POSE.hips, faces, .8, { id: 4, flip: true, look: -.5 });
+  pop('"THAT\'S CUTE."', 540, 620, 86, t, 13.65, { rot: -2 });
+  pop('"BUT DON\'T TELL ANYONE."', 540, 1100, 58, t, 14.5, { color: C.white, bg: 1, rot: 2 });
+}
+
+// ---------- S3 why: film money ----------
+function s3(t) {
+  sceneIn(t, 15.55);
+  pop('KODAK = FILM $$$', 540, 380, 84, t, 15.7, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  const n = Math.floor(lerp(0, 14, eo(prog(t, 15.8, 17.5))));
+  for (let i = 0; i < n; i++) filmRoll(180 + (i % 5) * 170 + (Math.floor(i / 5) % 2) * 60, 1050 - Math.floor(i / 5) * 150, .9, (hash(i, 4) - .5) * .4);
+  for (let i = 0; i < 6; i++) { const k = ((t * .9 + i / 6) % 1); coin(160 + i * 150, 640 + k * 500, 32, k * 5, { spin: Math.cos(t * 5 + i) }); }
+  if (t > 18.2) {
+    ctx.save(); ctx.fillStyle = 'rgba(246,243,236,.85)'; ctx.fillRect(0, 1180, W, 420); ctx.restore();
+    prototype(330, 1380, .7, 0);
+    pop('NEEDS FILM?', 760, 1320, 64, t, 18.3, {});
+    pop('NOPE.', 760, 1430, 96, t, 18.9, { color: C.red, rot: 6 });
+  }
+}
+
+// ---------- S4 everyone moved faster ----------
+function s4(t) {
+  sceneIn(t, 20.0);
+  const yr = Math.round(lerp(1975, 2007, eio(prog(t, 20.2, 21.8))));
+  pop(String(yr), 540, 400, 110, t, 20.2, {});
+  pop('...EVENTUALLY', 540, 520, 60, t, 21.3, { color: C.soft });
+  // phones with cameras flood in
+  const n = Math.floor(lerp(0, 9, eo(prog(t, 22.4, 23.6))));
+  for (let i = 0; i < n; i++) camPhone(150 + (i % 5) * 195, 800 + Math.floor(i / 5) * 300, .95, (hash(i, 9) - .5) * .5);
+  const m = stick(540, 1500, t > 22.4 ? POSE.shock : POSE.stand, { s: .75, face: t > 22.4 ? 'shock' : 'neutral', id: 3, mouthOpen: .4 }); necktie(m, .75);
+  if (t > 22.5) pop('EVERYONE ELSE: FASTER', 540, 1640, 50, t, 22.5, { color: C.white, bg: 1, bgColor: C.ink });
+}
+
+// ---------- S5 bankrupt ----------
+function s5(t) {
+  sceneIn(t, 24.05);
+  pop('2012', 540, 400, 130, t, 24.2, { color: C.red });
+  const crack = prog(t, 25.0, 25.6), fall = eio(prog(t, 25.6, 26.6));
+  shake(t, crack > 0 && fall < 1 ? 10 : 0);
+  ctx.save(); ctx.globalAlpha = 1 - fall * .6; hq(540, 1450, 1.15, { crack, fall }); ctx.restore();
+  if (t > 25.6) {
+    const p = prog(t, 25.6, 25.8), s = lerp(2.2, 1, eo(p));
+    ctx.save(); ctx.translate(540, 900); ctx.rotate(-8 * D2R); ctx.scale(s, s); ctx.globalAlpha = p;
+    ctx.fillStyle = 'rgba(246,243,236,.9)'; roughRect(-360, -90, 720, 180, 16); ctx.fill();
+    ctx.strokeStyle = C.red; ctx.lineWidth = 12; roughRect(-360, -90, 720, 180, 16); ctx.stroke();
+    font(120, 900); ctx.fillStyle = C.red; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('BANKRUPT', 0, 6); ctx.restore();
+  }
+}
+
+// ---------- S6 lesson ----------
+function s6(t) {
+  sceneIn(t, 27.2);
+  pop("IF YOU DON'T REPLACE YOURSELF", 540, 600, 58, t, 27.35, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+  pop('SOMEONE ELSE WILL.', 540, 740, 90, t, 28.8, { color: C.white, bg: 1, rot: 2 });
+  stick(540, 1450, POSE.think, { s: 1, face: 'smug', id: 1 });
+}
+
+// ---------- S7 next + subscribe, then loop ----------
+function s7(t) {
+  sceneIn(t, 29.65);
+  nextUp(t, 29.85, CONFIG.nextSeries, CONFIG.nextTitle, 33.25, { y: 760 });
+  pop("DON'T MISS IT", 540, 1470, 50, t, 33.7, { color: C.soft, weight: 800 });
+  const k = prog(t, 34.85, 35.3);
+  if (k > 0) { ctx.save(); ctx.globalAlpha = k; paper(); hookLayout(0, true); ctx.restore(); }
+}
+
+const SCENES = [[s0, 0, 3.05], [s1, 3.05, 10.9], [s2, 10.9, 15.55], [s3, 15.55, 20.0], [s4, 20.0, 24.05], [s5, 24.05, 27.2], [s6, 27.2, 29.65], [s7, 29.65, 99]];
+
+function renderFrame(t) {
+  setTime(t);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none';
+  paper();
+  for (const [fn, a, b] of SCENES) if (inScene(t, a, b)) { ctx.save(); fn(t); ctx.restore(); }
+  for (const [, a] of SCENES) { const k = prog(t, a - .06, a + .08); if (a > 0 && k > 0 && k < 1) { ctx.fillStyle = `rgba(20,20,20,${(1 - Math.abs(k * 2 - 1)) * .45})`; ctx.fillRect(0, 0, W, H); } }
+  vignette();
+  seriesBadge(CONFIG.series, CONFIG.ep, t);
+}
+
+window.FPS = FPS; window.DURATION = DURATION;
+if (params.get('render')) document.body.classList.add('render');
+window.ready = document.fonts.load('900 100px Inter').then(() => document.fonts.load('700 50px Inter')).then(() => { renderFrame(0); return true; });
+if (!params.get('render')) { const t0 = performance.now(); const loop = () => { renderFrame(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); }; loop(); }
+</script>
+</body>
+</html>

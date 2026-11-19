@@ -143,3 +143,50 @@
 
 **Pinned comment**
 > If you won $100K tomorrow, what's the FIRST thing you'd do? Be honest 👇
+
+## Brain vs Wallet EP 4 (`video8/output/brain-vs-wallet-ep4-lifestyle-creep.mp4`)
+**Title** (≤100 chars)
+> Why Your Raise Disappears Before You Feel It 💸 #BrainVsWallet #shorts
+
+**Description**
+> You got a raise. So why are you still broke?
+> Even among households earning over $500K a year, 36.6% say they live paycheck to paycheck (Goldman Sachs Retirement Survey, 2026).
+>
+> Fancier coffee. One more subscription. Delivery instead of cooking. A new phone. Add it up and the raise is gone. It's called lifestyle creep — your brain gets used to nice things fast, so yesterday's luxury becomes today's normal.
+>
+> The fix: before you upgrade anything, save half the raise.
+>
+> 📺 Brain vs Wallet — a new money-psychology short every day. Subscribe so you don't miss tomorrow's.
+> What did your last raise turn into? 👇
+>
+> *Upgrade costs are example numbers.
+>
+> #BrainVsWallet #lifestylecreep #money #psychology #shorts
+
+**Related video:** Brain vs Wallet EP 3 ($9.99)
+**Pinned comment**
+> What did your last raise quietly turn into? ☕📱🍔 👇
+> 📺 Full Brain vs Wallet series in the playlist — new episode every day.
+
+## Worst Money Decisions EP 5 (`video9/output/worst-money-ep5-kodak.mp4`)
+**Title** (≤100 chars)
+> Kodak Invented the Digital Camera… and Didn't Want It 📷 #WorstMoneyDecisions #shorts
+
+**Description**
+> In 1975, Kodak engineer Steve Sasson built the first digital camera: about 8 pounds, 0.01 megapixels, 23 seconds to save one black-and-white photo to a cassette tape.
+> His bosses' reaction, as Sasson tells it: "That's cute — but don't tell anyone about it."
+>
+> Why? Kodak made a fortune selling film, and digital cameras don't need film. Kodak did go digital eventually — but everyone else moved faster. In January 2012, Kodak filed for bankruptcy.
+>
+> If you don't replace yourself, someone else will.
+>
+> 📺 Worst Money Decisions in History — a new one every day. Subscribe so you don't miss tomorrow's.
+>
+> *Kodak patented the camera in 1978 and later sold digital cameras; this is a story about moving too slowly, not about never trying.
+>
+> #WorstMoneyDecisions #kodak #history #business #shorts
+
+**Related video:** Worst Money Decisions EP 4 (lottery myth)
+**Pinned comment**
+> Which company today is making the same mistake Kodak did? 👀👇
+> 📺 Full Worst Money Decisions series in the playlist — new episode every day.
