@@ -32,6 +32,11 @@ Motion graphic TikTok, tema motivasi hidup & keuangan. Tiap video: folder `video
 - Caption TikTok berbentuk **cerita kontras** ("Dua tahun ditonton 300 orang. Satu kalimat: dua juta.").
 - Warna tetap hitam-putih; sorotan pakai kotak putih (bukan kuning).
 
+## Sumber konten (mulai video berikutnya)
+- Seri utama diambil dari buku **Zero to One** (Peter Thiel & Blake Masters, 2014). Ringkasan per bab, terjemahan
+  ide ke bahasa SUARA, dan bank ide konten ada di `riset/zero-to-one.md`. Badge: `ZERO TO ONE · BAB N`.
+- Tulis dengan kata sendiri; jangan kutip panjang dari buku.
+
 ## Gaya bahasa (berlaku mulai video 5)
 - **Santai, gaya Gen Z, jangan kaku.** Pakai "lo/gue", kalimat pendek, kayak ngobrol sama temen.
 - Boleh pakai kata gaul secukupnya: *literally, jujurly, bestie, boncos, ceban, self-reward, nongki, sisihin, kerasa, gaskeun* — jangan berlebihan sampai maksa.
