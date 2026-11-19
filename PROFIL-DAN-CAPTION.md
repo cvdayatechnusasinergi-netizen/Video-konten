@@ -77,6 +77,13 @@ Pola: hook pendek + pertanyaan biar orang komen + 3–5 hashtag (campur niche & 
 >
 > #warrenbuffett #investasipemula #psychologyofmoney #keuangan #fyp
 
+### Carousel foto — Kalau $20 Bisa Ngomong (tren "momen $20 versi kocakmu")
+> Kalau duit $20 bisa ngomong, kayaknya dia udah resign dari dompet lo 😭 ($20 ≈ Rp365rb, kurs BI 18 Nov 2026)
+> Duit lo udah ngomong apa hari ini? 👇
+>
+> #momen20dolar #duit #relate #anakkos #fyp
+File: `carousel/output/20dolar/01.png` … `07.png` (upload sebagai postingan foto, urut 01→07).
+
 ---
 
 ## Cover
