@@ -84,6 +84,12 @@ Pola: hook pendek + pertanyaan biar orang komen + 3–5 hashtag (campur niche & 
 > #momen20dolar #duit #relate #anakkos #fyp
 File: `carousel/output/20dolar/01.png` … `07.png` (upload sebagai postingan foto, urut 01→07).
 
+### Carousel foto — 99 Detik Buat Nyelametin Duit Lo (challenge "99 detik")
+> 99 detik. Lebih cepet dari scroll FYP, tapi bisa nyelametin duit lo sebulan ⏱️ Udah lakuin yang nomor berapa? 👇 Simpan biar nggak lupa!
+>
+> #challenge99detik #duit #tipskeuangan #nabung #fyp
+File: `carousel/output/99detik/01.png` … `08.png`.
+
 ---
 
 ## Cover
