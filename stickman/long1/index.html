@@ -1,0 +1,559 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Worst Money Decisions Ranked</title>
+<style>
+  html,body{margin:0;background:#222;}
+  canvas{display:block;width:960px;height:540px;}
+  body.render canvas{width:1920px;height:1080px;}
+</style>
+</head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<script src="../lib/stick.js"></script>
+<script src="../lib/props.js"></script>
+<script src="vo/timing.js"></script>
+<script>
+// ============ CONFIG ============
+const params = new URLSearchParams(location.search);
+const CONFIG = { channel: params.get('channel') || 'StickWise' };
+// ================================
+const FPS = 30, END_SCREEN = 20, DURATION = VO_DURATION;
+const PURPLE = '#6b3fa0';
+
+// ---------- timing helpers (SEG from vo/timing.js) ----------
+const S = i => SEG[i].s, E = i => SEG[i].s + SEG[i].d, D = i => SEG[i].d;
+const P = (i, k) => SEG[i].ph[Math.min(k, SEG[i].ph.length - 1)];          // k-th phrase start
+const F = (i, f) => SEG[i].s + SEG[i].d * f;                               // fraction of a line
+function sceneIn(t, a) { const p = prog(t, a, a + .2); zoomAt(W / 2, H / 2, 1 + (1 - eo(p)) * .05); }
+const GROUND = 1000;
+
+// ---------- HUD ----------
+function ladder(t, cur) { // countdown ladder top-right
+  for (let n = 6; n >= 1; n--) {
+    const x = 1880 - (n - 1) * 62, y = 60, on = n === cur, done = n > cur;
+    ctx.fillStyle = on ? C.red : done ? C.ink : C.paper; ctx.strokeStyle = C.ink; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.arc(x, y, 24, 0, 7); ctx.fill(); ctx.stroke();
+    font(26, 900); ctx.fillStyle = on || done ? C.white : C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(n, x, y + 1);
+  }
+}
+function chip(text, num) {
+  font(32, 900); const w = ctx.measureText(text).width;
+  ctx.fillStyle = C.red; roughRect(40, 34, 90, 54, 10); ctx.fill();
+  ctx.fillStyle = C.ink; roughRect(130, 34, w + 40, 54, 10); ctx.fill();
+  ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('#' + num, 85, 62);
+  ctx.textAlign = 'left'; ctx.fillText(text, 150, 62);
+}
+function sectionCard(t, i, num, title) { // big "#N" title during the "Number N..." line
+  const p = eo(prog(t, S(i) - .3, S(i) + .25));
+  ctx.save(); ctx.fillStyle = C.ink; ctx.fillRect(0, 0, W * p, H); ctx.restore();
+  if (p < .6) return;
+  const q = back(prog(t, S(i), S(i) + .4));
+  ctx.save(); ctx.translate(560, 540); ctx.scale(q, q); ctx.rotate(-4 * D2R);
+  ctx.fillStyle = C.red; roughRect(-230, -230, 460, 460, 40); ctx.fill();
+  font(330, 900); ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('#' + num, 0, 20); ctx.restore();
+  const lines = title.split('\n');
+  lines.forEach((l, k) => pop(l, 1250, 470 + k * 120, 96, t, P(i, 1) - .1 + k * .15, { color: C.white }));
+}
+
+// ======================= COLD OPEN =======================
+function searchBox(x, y, s, label = 'SEARCH') {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 7; roughRect(-200, -130, 400, 260, 14); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = C.ink; roughRect(-200, -130, 400, 46, 14); ctx.fill();
+  ctx.fillStyle = C.white; roughRect(-150, -30, 300, 56, 28); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = C.ink; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(110, -3, 14, 0, 7); ctx.moveTo(120, 8); ctx.lineTo(132, 20); ctx.stroke();
+  font(32, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, 0, 80);
+  ctx.restore();
+}
+function cold(t) {
+  sceneIn(t, 0);
+  if (t < S(2) - .2) {
+    pop('1999', 960, 140, 110, t, S(0) - .2, { color: C.white, bg: 1, rot: -2 });
+    stick(380, 830, POSE.hold, { s: .8, face: 'happy', id: 1 });
+    stick(560, 830, POSE.point, { s: .8, face: 'smile', id: 2 });
+    searchBox(470, 520, .9, t > P(1, 1) ? 'GOOGLE' : 'LITTLE SEARCH ENGINE');
+    if (t > F(0, .55)) priceTag(700, 380, '$750,000', back(prog(t, F(0, .55), F(0, .55) + .3)) * 1.1, .1);
+    boss(1450, 830, t > S(1) ? POSE.point : POSE.hips, t > S(1) ? 'smug' : 'neutral', .85, { id: 3, flip: true, look: -.5 });
+    if (t > S(1)) pop('NO.', 1450, 420, 130, t, S(1) + .1, { color: C.red, rot: 8 });
+    if (t > P(1, 2)) { const hit = t > E(1) - .3; if (hit) burst(960, 300, 230, C.gold, 18, t * .3);
+      counterText(t, P(1, 2) + .2, E(1) - .3, 750000, 3.6e12, 960, 300, 88, { color: hit ? C.white : C.ink, bg: hit ? 1 : null, rot: -2 }); }
+  } else if (t < S(3) - .2) {
+    sceneIn(t, S(2) - .2);
+    ctx.save(); ctx.translate(380, 520); ctx.rotate(-.06); ctx.fillStyle = C.red; roughRect(-200, -200, 400, 400, 36); ctx.fill();
+    font(250, 900); ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('#1', 0, 15); ctx.restore();
+    pop('...BUT FIRST', 1250, 220, 90, t, P(2, 1), {});
+    for (let n = 6; n >= 2; n--) { const k = 6 - n; const x = 850 + k * 205, y = 560;
+      const p = back(prog(t, P(2, 1) + .3 + k * .18, P(2, 1) + .6 + k * .18)); if (p <= 0) continue;
+      ctx.save(); ctx.translate(x, y); ctx.scale(p, p); ctx.fillStyle = C.ink; roughRect(-85, -110, 170, 220, 16); ctx.fill();
+      font(80, 900); ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('#' + n, 0, -20);
+      font(70, 900); ctx.fillStyle = C.gold; ctx.fillText('?', 0, 60); ctx.restore(); }
+    pop('SO BAD THEY HURT', 1250, 860, 70, t, F(2, .8), { color: C.white, bg: 1, rot: 2 });
+  } else {
+    sceneIn(t, S(3) - .2);
+    const p = back(prog(t, S(3), S(3) + .45));
+    ctx.save(); ctx.translate(960, 420); ctx.scale(p, p); logoMark(0, 0, 200); ctx.restore();
+    const w = back(prog(t, S(3) + .3, S(3) + .7)); if (w > 0) { ctx.save(); ctx.translate(960, 730); ctx.scale(w, w); logoWord(0, 0, 130, CONFIG.channel); ctx.restore(); }
+    pop("LET'S COUNT THEM DOWN", 960, 870, 60, t, P(3, 1), { color: C.white, bg: 1, bgColor: C.ink });
+  }
+}
+
+// ======================= #6 PIZZA =======================
+function pizzaSec(t) {
+  ladder(t, 6); chip('THE BILLION DOLLAR PIZZA', 6);
+  if (t < S(6) - .2) { // May 2010 computer
+    sceneIn(t, S(5) - .2);
+    pop('MAY 2010', 960, 170, 100, t, S(5), { color: C.white, bg: 1, rot: -2 });
+    desk(1060, 860, 560); chair(700, 850);
+    stick(720, 830, Math.floor(t * 9) % 2 ? POSE.type1 : POSE.type2, { s: .85, face: 'smile', look: .8, id: 4 });
+    computer(1080, 860, 1.1, () => coin(0, -10, 50, 0, { spin: Math.cos(t * 3) }));
+    pop('BITCOIN: BRAND NEW', 1500, 420, 54, t, P(5, 1), {});
+    pop('WHAT IS IT FOR??', 1500, 520, 50, t, F(5, .7), { color: C.red, rot: 4 });
+  } else if (t < S(7) - .2) { // forum post
+    sceneIn(t, S(6) - .2);
+    const m = stick(330, 860, POSE.point, { s: .85, face: 'happy', look: .6, id: 4 });
+    pop('LASZLO HANYECZ', 330, 450, 44, t, S(6) + .3, { color: C.white, bg: 1, bgColor: C.ink });
+    ctx.save(); ctx.translate(1120, 520); ctx.rotate(-1 * D2R);
+    ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 8; roughRect(-560, -260, 1120, 520, 22); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(-480, -190, 36, 0, 7); ctx.fill();
+    font(40, 900); ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('laszlo', -425, -205);
+    font(28, 600); ctx.fillStyle = C.soft; ctx.fillText('Bitcoin Forum · May 18, 2010', -425, -162);
+    ctx.fillStyle = C.line; ctx.fillRect(-510, -120, 1020, 5);
+    typeText("I'll pay 10,000 bitcoins for a couple of pizzas.. like maybe 2 large ones.", -500, -80, 60, t, P(6, 1), 26, { maxW: 1000 });
+    ctx.restore();
+  } else if (t < S(8) - .2) { // the deal
+    sceneIn(t, S(7) - .2);
+    const wx = lerp(2100, 1250, eio(prog(t, S(7), S(7) + 1.2)));
+    const d = stick(wx, 860, POSE.give, { s: .85, face: 'smile', look: -.7, id: 5, flip: true });
+    const got = eio(prog(t, P(7, 1), P(7, 1) + .5));
+    const l = stick(640, 860, got > .5 ? POSE.hold : POSE.stand, { s: .85, face: got > .5 ? 'happy' : 'smile', look: .7, id: 4 });
+    const bx = lerp(d.lh[0] - 20, 640, got), by = lerp(d.lh[1] - 10, l.lh[1] - 10, got);
+    pizzaBox(bx, by, 230, -.04); pizzaBox(bx, by - 56, 230, .05);
+    pop('DEAL!', 960, 170, 110, t, S(7) + .3, { color: C.white, bg: 1, rot: -3 });
+    if (t > P(7, 3)) priceTag(950, 330, '≈ $41', back(prog(t, P(7, 3), P(7, 3) + .3)) * 1.3, Math.sin((t - P(7, 3)) * 6) * .25 * Math.exp(-(t - P(7, 3)) * 1.6));
+  } else if (t < S(9) - .2) { // went crazy
+    sceneIn(t, S(8) - .2);
+    const p = eio(prog(t, S(8) + .3, F(8, .45)));
+    inkLine([[200, 300], [200, 950], [1100, 950]], 9, C.ink, 500);
+    const pts = []; for (let i = 0; i <= 80 * p; i++) { const x = i / 80; pts.push([220 + x * 860, 940 - Math.pow(x, 6) * 620]); }
+    if (pts.length > 1) { ctx.save(); ctx.strokeStyle = C.red; ctx.lineWidth = 14; ctx.lineCap = 'round'; ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.stroke(); ctx.restore(); const [hx, hy] = pts[pts.length - 1]; coin(hx, hy, 40, t * 2, { spin: Math.cos(t * 6) }); }
+    pop('...A LITTLE CRAZY', 650, 170, 80, t, S(8) + .4, { color: C.white, bg: 1, rot: -3 });
+    const hit = t > E(8) - .4; if (hit) burst(1500, 470, 250, C.gold, 18, t * .3);
+    if (t > F(8, .45)) counterText(t, F(8, .5), E(8) - .4, 41, 1.26e9, 1500, 470, 84, { color: hit ? C.white : C.ink, bg: hit ? 1 : null, rot: -2 });
+    pop("*at Bitcoin's Oct 2025 peak (~$126K per ₿)", 1500, 780, 30, t, E(8) - .3, { weight: 700, bg: 1, bgColor: C.paper, pad: 8 });
+    stick(1500, 1080, POSE.shock, { s: .6, face: 'shock', id: 4 });
+  } else if (t < S(10) - .2) { // no regrets + pizza day
+    sceneIn(t, S(9) - .2);
+    stick(420, 860, t > P(9, 2) ? POSE.cheer : POSE.relax, { s: .9, face: t > P(9, 2) ? 'happy' : 'cool', id: 4 });
+    pop('NO REGRETS', 420, 200, 90, t, S(9) + .5, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+    if (t > P(9, 2)) {
+      const p = back(prog(t, P(9, 2), P(9, 2) + .4));
+      ctx.save(); ctx.translate(1250, 470); ctx.scale(p, p); ctx.rotate(-2 * D2R);
+      ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 9; roughRect(-240, -250, 480, 500, 26); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = C.red; roughRect(-240, -250, 480, 130, 26); ctx.fill(); ctx.stroke();
+      font(84, 900); ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('MAY', 0, -184);
+      font(250, 900); ctx.fillStyle = C.ink; ctx.fillText('22', 0, 50); ctx.restore();
+      pop('BITCOIN PIZZA DAY', 1250, 820, 70, t, P(9, 3), { color: C.white, bg: 1, rot: -2 });
+      confetti(t, P(9, 3), 60);
+    }
+  } else { // transition to #5
+    sceneIn(t, S(10) - .2);
+    pop('$1.2 BILLION?', 960, 330, 110, t, S(10), { color: C.soft });
+    pop('NOTHING.', 960, 500, 150, t, F(10, .45), { color: C.white, bg: 1, rot: -3 });
+    pop('wait for #5...', 960, 700, 60, t, F(10, .8), {});
+  }
+}
+
+// ======================= #5 KODAK =======================
+function kodakSec(t) {
+  ladder(t, 5); chip('THE COMPANY THAT INVENTED ITS OWN KILLER', 5);
+  if (t < S(13) - .2) {
+    sceneIn(t, S(12) - .2);
+    hq(500, 980, 1.25);
+    pop('~$31 BILLION', 1300, 300, 110, t, F(12, .25), { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+    const n = Math.round(lerp(0, 145000, eo(prog(t, F(12, .6), E(12)))));
+    for (let i = 0; i < Math.min(30, n / 4800); i++) stick(1000 + (i % 10) * 85, 760 + Math.floor(i / 10) * 95, POSE.stand, { s: .2, face: 'smile', id: 40 + i, lw: 22 });
+    if (t > F(12, .6)) pop(n.toLocaleString('en-US') + ' EMPLOYEES', 1400, 1010, 56, t, F(12, .6), { color: C.white, bg: 1 });
+  } else if (t < S(15) - .2) {
+    sceneIn(t, S(13) - .2);
+    pop('1975', 960, 150, 110, t, S(13), { color: C.white, bg: 1, rot: -3 });
+    stick(380, 860, POSE.cheer, { s: .85, face: 'happy', id: 6 });
+    pop('STEVE SASSON', 380, 400, 44, t, P(13, 1) + .3, { color: C.white, bg: 1, bgColor: C.ink });
+    const p = back(prog(t, P(13, 2), P(13, 2) + .4)); if (p > 0) prototype(1000, 560, 1.3 * p, .03);
+    pop('THE 1ST DIGITAL CAMERA', 1000, 300, 56, t, P(13, 2) + .2, { color: C.white, bg: 1 });
+    if (t > S(14) - .2) {
+      pop('8 LBS', 1500, 420, 90, t, S(14), { rot: -6 });
+      pop('23 SEC / PHOTO', 1520, 580, 70, t, P(14, 1), { color: C.red, rot: 4 });
+      pop('B&W · ON A CASSETTE', 1500, 720, 48, t, P(14, 2), { color: C.soft });
+    }
+  } else if (t < S(16) - .2) {
+    sceneIn(t, S(15) - .2);
+    pop("THE BOSSES' REACTION (per Sasson)", 960, 150, 60, t, S(15), { color: C.white, bg: 1, bgColor: C.ink });
+    prototype(960, 520, .7);
+    const face = t > P(15, 3) ? 'smug' : t > P(15, 2) ? 'smile' : 'neutral';
+    boss(450, 860, POSE.hips, face, .85, { id: 7, look: .5 });
+    boss(1470, 860, t > P(15, 3) ? POSE.point : POSE.hips, face, .85, { id: 8, flip: true, look: -.5 });
+    pop('"THAT\'S CUTE."', 960, 330, 90, t, P(15, 2), {});
+    pop('"BUT DON\'T TELL ANYONE."', 960, 760, 70, t, P(15, 3), { color: C.white, bg: 1, rot: 2 });
+  } else if (t < S(17) - .2) {
+    sceneIn(t, S(16) - .2);
+    pop('KODAK = FILM $$$', 600, 150, 90, t, S(16) + .3, { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+    const n = Math.floor(lerp(0, 12, eo(prog(t, S(16) + .5, P(16, 1)))));
+    for (let i = 0; i < n; i++) filmRoll(160 + (i % 4) * 230, 800 - Math.floor(i / 4) * 170, .9, (hash(i, 4) - .5) * .4);
+    if (t > P(16, 1)) { prototype(1450, 520, .8); pop('NEEDS FILM?', 1450, 760, 70, t, P(16, 1) + .3, {}); pop('NOPE.', 1450, 880, 100, t, F(16, .85), { color: C.red, rot: 6 }); }
+  } else if (t < S(18) - .2) {
+    sceneIn(t, S(17) - .2);
+    pop('...EVENTUALLY', 960, 150, 80, t, S(17) + .5, { color: C.soft });
+    const n = Math.floor(lerp(0, 14, eo(prog(t, P(17, 1), P(17, 2) + .5))));
+    for (let i = 0; i < n; i++) camPhone(260 + (i % 7) * 230, 420 + Math.floor(i / 7) * 330, .95, (hash(i, 9) - .5) * .5);
+    if (t > P(17, 3)) { ctx.save(); ctx.globalAlpha = .9; filmRoll(960, 900, 1.2 * (1 - prog(t, P(17, 3), E(17))), .3); ctx.restore(); }
+    pop('EVERYONE ELSE: FASTER', 960, 1010, 54, t, P(17, 1), { color: C.white, bg: 1, bgColor: C.ink });
+  } else if (t < S(19) - .2) {
+    sceneIn(t, S(18) - .2);
+    pop('JANUARY 2012', 960, 150, 90, t, S(18), { color: C.red });
+    const crack = prog(t, S(18) + .6, S(18) + 1.2), fall = eio(prog(t, S(18) + 1.2, S(18) + 2.2));
+    shake(t, crack > 0 && fall < 1 ? 10 : 0);
+    ctx.save(); ctx.globalAlpha = 1 - fall * .6; hq(960, 1030, 1.15, { crack, fall }); ctx.restore();
+    slam(t, S(18) + 1.2, 960, 560, 'BANKRUPT', -.12);
+  } else {
+    sceneIn(t, S(19) - .2);
+    pop('AT LEAST KODAK TRIED.', 960, 200, 80, t, S(19), {});
+    cheque(960, 560, 1.6 * back(prog(t, P(19, 1), P(19, 1) + .4)), -.05, '$40 BILLION', 'OFFER');
+    slam(t, F(19, .85), 1180, 650, 'NO', .2, C.red, 140);
+  }
+}
+
+// ======================= #4 YAHOO =======================
+function namedBoss(x, base, label, pose, face, opts = {}) { const m = boss(x, base, pose, face, opts.s || .85, opts); pop(label, x, m.head[1] - 110, 40, 99, -1, { color: C.white, bg: 1, bgColor: opts.lc || C.ink, pad: 10 }); return m; }
+function yahooSec(t) {
+  ladder(t, 4); chip('YAHOO SAYS NO TO MICROSOFT', 4);
+  if (t < S(22) - .2) {
+    sceneIn(t, S(21) - .2);
+    pop('FEBRUARY 2008', 960, 150, 90, t, S(21), { color: C.white, bg: 1, rot: -2 });
+    const m = namedBoss(420, 860, 'MICROSOFT', POSE.give, 'happy', { id: 9, look: .5, lc: BLUE });
+    namedBoss(1500, 860, 'YAHOO', POSE.hips, 'neutral', { id: 10, flip: true, look: -.5, lc: PURPLE });
+    if (t > P(21, 2)) { cheque(950, 560, 1.5 * back(prog(t, P(21, 2), P(21, 2) + .4)), -.04, '$44.6 BILLION', 'OFFER: BUY YAHOO'); pop('$31 / SHARE', 950, 760, 54, t, P(21, 2) + .3, { color: C.soft }); }
+  } else if (t < S(23) - .2) {
+    sceneIn(t, S(22) - .2);
+    pop("YAHOO'S BOARD", 960, 150, 80, t, S(22), { color: C.white, bg: 1, bgColor: PURPLE });
+    for (let i = 0; i < 3; i++) boss(700 + i * 260, 860, i === 1 && t > P(22, 1) ? POSE.point : POSE.hips, t > P(22, 1) ? 'smug' : 'neutral', .8, { id: 11 + i });
+    pop('"THAT UNDERVALUES US."', 960, 330, 80, t, P(22, 1), {});
+    slam(t, P(22, 2), 1550, 560, 'NO THANKS', .12, C.red, 90);
+  } else if (t < S(24) - .2) {
+    sceneIn(t, S(23) - .2);
+    const fade = prog(t, P(23, 1), E(23));
+    ctx.save(); ctx.globalAlpha = 1 - fade * .7; store(560, 980, 520, 600, { label: 'YAHOO' }); ctx.restore();
+    pop('MICROSOFT WALKS AWAY', 960, 150, 70, t, S(23) + .2, { color: C.white, bg: 1, bgColor: BLUE });
+    pop('SEARCH → GOOGLE', 1380, 480, 70, t, P(23, 2), { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+    pop('SOCIAL → FACEBOOK', 1380, 640, 70, t, P(23, 3), { color: C.white, bg: 1, bgColor: C.ink, rot: 2 });
+  } else if (t < S(25) - .2) {
+    sceneIn(t, S(24) - .2);
+    pop('2017', 960, 150, 110, t, S(24), { color: C.red });
+    namedBoss(420, 860, 'VERIZON', POSE.give, 'smug', { id: 14, look: .5, lc: C.red });
+    namedBoss(1500, 860, 'YAHOO', POSE.stand, 'sad', { id: 10, flip: true, look: -.5, lc: PURPLE });
+    if (t > P(24, 2)) cheque(950, 560, 1.4 * back(prog(t, P(24, 2), P(24, 2) + .4)), .04, '$4.48 BILLION', 'PRICE: YAHOO');
+  } else if (t < S(26) - .2) {
+    sceneIn(t, S(25) - .2);
+    const k = eo(prog(t, S(25) + .2, S(25) + 1.2));
+    [[44.6, '2008 OFFER', C.ink], [4.48, '2017 SALE', C.red]].forEach(([v, l, c], i) => {
+      const x = 600 + i * 380, h = v / 44.6 * 560 * k;
+      ctx.fillStyle = c; roughRect(x - 120, 930 - h, 240, Math.max(2, h), 8); ctx.fill();
+      font(56, 900); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('$' + v + 'B', x, 930 - h - 46);
+      font(36, 800); ctx.fillStyle = C.soft; ctx.fillText(l, x, 980);
+    });
+    slam(t, P(25, 1), 1500, 500, '-90%', -.1, C.red, 160);
+  } else {
+    sceneIn(t, S(26) - .2);
+    const m = stick(500, 860, POSE.hold, { s: .9, face: 'smile', id: 15 });
+    cheque(m.lh[0], m.lh[1] - 40, .9, -.06, 'THE OFFER', 'IN YOUR HAND');
+    pop('SOMETIMES THE BEST OFFER', 1250, 420, 70, t, P(26, 1), { color: C.white, bg: 1, bgColor: C.ink });
+    pop('IS THE ONE IN YOUR HAND', 1250, 560, 70, t, F(26, .6), { color: C.white, bg: 1, bgColor: GREEN });
+  }
+}
+
+// ======================= MID-ROLL SUBSCRIBE =======================
+function ctaSec(t) {
+  sceneIn(t, S(27) - .2);
+  pop('QUICK THING', 960, 170, 80, t, S(27), { color: C.soft });
+  const bp = back(prog(t, P(27, 1), P(27, 1) + .4));
+  const click = P(27, 1) + 1.2, pressed = t > click;
+  if (bp > 0) {
+    ctx.save(); ctx.translate(960, 520); ctx.scale(bp * (pressed && t < click + .15 ? .92 : 1), bp * (pressed && t < click + .15 ? .92 : 1));
+    ctx.fillStyle = pressed ? C.ink : C.red; ctx.strokeStyle = C.ink; ctx.lineWidth = 9; roughRect(-360, -100, 720, 200, 100); ctx.fill(); ctx.stroke();
+    font(90, 900); ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(pressed ? 'SUBSCRIBED ✓' : 'SUBSCRIBE', 0, 6); ctx.restore();
+  }
+  const m = stick(1500, 900, t > click - .6 ? POSE.point : POSE.stand, { s: .85, face: 'happy', id: 16, flip: true, look: -.5 });
+  pop('NEW MONEY STORY EVERY WEEK', 960, 800, 60, t, P(27, 2), { color: C.white, bg: 1, bgColor: C.ink });
+  if (pressed) confetti(t, click, 50, 11);
+}
+
+// ======================= #3 BLOCKBUSTER =======================
+function blockSec(t) {
+  ladder(t, 3); chip('BLOCKBUSTER LAUGHS AT NETFLIX', 3);
+  if (t < S(30) - .2) {
+    sceneIn(t, S(29) - .2);
+    pop('THE YEAR 2000', 960, 150, 80, t, S(29), { color: C.soft });
+    store(600, 980, 560, 620);
+    const n = Math.round(lerp(0, 9000, eo(prog(t, P(29, 1), P(29, 1) + 1.4))));
+    if (t > P(29, 1)) pop(n.toLocaleString('en-US') + ' STORES', 1350, 460, 90, t, P(29, 1), { color: C.white, bg: 1, bgColor: BLUE });
+    pop('KING OF MOVIE NIGHT', 1350, 640, 60, t, P(29, 2), { rot: -3 });
+  } else if (t < S(31) - .2) {
+    sceneIn(t, S(30) - .2);
+    const m = stick(800, 860, POSE.hold, { s: .7, face: t > P(30, 1) ? 'worried' : 'smile', id: 17 });
+    dvdMailer(m.lh[0], m.lh[1] - 20, .6, -.1);
+    for (let i = 0; i < 4; i++) { const k = ((t * .6 + i / 4) % 1); dvdMailer(1200 + k * 500, 400 + i * 120, .6, k * 2); }
+    pop('NETFLIX', 800, 330, 70, t, S(30), { color: C.white, bg: 1 });
+    pop('TINY STARTUP · DVDs BY MAIL', 800, 430, 44, t, S(30) + .5, { color: C.soft });
+    pop('LOSING $$$', 400, 600, 70, t, P(30, 1), { color: C.white, bg: 1, bgColor: C.ink, rot: -4 });
+  } else if (t < S(32) - .2) {
+    sceneIn(t, S(31) - .2);
+    pop('DALLAS', 960, 150, 70, t, S(31), { color: C.soft });
+    stick(420, 820, POSE.give, { s: .75, face: 'smile', id: 17, look: .6 });
+    stick(580, 820, POSE.stand, { s: .75, face: 'smile', id: 18, look: .6 });
+    boss(1450, 820, POSE.hips, 'neutral', .8, { id: 19, flip: true, look: -.6 });
+    ctx.fillStyle = '#c9a77a'; ctx.strokeStyle = C.ink; ctx.lineWidth = 9; roughRect(300, 840, 1320, 46, 8); ctx.fill(); ctx.stroke();
+    if (t > P(31, 2)) pop('$50,000,000', 960, 450, 120, t, P(31, 2), { color: C.white, bg: 1, rot: -3 });
+  } else if (t < S(33) - .2) {
+    sceneIn(t, S(32) - .2);
+    const out = t > P(32, 1);
+    ctx.save(); if (!out) shake(t, 3 + prog(t, S(32), P(32, 1)) * 6);
+    boss(960, 900, out ? POSE.cheer : POSE.stand, out ? 'laugh' : 'puff', 1.0, { id: 19 }); ctx.restore();
+    pop('TRYING NOT TO LAUGH', 960, 160, 70, t, S(32) + .3, { color: C.white, bg: 1, bgColor: C.ink, end: P(32, 1) });
+    if (out) { for (let i = 0; i < 3; i++) pop('HA', 760 + i * 200, 380 - i * 40, 90 + i * 12, t, P(32, 1) + i * .15, { color: C.red, rot: (i - 1) * 12 }); pop('"TOO NICHE."', 960, 160, 100, t, P(32, 1) + .2, { color: C.white, bg: 1, rot: 3 }); }
+    pop('— per Netflix co-founder Marc Randolph', 1500, 1010, 30, t, S(32) + .5, { color: C.soft, weight: 700 });
+  } else if (t < S(34) - .2) {
+    sceneIn(t, S(33) - .2);
+    playIcon(1400, 500, 220 * back(prog(t, P(33, 1), P(33, 1) + .4)));
+    pop('STREAMING', 1400, 820, 60, t, P(33, 1) + .2, {});
+    const crack = prog(t, P(33, 2), P(33, 2) + .6), fall = eio(prog(t, P(33, 2) + .6, P(33, 2) + 1.4));
+    ctx.save(); ctx.globalAlpha = 1 - fall * .6; store(560, 980, 460, 540, { crack, fall }); ctx.restore();
+    slam(t, P(33, 2) + .6, 560, 560, 'BANKRUPT 2010', -.1, C.red, 80);
+  } else if (t < S(35) - .2) {
+    sceneIn(t, S(34) - .2);
+    const hit = t > F(34, .55);
+    playIcon(560, 600, lerp(120, 240, eo(prog(t, S(34), F(34, .55)))));
+    if (hit) burst(1300, 330, 210, C.gold, 18, t * .3);
+    counterText(t, S(34) + .2, F(34, .55), 5e7, 2.65e11, 1300, 330, 80, { color: hit ? C.white : C.ink, bg: hit ? 1 : null, rot: -2 });
+    pop('*market cap, Nov 2026', 1300, 520, 30, t, F(34, .55), { weight: 700 });
+    if (t > P(34, 2)) { store(1300, 960, 240, 260); pop('THE LAST ONE · BEND, OREGON', 1300, 1030, 40, t, P(34, 2), { color: C.white, bg: 1, bgColor: BLUE }); }
+  } else {
+    sceneIn(t, S(35) - .2);
+    pop('NUMBER TWO OWNED A PIECE OF...', 960, 200, 70, t, S(35) + .3, {});
+    appleIcon(960, 600, 230 * back(prog(t, F(35, .55), F(35, .55) + .4)));
+    pop('...AND GAVE IT BACK', 960, 950, 70, t, F(35, .8), { color: C.white, bg: 1 });
+  }
+}
+
+// ======================= #2 RON WAYNE =======================
+function wayneSec(t) {
+  ladder(t, 2); chip('THE THIRD FOUNDER OF APPLE', 2);
+  if (t < S(38) - .2) {
+    sceneIn(t, S(37) - .2);
+    pop('1976', 960, 150, 110, t, S(37), { color: C.white, bg: 1, rot: -3 });
+    inkLine([[360, 1060], [360, 520], [960, 360], [1560, 520], [1560, 1060]], 12, C.ink, 800);
+    [['JOBS', 640, P(37, 1)], ['WOZ', 960, P(37, 1) + .5], ['RON WAYNE', 1280, P(37, 3)]].forEach(([n, x, at], i) => {
+      if (t < at) return; const m = stick(x, 860, i === 2 ? POSE.stand : POSE.hips, { s: .8, face: 'smile', id: 20 + i });
+      if (i === 1) beard(m, .8); if (i === 2) glasses(m, .8);
+      pop(n, x, m.head[1] - 100, 44, t, at, { color: C.white, bg: 1, bgColor: i === 2 ? C.red : C.ink, pad: 10 });
+    });
+  } else if (t < S(39) - .2) {
+    sceneIn(t, S(38) - .2);
+    const m = stick(300, 880, POSE.point, { s: .85, face: 'happy', id: 22 }); glasses(m, .85);
+    const c = back(prog(t, P(38, 1), P(38, 1) + .35)); if (c > 0) paperDoc(720, 480, c * 1.1, -.06, 'AGREEMENT');
+    const l = back(prog(t, F(38, .55), F(38, .55) + .35)); if (l > 0) logoFrame(1120, 480, l, prog(t, F(38, .55), F(38, .8)));
+    const pp = eo(prog(t, P(38, 2), P(38, 2) + .7)); if (pp > 0) { pie(1550, 520, 190, pp); pop('10%', 1620, 250, 90, t, P(38, 2) + .4, { color: C.red, rot: -6 }); }
+  } else if (t < S(40) - .2) {
+    sceneIn(t, S(39) - .2);
+    const day = Math.min(12, 1 + Math.floor(prog(t, S(39), S(39) + .9) * 11));
+    ctx.save(); ctx.translate(560, 520); ctx.rotate(-2 * D2R); ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 9;
+    roughRect(-220, -230, 440, 460, 24); ctx.fill(); ctx.stroke(); ctx.fillStyle = C.ink; roughRect(-220, -230, 440, 120, 24); ctx.fill();
+    font(72, 900); ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('APRIL', 0, -168);
+    font(230, 900); ctx.fillStyle = day === 12 ? C.red : C.ink; ctx.fillText(String(day), 0, 60); ctx.restore();
+    const walk = eio(prog(t, P(39, 1), E(39) + .3));
+    const m = stick(lerp(1250, 1850, walk), 880, walk > 0 && walk < 1 ? (Math.floor(t * 6) % 2 ? POSE.walk1 : POSE.walk2) : POSE.stand, { s: .85, face: 'neutral', id: 22 }); glasses(m, .85);
+    pop('...HE WALKED AWAY', 1300, 250, 70, t, P(39, 1), {});
+  } else if (t < S(41) - .2) {
+    sceneIn(t, S(40) - .2);
+    inkLine([[960, 140], [960, 1040]], 8, C.line, 900);
+    stick(350, 860, POSE.shrug, { s: .75, face: 'happy', id: 20 }); const b = stick(600, 860, POSE.shrug, { s: .75, face: 'happy', id: 21 }); beard(b, .75);
+    pop('NOTHING TO LOSE', 475, 250, 64, t, S(40) + .2, { color: C.white, bg: 1, bgColor: C.ink });
+    const m = stick(1450, 900, POSE.stand, { s: .75, face: t > P(40, 2) ? 'worried' : 'neutral', id: 22, look: -.3 }); glasses(m, .75);
+    pop('EVERYTHING TO LOSE', 1440, 250, 64, t, P(40, 1), { color: C.white, bg: 1 });
+    [[house, 1250, 470], [car, 1450, 500], [piggy, 1650, 480]].forEach(([fn, x, y], i) => { const p = back(prog(t, P(40, 1) + .5 + i * .45, P(40, 1) + .8 + i * .45)); if (p > 0) fn(x, y, .55 * p); });
+    if (t > P(40, 2)) for (let i = 0; i < 6; i++) { const p = clamp(prog(t, P(40, 2), E(40)) * 1.6 - i * .12); if (p <= 0) continue;
+      const x = lerp(2050, 1450 + (i % 3 - 1) * 120, eo(p)), y = 720 + Math.floor(i / 3) * 90 - Math.sin(p * Math.PI) * 100;
+      ctx.save(); ctx.translate(x, y); ctx.rotate((hash(i, 7) - .5) * .5); ctx.fillStyle = C.white; ctx.strokeStyle = C.red; ctx.lineWidth = 6; roughRect(-70, -40, 140, 80, 6); ctx.fill(); ctx.stroke(); font(30, 900); ctx.fillStyle = C.red; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('DEBT', 0, 2); ctx.restore(); }
+  } else if (t < S(42) - .2) {
+    sceneIn(t, S(41) - .2);
+    const m = stick(400, 880, POSE.hold, { s: .85, face: 'neutral', id: 22 }); glasses(m, .85);
+    paperDoc(m.lh[0], m.lh[1] - 60, .7 * (1 - prog(t, S(41) + .6, S(41) + 1)), .1, '10%', 3);
+    const c1 = back(prog(t, P(41, 1), P(41, 1) + .35)), c2 = back(prog(t, P(41, 2), P(41, 2) + .35));
+    if (c1 > 0) cheque(1050, 420, c1 * 1.3, -.06, '$800', 'PAY TO: RON WAYNE');
+    if (c2 > 0) cheque(1350, 680, c2 * 1.1, .07, '+$1,500', 'DROP ALL CLAIMS');
+    pop('TOTAL: $2,300', 1300, 950, 64, t, F(41, .9), { color: C.white, bg: 1 });
+  } else if (t < S(43) - .2) {
+    sceneIn(t, S(42) - .2);
+    const hit = t > F(42, .75);
+    appleIcon(560, 600, lerp(110, 260, eo(prog(t, S(42), F(42, .75)))));
+    if (hit) burst(1300, 420, 220, C.gold, 18, t * .3);
+    counterText(t, S(42) + .3, F(42, .75), 2300, 4e11, 1300, 420, 84, { color: hit ? C.white : C.ink, bg: hit ? 1 : null, rot: -2 });
+    pop('*hypothetical, before dilution', 1300, 640, 32, t, F(42, .75), { weight: 700 });
+  } else if (t < S(44) - .2) {
+    sceneIn(t, S(43) - .2);
+    const rock = Math.sin(t * 2.4) * .06;
+    ctx.save(); ctx.translate(700, 900); ctx.rotate(rock); ctx.translate(-700, -900);
+    rockingChair(720, 900, 1.0, 0); const m = stick(720, 840, POSE.sit, { s: .95, face: t > P(43, 2) ? 'smile' : 'neutral', id: 22 }); glasses(m, .95); ctx.restore();
+    pop('AGE 91', 1350, 250, 80, t, P(43, 1), { color: C.soft });
+    pop('NO REGRETS.', 1350, 420, 110, t, P(43, 2), { color: C.white, bg: 1, rot: -3 });
+    pop('"the risk wasn\'t worth it"', 1350, 580, 50, t, P(43, 3), {});
+  } else {
+    sceneIn(t, S(44) - .2);
+    pop('WHICH BRINGS US TO...', 960, 250, 70, t, S(44), { color: C.soft });
+    pop('TRILLIONS', 960, 560, 220, t, F(44, .7), { color: C.white, bg: 1, rot: -3, pad: 30 });
+  }
+}
+
+// ======================= #1 EXCITE =======================
+function exciteSec(t) {
+  ladder(t, 1); chip("THE DAY EXCITE DIDN'T BUY GOOGLE", 1);
+  if (t < S(47) - .2) {
+    sceneIn(t, S(46) - .2);
+    pop('1999', 960, 150, 110, t, S(46), { color: C.white, bg: 1, rot: -3 });
+    store(620, 980, 520, 600, { label: 'EXCITE' });
+    pop('THE INTERNET IS EXPLODING', 1350, 400, 56, t, S(46) + .6, {});
+    pop('A TOP SEARCH SITE', 1350, 540, 70, t, P(46, 1), { color: C.white, bg: 1, bgColor: PURPLE });
+    for (let i = 0; i < 5; i++) pop('www', 1050 + i * 180, 760 + (i % 2) * 70, 50, t, S(46) + .3 + i * .15, { color: C.soft, rot: (i - 2) * 8 });
+  } else if (t < S(48) - .2) {
+    sceneIn(t, S(47) - .2);
+    pop('STANFORD', 960, 150, 70, t, S(47), { color: C.soft });
+    const a = stick(420, 860, POSE.point, { s: .8, face: 'happy', id: 23 }), b = stick(620, 860, POSE.hold, { s: .8, face: 'smile', id: 24 });
+    pop('LARRY PAGE', 420, a.head[1] - 100, 38, t, P(47, 1), { color: C.white, bg: 1, bgColor: C.ink, pad: 8 });
+    pop('SERGEY BRIN', 640, b.head[1] - 160, 38, t, P(47, 1) + .3, { color: C.white, bg: 1, bgColor: C.ink, pad: 8 });
+    searchBox(1300, 500, 1.2, t > P(47, 2) ? 'FOR SALE' : 'A BETTER SEARCH ENGINE');
+    if (t > P(47, 2)) priceTag(1480, 300, 'SELL?', back(prog(t, P(47, 2), P(47, 2) + .3)), .15);
+  } else if (t < S(50) - .2) {
+    sceneIn(t, S(48) - .2);
+    const k = namedBoss(420, 860, 'VINOD KHOSLA · INVESTOR', t > P(49, 1) ? POSE.shrug : POSE.give, 'smile', { id: 25, look: .5, s: .8 });
+    const g = namedBoss(1500, 860, 'GEORGE BELL · EXCITE CEO', POSE.hips, t > S(49) ? 'smug' : 'neutral', { id: 26, flip: true, look: -.5, lc: PURPLE, s: .8 });
+    const price = t > P(49, 2) ? '$750,000' : '$1,000,000';
+    const pp = back(prog(t, P(48, 3), P(48, 3) + .35)); if (pp > 0) priceTag(820, 420, price, pp * 1.4, -.06);
+    if (t > S(49)) slam(t, S(49), 1500, 300, 'NO', .15, C.red, 120);
+    if (t > P(49, 2)) pop('PRICE DROP ↓', 960, 680, 60, t, P(49, 2), { color: C.red });
+  } else if (t < S(51) - .2) {
+    sceneIn(t, S(50) - .2);
+    shake(t, Math.max(0, 16 - (t - S(50) - .3) * 30) * (t > S(50) + .3 ? 1 : 0));
+    priceTag(700, 420, '$750,000', 1.4, -.06);
+    boss(1450, 880, POSE.point, 'smug', .9, { id: 26, flip: true, look: -.5 });
+    slam(t, S(50) + .3, 960, 560, 'NO. AGAIN.', -.1, C.red, 160);
+  } else if (t < S(52) - .2) {
+    sceneIn(t, S(51) - .2);
+    boss(380, 880, POSE.think, 'neutral', .85, { id: 26 });
+    pop('"NOT ABOUT THE MONEY"', 1150, 230, 70, t, S(51) + .3, {});
+    store(900, 820, 300, 340, { label: 'EXCITE' });
+    if (t > P(51, 1)) { pop('→', 1180, 600, 120, t, P(51, 1) + .3, {}); searchBox(1500, 600, .8, 'GOOGLE TECH'); pop('REPLACE OUR TECH?!', 1150, 360, 60, t, P(51, 1) + .5, { color: C.red }); }
+    slam(t, P(51, 2), 1200, 900, 'DEAL BREAKER', -.06, C.red, 80);
+  } else if (t < S(53) - .2) {
+    sceneIn(t, S(52) - .2);
+    pop('2001', 960, 150, 110, t, S(52), { color: C.red });
+    const crack = prog(t, S(52) + .5, S(52) + 1.1), fall = eio(prog(t, S(52) + 1.1, S(52) + 2.0));
+    shake(t, crack > 0 && fall < 1 ? 10 : 0);
+    ctx.save(); ctx.globalAlpha = 1 - fall * .6; store(960, 1020, 520, 600, { label: 'EXCITE', crack, fall }); ctx.restore();
+    slam(t, S(52) + 1.1, 960, 560, 'BANKRUPT', -.12);
+    pop("(Excite's parent, Excite@Home)", 960, 760, 36, t, S(52) + 1.3, { color: C.soft });
+  } else {
+    sceneIn(t, S(53) - .2);
+    const hit = t > F(53, .6);
+    shake(t, hit ? Math.max(0, 16 - (t - F(53, .6)) * 25) : prog(t, F(53, .3), F(53, .6)) * 6);
+    searchBox(480, 650, lerp(.6, 1.2, eo(prog(t, S(53), F(53, .6)))), 'GOOGLE');
+    if (hit) burst(1250, 420, 300 + Math.sin(t * 9) * 8, C.gold, 20, t * .3);
+    counterText(t, P(53, 1) + .2, F(53, .6), 750000, 3.6e12, 1250, 420, 90, { color: hit ? C.white : C.ink, bg: hit ? 1 : null, rot: -2 });
+    pop('*Alphabet market cap, Nov 2026', 1250, 690, 32, t, F(53, .6), { weight: 700, bg: 1, bgColor: C.paper, pad: 8 });
+    pop('FROM ONE "NO"', 1250, 840, 70, t, P(53, 2), { color: C.white, bg: 1, bgColor: C.ink });
+  }
+}
+
+// ======================= OUTRO =======================
+const ICONS = [
+  (x, y) => pizza(x, y, 70, 0),
+  (x, y) => filmRoll(x - 30, y, .8),
+  (x, y) => cheque(x, y, .55, 0, '$44.6B', 'OFFER'),
+  (x, y) => store(x, y + 110, 180, 200),
+  (x, y) => appleIcon(x, y, 80),
+  (x, y) => searchBox(x, y, .5, 'GOOGLE'),
+];
+function outroSec(t) {
+  if (t < S(55) - .2) {
+    sceneIn(t, S(54) - .2);
+    pop('WHAT DO ALL 6 HAVE IN COMMON?', 960, 170, 76, t, S(54), {});
+    ICONS.forEach((fn, i) => { const p = back(prog(t, S(54) + .3 + i * .15, S(54) + .6 + i * .15)); if (p <= 0) return; ctx.save(); ctx.translate(260 + i * 280, 500); ctx.scale(p, p); fn(0, 0); ctx.restore(); });
+    pop('SAFE.', 640, 820, 90, t, P(54, 2), { color: C.white, bg: 1, bgColor: C.ink, rot: -3 });
+    pop('ENOUGH.', 960, 820, 90, t, P(54, 2) + .6, { color: C.white, bg: 1, bgColor: C.ink, rot: 2 });
+    pop('RIGHT NOW.', 1300, 820, 90, t, F(54, .85), { color: C.white, bg: 1, rot: -2 });
+  } else if (t < S(56) - .2) {
+    sceneIn(t, S(55) - .2);
+    const items = [['A PIZZA TODAY', 0], ['FILM PROFITS TODAY', 1], ['A BETTER OFFER SOMEDAY', 2], ['$800 TODAY', 4]];
+    items.forEach(([l, ic], k) => { const at = P(55, k); if (t < at) return; const x = 280 + k * 450;
+      ctx.save(); ctx.translate(x, 470); const p = back(prog(t, at, at + .3)); ctx.scale(p, p); ICONS[ic](0, 0); ctx.restore();
+      pop(l, x, 760, 46, t, at + .1, { color: C.white, bg: 1, bgColor: C.ink }); });
+  } else if (t < S(57) - .2) {
+    sceneIn(t, S(56) - .2);
+    pop('NOBODY CAN SEE THE FUTURE.', 960, 200, 64, t, S(56), { color: C.soft });
+    pop('BUT YOU CAN ASK:', 960, 320, 64, t, P(56, 1), {});
+    pop('"WHAT COULD THIS BECOME', 960, 520, 96, t, P(56, 2), { color: C.white, bg: 1, bgColor: C.ink, rot: -2 });
+    pop('IF I WAIT?"', 960, 680, 120, t, P(56, 2) + .6, { color: C.white, bg: 1, rot: 2 });
+    stick(1650, 1000, POSE.think, { s: .7, face: 'smug', id: 27 });
+  } else {
+    sceneIn(t, S(57) - .2);
+    pop('WHICH ONE HURT THE MOST?', 960, 200, 76, t, S(57), {});
+    ctx.save(); ctx.translate(960, 480); const p = back(prog(t, S(57) + .3, S(57) + .6)); ctx.scale(p, p);
+    ctx.fillStyle = C.white; ctx.strokeStyle = C.ink; ctx.lineWidth = 8; roughRect(-420, -110, 840, 220, 30); ctx.fill(); ctx.stroke();
+    font(54, 800); ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('#___ hurt the most because...', 0, 4); ctx.restore();
+    const click = P(57, 2) + .9, pressed = t > click, bp = back(prog(t, P(57, 2), P(57, 2) + .4));
+    if (bp > 0) { ctx.save(); ctx.translate(960, 800); ctx.scale(bp, bp); ctx.fillStyle = pressed ? C.ink : C.red; ctx.strokeStyle = C.ink; ctx.lineWidth = 9; roughRect(-330, -90, 660, 180, 90); ctx.fill(); ctx.stroke();
+      font(80, 900); ctx.fillStyle = C.white; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(pressed ? 'SUBSCRIBED ✓' : 'SUBSCRIBE', 0, 5); ctx.restore(); }
+  }
+}
+
+// ======================= END SCREEN (20 s) =======================
+function endScreen(t) {
+  const a = prog(t, E(57) + .3, E(57) + .8);
+  ctx.save(); ctx.globalAlpha = a;
+  ctx.fillStyle = C.paper; ctx.fillRect(0, 0, W, H);
+  logoMark(960, 230, 110); logoWord(960, 420, 90, CONFIG.channel);
+  font(40, 800); ctx.fillStyle = C.soft; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('WATCH NEXT', 960, 520);
+  // placeholders where YouTube end-screen elements go (left video, right video)
+  ctx.setLineDash([18, 14]); ctx.strokeStyle = C.soft; ctx.lineWidth = 5;
+  roughRect(190, 590, 700, 394, 18); ctx.stroke(); roughRect(1030, 590, 700, 394, 18); ctx.stroke(); ctx.setLineDash([]);
+  stick(110, 1000, POSE.point, { s: .45, face: 'happy', id: 28, look: .5 });
+  stick(1820, 1000, POSE.point, { s: .45, face: 'happy', id: 29, flip: true, look: -.5 });
+  ctx.restore();
+}
+
+// ======================= timeline =======================
+const SECTIONS = [
+  [cold, 0, 4], [(t) => { sectionCard(t, 4, 6, 'THE BILLION\nDOLLAR PIZZA'); }, 4, 5], [pizzaSec, 5, 11],
+  [(t) => sectionCard(t, 11, 5, 'THE COMPANY THAT\nINVENTED ITS\nOWN KILLER'), 11, 12], [kodakSec, 12, 20],
+  [(t) => sectionCard(t, 20, 4, 'YAHOO SAYS NO\nTO MICROSOFT'), 20, 21], [yahooSec, 21, 27], [ctaSec, 27, 28],
+  [(t) => sectionCard(t, 28, 3, 'BLOCKBUSTER\nLAUGHS AT NETFLIX'), 28, 29], [blockSec, 29, 36],
+  [(t) => sectionCard(t, 36, 2, 'THE THIRD\nFOUNDER OF APPLE'), 36, 37], [wayneSec, 37, 45],
+  [(t) => sectionCard(t, 45, 1, "THE DAY EXCITE\nDIDN'T BUY GOOGLE"), 45, 46], [exciteSec, 46, 54], [outroSec, 54, 58],
+];
+const bound = i => i === 0 ? 0 : i >= SEG.length ? E(SEG.length - 1) + .3 : (E(i - 1) + S(i)) / 2;
+
+function renderFrame(t) {
+  setTime(t);
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.filter = 'none';
+  paper();
+  for (const [fn, a, b] of SECTIONS) if (t >= bound(a) && t < bound(b)) { ctx.save(); fn(t); ctx.restore(); }
+  vignette();
+  if (t > E(57) + .3) endScreen(t);
+}
+
+window.FPS = FPS; window.DURATION = DURATION;
+if (params.get('render')) document.body.classList.add('render');
+window.ready = document.fonts.load('900 100px Inter').then(() => document.fonts.load('700 50px Inter')).then(() => { renderFrame(0); return true; });
+if (!params.get('render')) { const t0 = performance.now(); const loop = () => { renderFrame(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); }; loop(); }
+</script>
+</body>
+</html>

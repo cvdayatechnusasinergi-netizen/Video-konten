@@ -1,7 +1,7 @@
 // ===== Stickman motion-graphic library (shared by stickman/videoN/index.html) =====
 // Canvas 1080x1920. Load after defining a <canvas id="c">.
-const W = 1080, H = 1920;
 const cv = document.getElementById('c');
+const W = cv.width, H = cv.height; // 1080x1920 Shorts, 1920x1080 long-form
 const ctx = cv.getContext('2d');
 const FONT = 'Inter, "Inter Display", "DejaVu Sans", sans-serif';
 
