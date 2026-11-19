@@ -90,6 +90,24 @@ File: `carousel/output/20dolar/01.png` … `07.png` (upload sebagai postingan fo
 > #challenge99detik #duit #tipskeuangan #nabung #fyp
 File: `carousel/output/99detik/01.png` … `08.png`.
 
+### #9 — Zero to One · Bab 4: Persaingan itu buat yang kalah
+> 100 toko jualan barang yang sama. Yang menang? Bukan yang paling bagus, tapi yang paling murah 😮‍💨
+> Lo lagi ikut lomba yang semua orang ikutin? 👇
+>
+> #zerotoone #peterthiel #bisnis #jualanonline #fyp
+
+### #10 — Zero to One · Bab 7: Power law
+> 1 keputusan bisa ngalahin 100 keputusan lainnya. Masalahnya, kita sering nyebar diri tipis-tipis.
+> Lo lagi seriusin apa sekarang? 👇
+>
+> #zerotoone #powerlaw #mindset #selfimprovement #fyp
+
+### #11 — Zero to One · Bab 1: Kebenaran yang nggak ada yang setuju
+> Pertanyaan favorit Peter Thiel waktu wawancara: kebenaran apa yang lo yakini, tapi hampir nggak ada yang setuju?
+> Jawaban lo apa? Tulis di komen 👇
+>
+> #zerotoone #peterthiel #mindset #berpikirkritis #fyp
+
 ---
 
 ## Cover
